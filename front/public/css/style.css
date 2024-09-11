@@ -13,4 +13,7 @@
 * {
   font-family: 'MonumentExtended', 'Pretendard', sans-serif;
 }
-  
+
+ol, ul, li{
+  list-style: none;
+}

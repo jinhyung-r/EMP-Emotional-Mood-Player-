@@ -57,7 +57,7 @@ import './Header.css';
 
 const Header = () => {
   return (
-    <header>
+    <header id="header">
       <div className="desktop-navbar">
         <nav className="navbar">
           <ul className="nav-links">
