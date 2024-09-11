@@ -25,19 +25,19 @@ const Footer = () => {
           </p>
           <p>
             <span className='tag'>사업자번호</span>
-            <span className='content'>000-00-00000</span>
+            <span className='content'>000-00-00</span>
             <span className='check-corp'><a href='http://www.ftc.go.kr/bizCommPop.do?wrkr_no=0000000000' target='_blank'>사업자확인</a></span>
           </p>
           <p>
             <span className='tag'>주소</span>
-            <span className='content'>경기도 성남시 분당구 판교역로 000, 8층(EMP)</span>
+            <span className='content'>경기도 성남시 분당구 판교역로 000, 8층</span>
           </p>
           <p>
             <span className='tag'>대표전화</span>
             <span className='content'><a href='tel:1544-0000'>1544-0000</a></span>
           </p>
           <p>
-            <span className='tag'>고객문의</span>
+            <span className='tag'>문의</span>
             <span className='content'><a href='mailto:cs@elice.com'>cs@elice.com</a></span>
           </p>
           <p>
