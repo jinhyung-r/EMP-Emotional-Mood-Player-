@@ -1,0 +1,107 @@
+header {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+header nav {
+  display: flex;
+  padding: 10px 20px;
+}
+
+header ul {
+  display: flex;
+  gap: 50px;
+}
+
+header ul li a {
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+header ul li a:hover {
+  text-decoration: underline;
+}
+
+/* 기본 데스크탑 네비게이션 */
+.desktop-navbar {
+  display: block;
+  padding-top: 25px;
+}
+
+.desktop-navbar nav {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 50px;
+}
+
+.mobile-navbar {
+  display: none;
+}
+
+/* 모바일 햄버거 메뉴 버튼 */
+.bm-burger-button {
+  position: fixed;
+  width: 30px;
+  height: 20px;
+  left: 20px;
+  top: 20px;
+  z-index: 2;
+}
+
+.bm-burger-bars {
+  background: #ffffff;
+}
+
+.bm-cross-button {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  right: 20px;
+  top: 20px;
+}
+
+.bm-cross {
+  background: #fff;
+  height: 2px;
+  width: 24px;
+}
+
+.bm-menu {
+  background: #4a4a4a;
+  padding: 2.5em 1.5em 0;
+  z-index: 1;
+}
+
+.bm-item-list a {
+  padding: 1em 0;
+  text-decoration: none;
+  color: white;
+  display: block; 
+  font-size: 20px;
+}
+
+.bm-item-list a:hover {
+  text-decoration: underline;
+}
+
+
+/* 모바일 크기일 때 햄버거 메뉴 사용 */
+@media screen and (max-width: 768px) {
+  .desktop-navbar {
+    display: none;
+  }
+
+  .mobile-navbar {
+    display: block;
+  }
+
+  .bm-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
