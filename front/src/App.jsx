@@ -1,14 +1,16 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import necessary components from react-router-dom
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import React from 'react';
-import Home from './views/Home';
+import SpotifyLogin from './components/login/SpotifyLogin';
+import Callback from './components/login/Callback';
 import './styles/App.css';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path='/' element={<Home />} />
-      </Routes>
+      <Switch>
+        <Route path="/" exact component={SpotifyLogin} />
+        <Route path="/auth/spotify" component={Callback} />
+      </Switch>
     </Router>
   );
 }
