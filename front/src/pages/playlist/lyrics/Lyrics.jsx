@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import { lyricsState } from '../../../store/atoms';
-import '../../../styles/Survey.css';
+import '../../../styles/Survey.css'; //emotion,lyrics-playlist 공통 스타일
 
 function Lyrics() {
   const [lyrics, setLyrics] = useRecoilState(lyricsState); // 입력된 가사를 상태로 관리

@@ -16,8 +16,8 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path="/create" element={<Create />} />
-          <Route path="/lyrics" element={<Lyrics />} />
-          <Route path="/emotions" element={<Emotions />} />
+          <Route path="/lyrics-playlist" element={<Lyrics />} />
+          <Route path="/emotion-playlist" element={<Emotions />} />
         </Routes>
       </Wrapper>
     </Router>
