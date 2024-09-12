@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { loginState } from '../../store/atoms';
+// import { useRecoilValue } from 'recoil';
+// import { loginState } from '../../store/atoms';
 import '../../styles/Create.css';
 
 function Create() {
-  const isLoggedIn = useRecoilValue(loginState);
+  // const isLoggedIn = useRecoilValue(loginState);
 
   return (
     <div className="background-create">

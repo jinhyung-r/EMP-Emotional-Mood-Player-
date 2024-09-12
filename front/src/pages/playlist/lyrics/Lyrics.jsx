@@ -15,7 +15,7 @@ function Lyrics() {
   return (
     <div className="background-survey">
       <h1 className="survey-title">SURVEY</h1>
-      <p className="lyrics-instruction">좋아하는 가사를 입력해주세요.</p>
+      <p className="instruction">좋아하는 가사를 입력해주세요.</p>
       <form className="lyrics-form" onSubmit={handleSubmit}>
         <input
           type="text"
