@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../../../styles/Survey.css';
 
 function Emotions() {
   return (
-    <div>
-      <h1>감정에 맞는 플레이리스트 찾기</h1>
-      {/* <Link to="/mypage"><button>마이페이지</button></Link> */}
+    <div className="background-survey">
+      <h1 className="survey-title">SURVEY</h1>
+
     </div>
   );
 }

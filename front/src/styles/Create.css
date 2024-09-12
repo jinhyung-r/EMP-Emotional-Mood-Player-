@@ -1,0 +1,61 @@
+.background-create {
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  align-items: center; /* 가운데 정렬 */
+  justify-content: center; /* 수직 가운데 정렬 */
+  height: 100vh; /* 전체 화면 높이를 채움 */
+  background: linear-gradient(180deg, #AE29FF 0%, #FF8A00 100%);
+}
+
+.create-title {
+  color: white;
+  font-size: 105px;
+  font-weight: bold;
+  text-align: center;
+  padding: 80px 0 60px 0;
+}
+
+.create-btns{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-radius: 10px;
+  padding: 20px 0 0 0; 
+}
+
+.lyrics {
+  width: 300px;
+  height: 420px;
+  background-color: rgba(255, 255, 255, 0); /* 투명한 버튼 */
+  border: 2px solid #fff; /* 흰색 테두리 */
+  border-radius: 5px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 10px;
+}
+
+.lyrics:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* 호버 시 배경색 변경 */
+  transform: scale(1.05); /* 호버 시 살짝 확대 */
+}
+
+.emotions {
+  width: 300px;
+  height: 420px;
+  background-color: rgba(255, 255, 255, 0); /* 투명한 버튼 */
+  border: 2px solid #fff; /* 흰색 테두리 */
+  border-radius: 5px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 10px;
+}
+
+.emotions:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* 호버 시 배경색 변경 */
+  transform: scale(1.05); /* 호버 시 살짝 확대 */
+}
