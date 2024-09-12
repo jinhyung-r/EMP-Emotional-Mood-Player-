@@ -61,8 +61,8 @@ const Header = () => {
       <div className="desktop-navbar">
         <nav className="navbar">
           <ul className="nav-links">
-            <li><Link to="/emotion-playlist">감정기반 플레이리스트</Link></li>
-            <li><Link to="/lyrics-playlist">가사기반 플레이리스트</Link></li>
+            <li><Link to="/emotions">감정기반 플레이리스트</Link></li>
+            <li><Link to="/lyrics">가사기반 플레이리스트</Link></li>
             <li><Link to="/login">로그인/회원가입</Link></li>
           </ul>
         </nav>

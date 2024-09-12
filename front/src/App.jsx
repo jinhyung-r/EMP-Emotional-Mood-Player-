@@ -1,20 +1,25 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import necessary components from react-router-dom
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'; // Import necessary components from react-router-dom
 import React from 'react';
-import Header from './components/common/Header';
+import Wrapper from './components/common/Wrapper';
 import Home from './pages/Home';
 import Login from './pages/account/Login';
-import Footer from './components/common/Footer';
+import Create from './pages/playlist/Create';
+import Lyrics from './pages/playlist/lyrics/Lyrics';
+import Emotions from './pages/playlist/emotions/Emotions';
 import './styles/App.css';
 
 function App() {
   return (
     <Router>
-      <Header /*isLoggedIn={isLoggedIn}*/ />
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-      </Routes>
-      <Footer />
+      <Wrapper>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path="/create" element={<Create />} />
+          <Route path="/lyrics" element={<Lyrics />} />
+          <Route path="/emotions" element={<Emotions />} />
+        </Routes>
+      </Wrapper>
     </Router>
   );
 }
