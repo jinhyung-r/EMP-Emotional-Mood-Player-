@@ -59,3 +59,24 @@
   background-color: rgba(255, 255, 255, 0.4); /* 호버 시 배경색 변경 */
   transform: scale(1.05); /* 호버 시 살짝 확대 */
 }
+
+.user-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.user-info h1 {
+  font-size: 1rem;
+  margin-right: 10px;
+  color: white;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
