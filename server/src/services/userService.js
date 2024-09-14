@@ -1,4 +1,6 @@
-import { User } from '../models/index.js';
+import db from '../models/index.js';
+const { User } = db;
+
 
 export const findOrCreateUser = async (profile, provider) => {
   const [user, created] = await User.findOrCreate({

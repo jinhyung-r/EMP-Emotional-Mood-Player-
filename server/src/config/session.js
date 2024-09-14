@@ -2,7 +2,7 @@ import session, { Store } from 'express-session';
 import MySQLStore from 'express-mysql-session';
 import config from './index.js';
 
-const MySQLStroeSession = MySQLStore(session);
+const MySQLStoreSession = MySQLStore(session);
 
 const sessionStore = new MySQLStoreSession({
     host: config.MYSQL_HOST,
