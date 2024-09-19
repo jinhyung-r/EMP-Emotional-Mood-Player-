@@ -2,12 +2,12 @@ import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
-import * as config from './config/index.js';
+import config from './config/index.js';
 import sessionConfig from './config/session.js';
 import configurePassport from './config/passport.js';
 import routes from './routes/index.js';
 import db from './models/index.js';
-import { checkAndRefreshToken } from './middlewares/tokenMiddleware.js';
+import { checkAndRefreshToken } from './middlewares/tokenMiddlware.js';
 import logger from './utils/logger.js';
 import { errorHandler } from './middlewares/errorHanlder.js'
 const app = express();
@@ -30,7 +30,7 @@ app.use((err, req, res, _next) => {
   res.status(500).send('An unexpected error occurred');
 });
 
-db.sequelize.sync().then(() => {
+db.sequelize.sync({force: true}).then(() => {
     app.listen(config.PORT, () => {
       logger.info(`Server is running on port ${config.PORT}`);
     });

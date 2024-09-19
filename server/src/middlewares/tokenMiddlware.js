@@ -1,4 +1,5 @@
-import { isTokenExpired, refreshAccessToken } from '../utils/tokenUtils.js';
+import { isTokenExpired } from '../utils/tokenUtils.js';
+import { refreshAccessToken } from '../services/tokenService.js';
 import logger from '../utils/logger.js';
 
 export const checkAndRefreshToken = async (req, res, next) => {

@@ -1,6 +1,6 @@
 
 import { Sequelize } from 'sequelize';
-import * as config from '../config/index.js';
+import config from '../config/index.js';
 import User from './user.js';
 
 const sequelize = new Sequelize(config.MYSQL_NAME, config.MYSQL_USER, config.MYSQL_PW, {
