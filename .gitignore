@@ -4,6 +4,8 @@
 
 ### dotenv ###
 .env
+.env.development
+.env.production
 
 ### Linux ###
 *~
@@ -27,7 +29,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
