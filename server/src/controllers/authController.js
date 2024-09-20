@@ -1,7 +1,7 @@
 // 사용자의 db에 따른 리다렉 경로 정의 필요
 // playlist 존재하면 playlist, 없으면 /create로..
 
-import { UserDTO } from '../dtos/userDto.js';
+import { UserDTO } from '../dtos/index.js';
 import logger from '../utils/logger.js';
 import config from '../config/index.js';
 
