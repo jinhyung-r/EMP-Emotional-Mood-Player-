@@ -14,10 +14,12 @@ import { errorHandler } from './middlewares/errorHanlder.js';
 
 const app = express();
 
-app.use(cors({
-  origin: config.FRONTEND_URL,
-  credentials: true
-}));
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  Credential: true,
+  optionSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 app.use(cookieParser(config.COOKIE_SECRET));
 app.use(session(sessionConfig));
