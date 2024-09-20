@@ -15,6 +15,7 @@ const config = {
   MYSQL_HOST: process.env.MYSQL_HOST,
   MYSQL_NAME: process.env.MYSQL_NAME,
   PORT: process.env.PORT || 8888,
+  FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
