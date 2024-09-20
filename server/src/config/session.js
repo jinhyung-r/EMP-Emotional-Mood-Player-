@@ -1,4 +1,4 @@
-import session, { Store } from 'express-session';
+import session from 'express-session';
 import MySQLStore from 'express-mysql-session';
 import config from './index.js';
 
@@ -8,7 +8,7 @@ const sessionStore = new MySQLStoreSession({
     host: config.MYSQL_HOST,
     port: 3306,
     user: config.MYSQL_USER,
-    pw: config.MYSQL_PW,
+    password: config.MYSQL_PW,
     db: config.MYSQL_NAME,
 });
 
