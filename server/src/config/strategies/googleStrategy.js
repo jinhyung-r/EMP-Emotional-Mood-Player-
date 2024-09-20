@@ -6,12 +6,14 @@ import logger from '../../utils/logger.js';
 export default new GoogleStrategy({
   clientID: config.GOOGLE_CLIENT_ID,
   clientSecret: config.GOOGLE_CLIENT_SECRET,
-  callbackURL: config.GOOGLE_REDIRECT_URI
+  callbackURL: config.GOOGLE_REDIRECT_URI,
+  accessType: 'offline',  // 리프레시 토큰을 받기 위해 필요 무조건임!
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     const user = await findOrCreateUser(profile, 'google');
-    const expiresAt = Date.now() + 3600 * 1000; // 1시간 뒤(스포티파이가 1시간이니 일괄적으로 적용?)
-    logger.info(`구글 유저 로그인 성공: ${user.id}`);
+    const expiresAt = Date.now() + 3600 * 1000; // 1시간 뒤
+    logger.info(`구글 유저 로그인 성공: ${user.id}`);               // 나중에 지울거(로그용)
+    logger.info(`리프레시 토큰 받음: ${refreshToken ? 'Yes' : 'No'}`);    // 나중에 지울거 로그용
     done(null, { 
       id: user.id,
       provider: 'google',

@@ -10,7 +10,7 @@ export default new SpotifyStrategy({
 }, async (accessToken, refreshToken, expires_in, profile, done) => {
   try {
     const user = await findOrCreateUser(profile, 'spotify');
-    const expiresAt = Date.now() + 3600 * 1000; // 1시간, 구글 스프토파이 동일
+    const expiresAt = Date.now() + expires_in * 1000; // 1시간, 구글 스프토파이 동일
     logger.info(`스포티파이 로그인 성공: ${user.id}`);
     done(null, { 
       id: user.id,
