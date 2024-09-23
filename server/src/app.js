@@ -11,6 +11,14 @@ import prisma from './models/index.js';
 import { checkAndRefreshToken } from './middlewares/tokenMiddlware.js';
 import logger from './utils/logger.js';
 import { errorHandler } from './middlewares/errorHanlder.js';
+// log 디렉토리 확인용
+import fs from 'fs';
+import path from 'path';
+
+const logDir = 'logs';
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
 
 const app = express();
 
