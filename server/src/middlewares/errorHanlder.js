@@ -1,28 +1,23 @@
 import logger from '../utils/logger.js';
 import { AppError } from '../utils/errors.js';
+import config from '../config/index.js';
 
+// 환경별 다른 에러처리 
 export const errorHandler = (err, req, res, _next) => {
   err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
 
-  if (process.env.NODE_ENV === 'development') {
+  if (config.NODE_ENV === 'development') {
     sendErrorDev(err, res);
-  } else if (process.env.NODE_ENV === 'production') {
-    let error = { ...err };
-    error.message = err.message;
-
-    if (error.name === 'SequelizeValidationError') error = handleValidationErrorDB(error);
-    if (error.name === 'SequelizeUniqueConstraintError') error = handleDuplicateFieldsDB(error);
-    if (error.name === 'SequelizeDatabaseError') error = handleDatabaseErrorDB(error);
-
-    sendErrorProd(error, res);
+  } else if (config.NODE_ENV === 'production') {
+    sendErrorProd(err, res);
   }
 };
 
 const sendErrorDev = (err, res) => {
-  logger.error(`Error: ${err.message}`, { stack: err.stack });
+  logger.error(`${err.name}: ${err.message}`, { stack: err.stack });
+  
   res.status(err.statusCode).json({
-    status: err.status,
+    status: 'error',
     error: err,
     message: err.message,
     stack: err.stack
@@ -30,33 +25,24 @@ const sendErrorDev = (err, res) => {
 };
 
 const sendErrorProd = (err, res) => {
-  if (err.isOperational) {
+  // 여기는 클라에 넘기는 오류
+  if (err instanceof AppError) {
+    logger.error(`${err.name}: ${err.message}`);
     res.status(err.statusCode).json({
-      status: err.status,
+      status: 'error',
       message: err.message
     });
-  } else {
-    logger.error(`Unexpected error: ${err.message}`, { stack: err.stack });
+  } 
+
+  // 벡엔드 내부 오류, 클라에 전달하지 않음
+  else {
+    // 정의하지 않은 에러로 로거에 전달
+    logger.error('정의하지 않은 에러', { error: err });
+
+    // 메세지 전달(500)
     res.status(500).json({
       status: 'error',
-      message: 'Something went wrong'
+      message: '예기치 않은 에러입니다.'
     });
   }
-};
-
-const handleValidationErrorDB = err => {
-  const errors = err.errors.map(e => e.message);
-  const message = `Invalid input data. ${errors.join('. ')}`;
-  return new AppError(message, 400);
-};
-
-const handleDuplicateFieldsDB = err => {
-  const field = err.errors[0].path;
-  const message = `Duplicate field value: ${field}. Please use another value!`;
-  return new AppError(message, 400);
-};
-
-const handleDatabaseErrorDB = err => {
-  const message = `Database error: ${err.parent.sqlMessage}`;
-  return new AppError(message, 500);
 };
