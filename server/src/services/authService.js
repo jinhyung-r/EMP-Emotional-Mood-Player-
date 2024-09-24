@@ -10,7 +10,7 @@ export const checkAndRefreshTokenIfNeeded = async (user) => {
 
   try {
     if (isTokenExpired(user.expiresAt)) {
-      logger.warn(`Token expired for user: ${user.id}`);
+      logger.warn(`토큰 만료 user: ${user.id}`);
       throw new UnauthorizedError('토큰이 만료되었습니다', '다시 로그인 해주세용용.');
     }
 
@@ -19,7 +19,7 @@ export const checkAndRefreshTokenIfNeeded = async (user) => {
       user.accessToken = accessToken;
       user.refreshToken = refreshToken;
       user.expiresAt = expiresAt;
-      logger.info(`해당 유저의 토큰이 refresh되었답니다: ${user.id}`);
+      logger.info(`해당 user의 토큰이 refresh되었답니다: ${user.id}`);
       return true;
     }
   } catch (error) {

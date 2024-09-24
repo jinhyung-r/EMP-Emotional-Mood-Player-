@@ -10,7 +10,7 @@ export const checkAndRefreshToken = async (req, res, next) => {
         req.session.user = req.user;
         await new Promise((resolve, reject) => {
           req.session.save((err) => {
-            if (err) reject(new InternalServerError('세션 저장이 실패했습니다.', err.message));
+            if (err) reject(new InternalServerError('세션 저장 중 오류 발생.', err.message));
             else resolve();
           });
         });
