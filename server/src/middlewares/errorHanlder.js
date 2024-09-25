@@ -14,11 +14,11 @@ export const errorHandler = (err, req, res, _next) => {
 
 const sendErrorDev = (err, res) => {
   logger.error(`${err.name}: ${err.message}`, { stack: err.stack });
-  
+
   res.status(err.statusCode).json({
     status: 'error',
     message: err.message,
-    stack: err.stack
+    stack: err.stack,
   });
 };
 
@@ -27,14 +27,14 @@ const sendErrorProd = (err, res) => {
     logger.error(`${err.name}: ${err.message}`);
     res.status(err.statusCode).json({
       status: 'error',
-      message: err.message
+      message: err.message,
     });
   } else {
     logger.error('예기치 못한 오류', { error: err });
 
     res.status(500).json({
       status: 'error',
-      message: '서버 내부 오류가 발생했습니다.'
+      message: '서버 내부 오류가 발생했습니다.',
     });
   }
 };

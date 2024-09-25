@@ -5,7 +5,7 @@ import { AppError, UnauthorizedError, BadRequestError } from '../utils/errors.js
 
 export const refreshAccessToken = async (req) => {
   const { provider, refreshToken } = req.session.user;
-  
+
   if (!refreshToken) {
     throw new UnauthorizedError('리프레시 토큰이 없습니다.');
   }
@@ -23,9 +23,9 @@ export const refreshAccessToken = async (req) => {
     });
 
     // 여기서의 snake_case는 oauth에서 snake_case를 사용해서
-    
+
     const { access_token, refresh_token } = response.data;
-    const newExpiresAt = Date.now() + 3600 * 1000;    // 1시간
+    const newExpiresAt = Date.now() + 3600 * 1000; // 1시간
 
     // 세션 업데이트(리프레시 토큰 업데이트)
     req.session.user = {
@@ -45,10 +45,10 @@ export const refreshAccessToken = async (req) => {
 
     logger.info(`토큰 리프레시 완료: ${provider}`);
 
-    return { 
-      accessToken: access_token, 
-      refreshToken: refresh_token || refreshToken, 
-      expiresAt: newExpiresAt 
+    return {
+      accessToken: access_token,
+      refreshToken: refresh_token || refreshToken,
+      expiresAt: newExpiresAt,
     };
   } catch (error) {
     logger.error(`토큰 리프레시 중 오류: ${error.message}`);

@@ -1,4 +1,4 @@
-import { BadRequestError } from "./errors";
+import { BadRequestError } from './errors.js';
 
 // token expiresAt 사용해서 만료 10분 전부터 갱신 시도
 // 상수니까 대문자 + 언더스코어로 명명(JS  컨벤션?)
