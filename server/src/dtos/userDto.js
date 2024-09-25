@@ -8,13 +8,7 @@ export class UserDTO {
   }
 
   static fromEntity(user) {
-    return new UserDTO(
-      user.id,
-      user.provider,
-      user.accessToken,
-      user.refreshToken,
-      user.expiresAt
-    );
+    return new UserDTO(user.id, user.provider, user.accessToken, user.refreshToken, user.expiresAt);
   }
 
   toJSON() {
@@ -23,7 +17,7 @@ export class UserDTO {
       provider: this.provider,
       accessToken: 'Stored securely',
       refreshToken: this.refreshToken ? 'Stored securely' : null,
-      expiresAt: this.expiresAt
+      expiresAt: this.expiresAt,
     };
   }
 }

@@ -11,6 +11,7 @@ import prisma from './models/index.js';
 import { checkAndRefreshToken } from './middlewares/tokenMiddlware.js';
 import logger from './utils/logger.js';
 import { errorHandler } from './middlewares/errorHanlder.js';
+
 // log 디렉토리 확인용
 import fs from 'fs';
 import path from 'path';
@@ -29,7 +30,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// singed cookie => cookieParser(config 옵션 사용)
 app.use(cookieParser(config.COOKIE_SECRET));
+
 app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());

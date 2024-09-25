@@ -16,18 +16,11 @@ const getLogLevel = () => {
 const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.colorize(),
-  winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`
-  )
+  winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
 );
 
 // 파일 출력 형식
-const fileFormat = winston.format.combine(
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-  winston.format.errors({ stack: true }),
-  winston.format.splat(),
-  winston.format.json()
-);
+const fileFormat = winston.format.combine(winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), winston.format.errors({ stack: true }), winston.format.splat(), winston.format.json());
 
 // 일반 로그 파일 설정
 const fileRotateTransport = new DailyRotateFile({
@@ -54,17 +47,16 @@ const logger = winston.createLogger({
   level: getLogLevel(),
   format: fileFormat,
   defaultMeta: { service: 'EMP logs' },
-  transports: [
-    fileRotateTransport,
-    errorFileRotateTransport,
-  ],
+  transports: [fileRotateTransport, errorFileRotateTransport],
 });
 
 // 개발 환경에서는 콘솔에도 로그 출력
 if (config.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: consoleFormat,
-  }));
+  logger.add(
+    new winston.transports.Console({
+      format: consoleFormat,
+    }),
+  );
 }
 
 export default logger;

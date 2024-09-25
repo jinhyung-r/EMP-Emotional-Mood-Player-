@@ -26,7 +26,6 @@ const config = {
   COOKIE_SECRET: process.env.COOKIE_SECRET,
 };
 
-
 const requiredEnvVars = [
   'MYSQL_USER',
   'MYSQL_PW',
@@ -39,10 +38,10 @@ const requiredEnvVars = [
   'SPOTIFY_CLIENT_SECRET',
   'SPOTIFY_REDIRECT_URI',
   'SESSION_SECRET',
-  'COOKIE_SECRET'
+  'COOKIE_SECRET',
 ];
 
-requiredEnvVars.forEach(varName => {
+requiredEnvVars.forEach((varName) => {
   if (!config[varName]) {
     throw new Error(`Missing required environment variable: ${varName}`);
   }
@@ -50,23 +49,22 @@ requiredEnvVars.forEach(varName => {
 
 // uri 검증
 const uriVars = ['GOOGLE_REDIRECT_URI', 'SPOTIFY_REDIRECT_URI'];
-uriVars.forEach(varName => {
+uriVars.forEach((varName) => {
   if (config[varName] && !isValidUrl(config[varName])) {
     throw new Error(`Invalid URL format for ${varName}: ${config[varName]}`);
   }
 });
 
-// uri 유효성 검사 
+// uri 유효성 검사
 function isValidUrl(string) {
   try {
     new URL(string);
     return true;
     // 언더바 무시 추가(eslint)
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   } catch (_) {
     return false;
   }
 }
-
 
 export default config;
