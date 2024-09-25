@@ -76,22 +76,19 @@ export class UserDTO {
     return new UserDTO(
       user.id,
       user.provider,
-      user.email,
-      user.expiresAt,
       user.accessToken,
-      user.refreshToken
+      user.refreshToken,
+      user.expiresAt
     );
   }
 
   toJSON() {
     return {
-      id: this.#id,
-      provider: this.#provider,
-      email: this.#email,
-      expiresAt: this.#expiresAt,
-      // 미정
-      accessToken: this.#accessToken,
-      refreshToken: this.#refreshToken
+      id: this.id,
+      provider: this.provider,
+      accessToken: 'Stored securely',
+      refreshToken: this.refreshToken ? 'Stored securely' : null,
+      expiresAt: this.expiresAt
     };
   }
 }
