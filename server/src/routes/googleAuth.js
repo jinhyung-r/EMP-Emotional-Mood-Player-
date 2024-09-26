@@ -13,6 +13,6 @@ router.get(
   }),
 );
 
-router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: `${config.FRONTEND_URL}/login` }), oauthCallback);
+router.get('/auth/google/callback', passport.authenticate('google', { session: false }), oauthCallback);
 
 export default router;

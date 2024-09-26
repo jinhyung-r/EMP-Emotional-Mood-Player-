@@ -22,21 +22,17 @@ export const getUserPlaylists = async (userId) => {
 };
 
 export const getUserFirstPlaylist = async (userId) => {
-    try {
-      const playlist = await prisma.playlist.findFirst({
-        where: { userId: userId },
-        include: {
-          tracks: false,
-        },
-      });
-  
-      if (!playlist) {
-        throw new NotFoundError('플레이리스트를 찾을 수 없습니다.');
-      }
-  
-      return playlist;
-    } catch (error) {
-      logger.error(`첫 번째 플레이리스트 조회 중 오류 발생: ${error.message}`);
-      throw error;
-    }
-  };
+  try {
+    const playlist = await prisma.playlist.findFirst({
+      where: { userId: userId },
+      include: {
+        tracks: false,
+      },
+    });
+
+    return playlist || null; // 플레이리스트가 없으면 null 반환
+  } catch (error) {
+    logger.error(`첫 번째 플레이리스트 조회 중 오류 발생: ${error.message}`);
+    return null; // 에러 발생 시에도 null 반환
+  }
+};

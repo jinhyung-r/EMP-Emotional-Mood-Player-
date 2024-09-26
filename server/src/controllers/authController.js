@@ -18,7 +18,7 @@ export const oauthCallback = async (req, res, next) => {
     logger.info(`Provider: ${userDto.getProvider()}`);
 
     // 사용자의 플레이리스트 조회
-    const playlists = await getUserFirstPlaylist(userDto.getId());
+    const playlists = await getUserFirstPlaylist(userDto.getId()) || [];
 
     res.json({
       success: true,
@@ -27,7 +27,7 @@ export const oauthCallback = async (req, res, next) => {
       message: '인증이 완료되었습니다.',
     });
   } catch (error) {
-    logger.debug('oauth err', error);
+    logger.debug('oauth error', error);
     next(error);
   }
 };

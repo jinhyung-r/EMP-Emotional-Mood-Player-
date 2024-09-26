@@ -12,6 +12,6 @@ router.get(
   }),
 );
 
-router.get('/auth/spotify/callback', passport.authenticate('spotify', { failureRedirect: `${config.FRONTEND_URL}/login` }), oauthCallback);
+router.get('/auth/spotify/callback', passport.authenticate('spotify', { session: false }), oauthCallback);
 
 export default router;

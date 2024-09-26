@@ -24,11 +24,21 @@ if (!fs.existsSync(logDir)) {
 const app = express();
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
-  Credential: true,
-  optionSuccessStatus: 200,
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true,
+  optionsSuccessStatus: 200
 };
+
 app.use(cors(corsOptions));
+
+// 모든 라우트 앞에 이 미들웨어를 추가
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 // singed cookie => cookieParser(config 옵션 사용)
 app.use(cookieParser(config.COOKIE_SECRET));
