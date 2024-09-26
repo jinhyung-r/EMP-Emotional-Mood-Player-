@@ -54,3 +54,10 @@ export class DatabaseConnectionError extends AppError {
     super(message, 500, details);
   }
 }
+
+
+export class ValidationError extends AppError {
+  constructor(message = 'Validation Error', details= '') {
+    super(message, 400, details);
+  }
+}

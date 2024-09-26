@@ -9,6 +9,7 @@ export default new GoogleStrategy(
     clientSecret: config.GOOGLE_CLIENT_SECRET,
     callbackURL: config.GOOGLE_REDIRECT_URI,
     accessType: 'offline', // 리프레시 토큰을 받기 위해 필요 무조건임!
+    scope: ['profile', 'email']
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -18,6 +19,8 @@ export default new GoogleStrategy(
       logger.info(`리프레시 토큰 받음: ${refreshToken ? 'Yes' : 'No'}`); // 나중에 지울거 로그용
       done(null, {
         id: user.id,
+        email: profile.emails[0].value,
+        name: profile.displayName,
         provider: 'google',
         accessToken,
         refreshToken,
