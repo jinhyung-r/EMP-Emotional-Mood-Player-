@@ -1,12 +1,16 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import necessary components from react-router-dom
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import React from 'react';
 import Wrapper from './components/common/Wrapper';
 import Home from './pages/Home';
-import Login from './pages/account/Login';
-import Create from './pages/playlist/Create';
-import Lyrics from './pages/playlist/lyrics/Lyrics';
-import Emotions from './pages/playlist/emotions/Emotions';
-import Callback from './components/Callback';
+import Login from './pages/login/Login';
+import Create from './pages/create/Create';
+import Lyrics from './pages/create/lyrics/Lyrics';
+import Emotions from './pages/create/emotions/Emotions';
+import My from './pages/mypage/My';
+import Playlist from './pages/playlist/Playlist';
+import PlaylistTest from './pages/playlist/PlaylistTest';
+import SpotifyCallback from './components/SpotifyCallback';
+import GoogleCallback from './components/GoogleCallback';
 import './styles/App.css';
 
 function App() {
@@ -19,7 +23,11 @@ function App() {
           <Route path="/create" element={<Create />} />
           <Route path="/lyrics-playlist" element={<Lyrics />} />
           <Route path="/emotion-playlist" element={<Emotions />} />
-          <Route path="/callback" element={<Callback />} />
+          <Route path="/mypage" element={<My />} />
+          <Route path='/playlist' element={<Playlist />} />
+          <Route path='/playlist-test' element={<PlaylistTest />} />
+          <Route path="/auth/google/callback" element={<GoogleCallback />} />
+          <Route path="/auth/spotify/callback" element={<SpotifyCallback />} />
         </Routes>
       </Wrapper>
     </Router>

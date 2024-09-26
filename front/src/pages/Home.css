@@ -16,6 +16,12 @@
   font-size: 105px;
   text-align: center;
   padding-top: 150px;
+
+  text-shadow: 
+  2px 2px 0px rgba(0, 0, 0, 0.3),
+  -2px 2px 0px rgba(0, 0, 0, 0.3), 
+  2px -2px 0px rgba(0, 0, 0, 0.3),
+  -2px -2px 0px rgba(0, 0, 0, 0.3); 
 }
 
 .playlist-btn {
@@ -42,6 +48,11 @@
   background-color: #333;
   transform: translateY(-3px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.playlist-btn-container {
+  display:flex;
+  justify-content: center;
 }
 
 .section-container {
@@ -92,6 +103,7 @@
 @media screen and (max-width: 1024px) and (min-width: 768px) {
   .home-title {
     font-size: 70px;
+    padding-top: 100px;
   }
 
   .section {
@@ -117,7 +129,16 @@
 
 @media screen and (max-width: 768px) {
   .home-title {
-    font-size: 65px;
+    font-size: 60px;
+    padding-top: 80px;
+  }
+
+  .text-content h2 {
+    font-size: 30px;
+  }
+
+  .text-content p {
+    font-size: 16px;
   }
 
   .section {
@@ -147,19 +168,6 @@
 
   .section-container {
     padding: 20px; 
-  }
-
-  .home-title {
-    font-size: 60px;
-    padding-top: 40px;
-  }
-
-  .text-content h2 {
-    font-size: 30px;
-  }
-
-  .text-content p {
-    font-size: 16px;
   }
 }
 

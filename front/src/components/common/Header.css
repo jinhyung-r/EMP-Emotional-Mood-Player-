@@ -1,4 +1,4 @@
-#header {
+header {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -16,17 +16,23 @@ header ul {
   gap: 50px;
 }
 
+header ul li p {
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+}
+
 header ul li a {
   color: white;
   font-size: 20px;
   text-decoration: none;
+  cursor:pointer;
 }
 
 header ul li a:hover {
   text-decoration: underline;
 }
 
-/* 기본 데스크탑 네비게이션 */
 .desktop-navbar {
   display: block;
   padding-top: 25px;
@@ -38,11 +44,12 @@ header ul li a:hover {
     padding-right: 50px;
 }
 
+/* 주석처리된 모바일 관련 코드 */
+/*
 .mobile-navbar {
   display: none;
 }
 
-/* 모바일 햄버거 메뉴 버튼 */
 .bm-burger-button {
   position: fixed;
   width: 30px;
@@ -80,28 +87,31 @@ header ul li a:hover {
   padding: 1em 0;
   text-decoration: none;
   color: white;
-  display: block; 
+  display: block;
   font-size: 20px;
 }
 
 .bm-item-list a:hover {
   text-decoration: underline;
 }
+*/
 
+@media screen and (max-width: 1024px) {
+  header ul li a {
+    font-size: 18px;
+  }
 
-/* 모바일 크기일 때 햄버거 메뉴 사용 */
+  .desktop-navbar nav {
+    padding-right: 30px;
+  }
+}
+
 @media screen and (max-width: 768px) {
-  .desktop-navbar {
-    display: none;
+  header ul li a {
+    font-size: 16px;
   }
 
-  .mobile-navbar {
-    display: block;
-  }
-
-  .bm-item-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  .desktop-navbar nav {
+    padding-right: 20px;
   }
 }
