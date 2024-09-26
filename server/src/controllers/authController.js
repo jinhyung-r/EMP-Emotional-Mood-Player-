@@ -1,8 +1,9 @@
 import { UserDTO } from '../DTOs/userDTO.js';
 import logger from '../utils/logger.js';
 import { UnauthorizedError, InternalServerError } from '../utils/errors.js';
+import { getUserFirstPlaylist } from '../services/playlistService.js';
 
-export const oauthCallback = (req, res, next) => {
+export const oauthCallback = async (req, res, next) => {
   try {
     const user = req.user;
     logger.debug('user obj:', user);
@@ -16,9 +17,13 @@ export const oauthCallback = (req, res, next) => {
     logger.info(`User authenticated: ${userDto.getId()}`);
     logger.info(`Provider: ${userDto.getProvider()}`);
 
+    // 사용자의 플레이리스트 조회
+    const playlists = await getUserFirstPlaylist(userDto.getId());
+
     res.json({
       success: true,
       user: userDto.toJSON(),
+      playlists: playlists,
       message: '인증이 완료되었습니다.',
     });
   } catch (error) {
