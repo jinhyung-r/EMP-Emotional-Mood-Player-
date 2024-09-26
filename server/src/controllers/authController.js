@@ -1,10 +1,11 @@
-import { UserDTO } from '../dtos/index.js';
+import { UserDTO } from '../DTOs/userDTO.js';
 import logger from '../utils/logger.js';
 import { UnauthorizedError, InternalServerError } from '../utils/errors.js';
 
 export const oauthCallback = (req, res, next) => {
   try {
     const user = req.user;
+    logger.debug('user obj:', user);
     if (!user) {
       throw new UnauthorizedError('인증에 실패했습니다.');
     }
@@ -12,29 +13,8 @@ export const oauthCallback = (req, res, next) => {
     const userDto = UserDTO.fromEntity(user);
     req.session.user = userDto.toJSON();
 
-    // 로거는 나중에 지우기
-    /* 응답으로는 이렇게 보내줌
-        {
-      "success": true,
-      "user": {
-          "id": 3,
-          "provider": "google",
-          "accessToken": "Stored securely",
-          "refreshToken": "Stored securely",
-          "expiresAt": 1727161611746
-      },
-      "message": "인가 완료"
-      } 
-    */
-    logger.info(`User authenticated: ${user.id}`);
-    logger.info(`Provider: ${user.provider}`);
-    logger.info(`Access Token: ${user.accessToken}`);
-    logger.info(`Refresh Token: ${user.refreshToken}`);
-    logger.info(`Token expires at: ${new Date(user.expiresAt).toISOString()}`);
-
-    // 일단은 벡에서 프론트로 json응답을 보내는 방식으로 사용(200코드 보내는 방식도 고려해보면 좋을듯)
-    // 유저에 따른 응답값 구현 필요(아직 모델 구성 전이라 그 후에 진행)
-    // 아예 json에 플레이리스트 값을 추가해서 보내는 방식도 괜찮을듯? -> 인가 완료 및 플레이리스트 없음 or 있음
+    logger.info(`User authenticated: ${userDto.getId()}`);
+    logger.info(`Provider: ${userDto.getProvider()}`);
 
     res.json({
       success: true,
@@ -42,6 +22,7 @@ export const oauthCallback = (req, res, next) => {
       message: '인증이 완료되었습니다.',
     });
   } catch (error) {
+    logger.debug('oauth err', error);
     next(error);
   }
 };

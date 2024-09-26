@@ -24,6 +24,7 @@ const config = {
   SPOTIFY_REDIRECT_URI: process.env.SPOTIFY_REDIRECT_URI,
   SESSION_SECRET: process.env.SESSION_SECRET,
   COOKIE_SECRET: process.env.COOKIE_SECRET,
+  DATABASE_URL: process.env.DATABASE_URL, // 추가된 부분
 };
 
 const requiredEnvVars = [
