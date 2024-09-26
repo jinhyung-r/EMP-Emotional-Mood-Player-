@@ -4,26 +4,26 @@ import { UnauthorizedError, InternalServerError } from '../utils/errors.js';
 
 export const oauthCallback = (req, res, next) => {
   try {
-      const user = req.user;
-      logger.debug('user obj:', user);
-      if (!user) {
-          throw new UnauthorizedError('인증에 실패했습니다.');
-      }
+    const user = req.user;
+    logger.debug('user obj:', user);
+    if (!user) {
+      throw new UnauthorizedError('인증에 실패했습니다.');
+    }
 
-      const userDto = UserDTO.fromEntity(user);
-      req.session.user = userDto.toJSON();
+    const userDto = UserDTO.fromEntity(user);
+    req.session.user = userDto.toJSON();
 
-      logger.info(`User authenticated: ${userDto.getId()}`);
-      logger.info(`Provider: ${userDto.getProvider()}`);
+    logger.info(`User authenticated: ${userDto.getId()}`);
+    logger.info(`Provider: ${userDto.getProvider()}`);
 
-      res.json({
-          success: true,
-          user: userDto.toJSON(),
-          message: '인증이 완료되었습니다.',
-      });
+    res.json({
+      success: true,
+      user: userDto.toJSON(),
+      message: '인증이 완료되었습니다.',
+    });
   } catch (error) {
     logger.debug('oauth err', error);
-      next(error);
+    next(error);
   }
 };
 
