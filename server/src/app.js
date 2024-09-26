@@ -10,7 +10,7 @@ import routes from './routes/index.js';
 import prisma from './models/index.js';
 import { checkAndRefreshToken } from './middlewares/tokenMiddlware.js';
 import logger from './utils/logger.js';
-import { errorHandler } from './middlewares/errorHanlder.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 // log 디렉토리 확인용
 import fs from 'fs';
