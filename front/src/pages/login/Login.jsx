@@ -1,16 +1,47 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { backgroundStyle } from '../images/backgroundStyle';
 import './Login.css';
+import axios from 'axios';
+import { handleResponse } from '../../apis/responseHandler';
 
 const Login = () => {
+  const navigate = useNavigate();
 
   const handleLogin = (provider) => {
-    if (provider === 'google') {
-      window.location.href = 'http://localhost:8888/auth/google';  // 서버로 리다이렉션
-    } else if (provider === 'spotify') {
-      window.location.href = 'http://localhost:8888/auth/spotify';  // 서버로 리다이렉션
-    }
+    // 각각의 OAuth 제공자에 맞는 서버 엔드포인트로 리다이렉션
+    window.location.href = `http://localhost:8888/auth/${provider}`;
   };
+
+  useEffect(() => {
+    const fetchAuthData = async () => {
+      // URL에 'code' 파라미터가 있는 경우에만 처리
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const provider = window.location.pathname.includes('google') ? 'google' : 'spotify';
+
+      if (code) {
+        try {
+          const response = await axios.get(`http://localhost:8888/auth/${provider}/callback`, {
+            params: { code },
+          });
+
+          // handleResponse에서 성공 여부에 따라 sessionStorage에 사용자 정보를 저장
+          const data = handleResponse(response.data);
+          if (data.success) {
+            sessionStorage.setItem('user', JSON.stringify(data.user));
+            navigate('/create'); // 인증 성공 후 '/create'로 리다이렉트
+          } else {
+            console.error('Login failed:', data.message);
+          }
+        } catch (error) {
+          console.error('Error processing login response:', error);
+        }
+      }
+    };
+
+    fetchAuthData();
+  }, [navigate]);
 
   return (
     <div className="background-container" style={backgroundStyle}>
