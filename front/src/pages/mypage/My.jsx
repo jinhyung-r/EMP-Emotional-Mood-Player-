@@ -34,12 +34,9 @@ const MyPage = () => {
     const fetchPlaylists = async () => {
       try {
         const requestUrl = `/myplaylist/${playlistId}`;
-        console.log(`Sending GET request to: ${requestUrl}`); // 요청 경로 출력
         const response = await axiosInstance.get(requestUrl);
 
-        console.log('API 응답:', response.data); // 응답 데이터 출력
-
-        if (response.data && response.data.playlist) { // 단일 객체인지 확인
+        if (response.data && response.data.playlist) {
           const fetchedPlaylists = [{
             ...response.data.playlist,
             gradient: getRandomGradient(),
