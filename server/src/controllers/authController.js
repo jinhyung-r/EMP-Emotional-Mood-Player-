@@ -17,15 +17,15 @@ export const oauthCallback = async (req, res, next) => {
     logger.info(`User authenticated: ${userDto.getId()}`);
     logger.info(`Provider: ${userDto.getProvider()}`);
 
-    // 사용자의 플레이리스트 조회
-    const playlists = await getUserFirstPlaylist(userDto.getId()) || [];
+    // 사용자의 첫 번째 플레이리스트 ID 조회
+    const playlistId = await getUserFirstPlaylist(userDto.getId());
 
-    logger.info('Playlists:', JSON.stringify(playlists, null, 2));
+    logger.info('First Playlist ID:', playlistId);
 
     res.json({
       success: true,
       user: userDto.toJSON(),
-      playlists: playlists,
+      playlistId: playlistId,
       message: '인증이 완료되었습니다.',
     });
   } catch (error) {

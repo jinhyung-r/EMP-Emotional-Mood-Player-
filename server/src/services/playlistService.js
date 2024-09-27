@@ -25,8 +25,13 @@ export const getUserFirstPlaylist = async (userId) => {
   try {
     const playlist = await prisma.playlist.findFirst({
       where: { userId: userId },
+<<<<<<< HEAD
       select: {
         playlistId: true, // playlistId만 선택
+=======
+      include: {
+        tracks: false,
+>>>>>>> 18bdf33221dfdf142c1a5cb632ca24152a3346ad
       },
     });
 

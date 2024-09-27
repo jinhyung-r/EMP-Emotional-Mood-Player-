@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: 'https://localhost:8888',
-    withCredentials: true,
+  baseURL: process.env.REACT_APP_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // 요청 인터셉터

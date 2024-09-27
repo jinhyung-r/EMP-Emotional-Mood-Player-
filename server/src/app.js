@@ -11,6 +11,7 @@ import prisma from './models/index.js';
 import { checkAndRefreshToken } from './middlewares/tokenMiddlware.js';
 import logger from './utils/logger.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import playlistRoutes from './routes/playlistRoutes.js';
 
 // log 디렉토리 확인용
 import fs from 'fs';
@@ -52,6 +53,8 @@ configurePassport();
 app.use(checkAndRefreshToken);
 
 app.use('/', routes);
+
+app.use(playlistRoutes);
 
 app.use(errorHandler);
 

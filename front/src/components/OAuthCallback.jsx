@@ -26,8 +26,8 @@ const OAuthCallback = () => {
           if (response.data.success) {
             sessionStorage.setItem('user', JSON.stringify(response.data.user));
             
-            if (response.data.playlists && Object.keys(response.data.playlists).length > 0) {
-              navigate('/mypage');
+            if (response.data.playlistId) {
+              navigate('/mypage', { state: { playlistId: response.data.playlistId } });
             } else {
               navigate('/create');
             }

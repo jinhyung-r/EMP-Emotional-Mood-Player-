@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../apis/axiosInstance';
 import '../../styles/My.css';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const { playlistId } = useParams();
+  const location = useLocation();
+  const { playlistId } = location.state || {}; // 상태에서 playlistId 가져오기
   const [playlists, setPlaylists] = useState([]);
   const [latestPlaylist, setLatestPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,27 +32,18 @@ const MyPage = () => {
 
   useEffect(() => {
     const fetchPlaylists = async () => {
-      const accessToken = sessionStorage.getItem('access_token');
-
-      if (!accessToken) {
-        setError('No access token found');
-        setLoading(false);
-        return;
-      }
-
       try {
-        const response = await axiosInstance.get(`/myplaylist/${playlistId}`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
+        const requestUrl = `/myplaylist/${playlistId}`;
+        console.log(`Sending GET request to: ${requestUrl}`); // 요청 경로 출력
+        const response = await axiosInstance.get(requestUrl);
 
-        if (response.data && response.data.playlist) {
-          const fetchedPlaylists = response.data.playlist.map((playlist) => ({
-            ...playlist,
+        console.log('API 응답:', response.data); // 응답 데이터 출력
+
+        if (response.data && response.data.playlist) { // 단일 객체인지 확인
+          const fetchedPlaylists = [{
+            ...response.data.playlist,
             gradient: getRandomGradient(),
-          }));
+          }];
 
           setPlaylists(fetchedPlaylists);
 
@@ -59,17 +51,21 @@ const MyPage = () => {
             setLatestPlaylist(fetchedPlaylists[0]);
           }
         } else {
-          throw new Error('No playlists found');
+          throw new Error('No playlists found or invalid format');
         }
       } catch (err) {
-        const errorMessage = err.response?.data?.message || err.message || 'Error loading playlists';
+        const errorMessage = err.message || 'Error loading playlists';
         setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPlaylists();
+    if (playlistId) {
+      fetchPlaylists();
+    } else {
+      console.error('playlistId is undefined');
+    }
   }, [playlistId]);
 
   const handlePlaylistClick = (playlist) => {
