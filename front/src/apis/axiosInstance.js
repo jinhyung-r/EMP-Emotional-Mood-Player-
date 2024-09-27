@@ -2,9 +2,7 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
     baseURL: 'https://localhost:8888',
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    withCredentials: true,
 });
 
 // 요청 인터셉터
