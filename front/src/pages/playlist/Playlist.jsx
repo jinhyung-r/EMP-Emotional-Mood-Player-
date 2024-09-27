@@ -10,7 +10,7 @@ const Playlist = () => {
   const navigate = useNavigate();
   const { playlistId } = useParams();
 
-  const [shareLink, setShareLink] = useState('');
+  // const [shareLink, setShareLink] = useState('');
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [showSavePopup, setShowSavePopup] = useState(false);
@@ -103,7 +103,7 @@ const Playlist = () => {
       {playlist && (
         <div className='playlist-container'>
           <h1 className='playlist-page-title'>PLAYLIST</h1>
-          <h3 className='recommended-playlist-title'>{playlist.user}'s 추천 플레이리스트</h3>
+          <h3 className='recommended-playlist-title'>{`${playlist.user}'s`} 추천 플레이리스트</h3>
           <div className='album-cover-row'>
             {playlist.songs.map((song, index) => (
               <img key={index} src={song.albumCover} alt={song.title} className='album-cover' />

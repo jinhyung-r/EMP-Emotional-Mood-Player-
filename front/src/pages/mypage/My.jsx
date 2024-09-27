@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '../../apis/axiosInstance';
 import '../../styles/My.css';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { playlistId } = location.state || {}; // 상태에서 playlistId 가져오기
+  const { playlistId } = useParams();
   const [playlists, setPlaylists] = useState([]);
   const [latestPlaylist, setLatestPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,30 +16,42 @@ const MyPage = () => {
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [untitledCount, setUntitledCount] = useState(0); // 제목없음 번호 추가
 
-  const getRandomLightColor = () => {
+  const getRandomLightColor = useCallback(() => {
     const r = Math.floor(Math.random() * 256);
     const g = Math.floor(Math.random() * 256);
     const b = Math.floor(Math.random() * 256);
     return `rgb(${Math.min(r + 100, 255)}, ${Math.min(g + 100, 255)}, ${Math.min(b + 100, 255)})`;
-  };
+  }, []);
 
-  const getRandomGradient = () => {
+  const getRandomGradient = useCallback(() => {
     const color1 = getRandomLightColor();
     const color2 = getRandomLightColor();
     return `linear-gradient(to bottom, ${color1}, ${color2})`;
-  };
+  }, [getRandomLightColor]);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
+      const accessToken = sessionStorage.getItem('access_token');
+
+      if (!accessToken) {
+        setError('No access token found');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const requestUrl = `/myplaylist/${playlistId}`;
-        const response = await axiosInstance.get(requestUrl);
+        const response = await axiosInstance.get(`/myplaylist/${playlistId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
         if (response.data && response.data.playlist) {
-          const fetchedPlaylists = [{
-            ...response.data.playlist,
+          const fetchedPlaylists = response.data.playlist.map((playlist) => ({
+            ...playlist,
             gradient: getRandomGradient(),
-          }];
+          }));
 
           setPlaylists(fetchedPlaylists);
 
@@ -48,22 +59,18 @@ const MyPage = () => {
             setLatestPlaylist(fetchedPlaylists[0]);
           }
         } else {
-          throw new Error('No playlists found or invalid format');
+          throw new Error('No playlists found');
         }
       } catch (err) {
-        const errorMessage = err.message || 'Error loading playlists';
+        const errorMessage = err.response?.data?.message || err.message || 'Error loading playlists';
         setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
 
-    if (playlistId) {
-      fetchPlaylists();
-    } else {
-      console.error('playlistId is undefined');
-    }
-  }, [playlistId]);
+    fetchPlaylists();
+  }, [playlistId, getRandomGradient]); // Dependencies only include getRandomGradient
 
   const handlePlaylistClick = (playlist) => {
     setLatestPlaylist(playlist);
@@ -220,7 +227,6 @@ const MyPage = () => {
             <img src='/images/kakao.png' alt='카카오톡 공유' className='social-share-icon' />
             <img src='/images/igstory.png' alt='인스타그램 스토리 공유' className='social-share-icon' />
             <img src='/images/igmsg.png' alt='인스타그램 메시지 공유' className='social-share-icon' />
-            <img src='/images/whatsapp.png' alt='와츠앱 메시지 공유' className='social-share-icon' />
             <img src='/images/facebook.png' alt='페이스북 공유' className='social-share-icon' />
             <img src='/images/sms.png' alt='SMS 공유' className='social-share-icon' />
           </div>
@@ -229,10 +235,10 @@ const MyPage = () => {
 
       {showEditPopup && (
         <div className='edit-popup'>
-          <h2>플레이 리스트 이름 수정</h2>
+          <h2>플레이 리스트 제목 수정하기</h2>
           <input type='text' value={newPlaylistName} onChange={(e) => setNewPlaylistName(e.target.value)} />
-          <button onClick={handleSaveEdit}>저장</button>
-          <button onClick={() => setShowEditPopup(false)}>취소</button>
+          <button onClick={handleSaveEdit}>저장하기</button>
+          <button onClick={() => setShowEditPopup(false)}>취소하기</button>
         </div>
       )}
     </div>
