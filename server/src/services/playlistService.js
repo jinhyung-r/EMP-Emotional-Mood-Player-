@@ -26,7 +26,7 @@ export const getUserFirstPlaylist = async (userId) => {
     const playlist = await prisma.playlist.findFirst({
       where: { userId: userId },
       include: {
-        tracks: false,
+        tracks: true,
       },
     });
 

@@ -6,7 +6,7 @@ import { getUserFirstPlaylist } from '../services/playlistService.js';
 export const oauthCallback = async (req, res, next) => {
   try {
     const user = req.user;
-    logger.debug('user obj:', user);
+    logger.debug('user obj:', JSON.stringify(user, null, 2));
     if (!user) {
       throw new UnauthorizedError('인증에 실패했습니다.');
     }
@@ -19,6 +19,8 @@ export const oauthCallback = async (req, res, next) => {
 
     // 사용자의 플레이리스트 조회
     const playlists = await getUserFirstPlaylist(userDto.getId()) || [];
+
+    logger.info('Playlists:', JSON.stringify(playlists, null, 2));
 
     res.json({
       success: true,
