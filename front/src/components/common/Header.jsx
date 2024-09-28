@@ -33,7 +33,9 @@ const Header = ({ isHomeOrLogin }) => {
                 {isLoggedIn && (
                   <>
                     <li>
-                      <p><Link to='/mypage'>안녕하세요, {user.name || user.display_name}</Link></p>
+                      <p>
+                        <Link to='/mypage'>안녕하세요, {user.name || user.display_name}</Link>
+                      </p>
                     </li>
                     <li>
                       <a

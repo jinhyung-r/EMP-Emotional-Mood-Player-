@@ -5,7 +5,7 @@ import Footer from './Footer';
 
 const Wrapper = ({ children }) => {
   const location = useLocation();
-  
+
   // 로그인 상태에 따라 메뉴 표시 결정
   const isHomeOrLogin = location.pathname === '/' || location.pathname === '/login';
 

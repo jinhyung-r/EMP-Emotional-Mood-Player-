@@ -13,18 +13,14 @@ function Lyrics() {
   };
 
   return (
-    <div className="background-survey">
-      <h1 className="survey-title">SURVEY</h1>
-      <p className="instruction">좋아하는 가사를 입력해주세요.</p>
-      <form className="lyrics-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          className="transparent-input"
-          placeholder="가사를 입력하세요"
-          value={lyrics}
-          onChange={(e) => setLyrics(e.target.value)}
-        />
-        <button type="submit" className="submit-button">플레이리스트 생성하기</button>
+    <div className='background-survey'>
+      <h1 className='survey-title'>SURVEY</h1>
+      <p className='instruction'>좋아하는 가사를 입력해주세요.</p>
+      <form className='lyrics-form' onSubmit={handleSubmit}>
+        <input type='text' className='transparent-input' placeholder='가사를 입력하세요' value={lyrics} onChange={(e) => setLyrics(e.target.value)} />
+        <button type='submit' className='submit-button'>
+          플레이리스트 생성하기
+        </button>
       </form>
     </div>
   );

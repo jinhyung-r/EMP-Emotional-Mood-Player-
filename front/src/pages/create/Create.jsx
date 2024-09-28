@@ -16,7 +16,7 @@ function Create() {
         <div className='user-info'>
           <h1>Welcome, {user.display_name}</h1>
           {/* <img src={user.images[0]?.url || '../images/default-profile.png'} alt='Profile' onError={(e) => (e.target.src = '../images/default-profile.png')} /> */}
-          <img src={defaultProfile} alt='Profile'/>        
+          <img src={defaultProfile} alt='Profile' />
         </div>
       )}
       <h1 className='create-title'>CREATE</h1>
