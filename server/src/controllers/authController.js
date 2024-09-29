@@ -18,7 +18,7 @@ export const oauthCallback = async (req, res, next) => {
     logger.info(`Provider: ${userDto.getProvider()}`);
 
     // 사용자의 첫 번째 플레이리스트 ID 조회
-    const playlistId = await getUserFirstPlaylist(userDto.getId());
+    const playlistId = await getUserFirstPlaylist(userDto.getId()) || [];
 
     logger.info('First Playlist ID:', playlistId);
 
