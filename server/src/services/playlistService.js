@@ -49,3 +49,14 @@ export const updatePlaylistTitle = async (playlistId, newTitle) => {
     throw error;
   }
 };
+
+export const deletePlaylistById = async (playlistId) => {
+  try {
+    await prisma.playlist.delete({
+      where: { playlistId: parseInt(playlistId, 10) },
+    });
+  } catch (error) {
+    logger.error(`플레이리스트 삭제 중 오류: ${error.message}`);
+    throw error;
+  }
+};
