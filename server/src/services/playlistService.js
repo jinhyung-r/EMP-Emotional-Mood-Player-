@@ -2,25 +2,6 @@ import prisma from '../models/index.js';
 import logger from '../utils/logger.js';
 import { NotFoundError } from '../utils/errors.js';
 
-export const getUserPlaylists = async (playlistId) => {
-  try {
-    const playlists = await prisma.playlist.findMany({
-      where: { playlistId: parseInt(playlistId, 10) },
-      include: {
-        tracks: true,
-      },
-    });
-    if (!playlists) {
-      throw new NotFoundError('플레이리스트를 찾을 수 없습니다.');
-    }
-
-    return playlists;
-  } catch (error) {
-    logger.error(`플레이리스트 조회 중 오류: ${error.message}`);
-    throw error;
-  }
-};
-
 export const getUserFirstPlaylist = async (userId) => {
   try {
     const playlist = await prisma.playlist.findFirst({
@@ -52,6 +33,30 @@ export const getPlaylistById = async (playlistId) => {
     return playlist;
   } catch (error) {
     logger.error(`플레이리스트 조회 중 오류: ${error.message}`);
+    throw error;
+  }
+};
+
+export const updatePlaylistTitle = async (playlistId, newTitle) => {
+  try {
+    const updatedPlaylist = await prisma.playlist.update({
+      where: { playlistId: parseInt(playlistId, 10) },
+      data: { title: newTitle },
+    });
+    return updatedPlaylist;
+  } catch (error) {
+    logger.error(`플레이리스트 제목 수정 중 오류: ${error.message}`);
+    throw error;
+  }
+};
+
+export const deletePlaylistById = async (playlistId) => {
+  try {
+    await prisma.playlist.delete({
+      where: { playlistId: parseInt(playlistId, 10) },
+    });
+  } catch (error) {
+    logger.error(`플레이리스트 삭제 중 오류: ${error.message}`);
     throw error;
   }
 };

@@ -1,6 +1,4 @@
 import React from 'react';
-// import { useRecoilState } from 'recoil';
-// import { lyricsState } from '../../../store/atoms';
 import Questionnaire from '../Questionnaire';
 import '../../../styles/Survey.css';
 

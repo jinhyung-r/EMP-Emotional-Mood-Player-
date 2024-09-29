@@ -5,8 +5,8 @@ export const loginState = atom({
   default: false, // 기본값, 초기상태
 });
 
-export const lyricsState = atom({
-  key: 'lyricsState',
+export const searchTermState = atom({
+  key: 'searchTermState',
   default: '',
 });
 

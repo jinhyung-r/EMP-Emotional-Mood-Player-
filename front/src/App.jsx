@@ -9,8 +9,6 @@ import Emotions from './pages/create/emotions/Emotions';
 import My from './pages/mypage/My';
 import Playlist from './pages/playlist/Playlist';
 import PlaylistTest from './pages/playlist/PlaylistTest';
-// import SpotifyCallback from './components/SpotifyCallback';
-// import GoogleCallback from './components/GoogleCallback';
 import OAuthCallback from './components/OAuthCallback';
 import './styles/App.css';
 

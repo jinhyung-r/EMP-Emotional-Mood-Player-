@@ -19,6 +19,7 @@ export default [
       },
       globals: {
         ...globals.browser,
+        ...globals.node,
         es2020: true,
       },
     },
@@ -29,7 +30,7 @@ export default [
       import: pluginImport,
       prettier: pluginPrettier,
     },
-    settings: { // Add this section
+    settings: {
       react: {
         version: "detect", // Automatically detect the react version
       },

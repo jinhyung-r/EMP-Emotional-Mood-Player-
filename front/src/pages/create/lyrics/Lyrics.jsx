@@ -1,15 +1,22 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import { lyricsState } from '../../../store/atoms';
-import '../../../styles/Survey.css'; //emotion,lyrics-playlist 공통 스타일
+import { searchTermState } from '../../../store/atoms';
+import axiosInstance from '../../../apis/axiosInstance';
+import '../../../styles/Survey.css';
 
 function Lyrics() {
-  const [lyrics, setLyrics] = useRecoilState(lyricsState); // 입력된 가사를 상태로 관리
-  const handleSubmit = (e) => {
-    //axios 사용시 수정될 부분
+  const [searchTerm, setSearchTerm] = useRecoilState(searchTermState);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 서버로 가사를 보낼 API 요청 처리
-    console.log('Submitting lyrics:', lyrics);
+
+    try {
+      const response = await axiosInstance.post('/lyrics-playlist', { searchTerm }); // 서버로 검색어 전송
+      console.log('Server response:', response.data);
+      // 플레이리스트 ID를 이용해 페이지 이동 처리
+    } catch (error) {
+      console.error('Error submitting lyrics:', error);
+    }
   };
 
   return (
@@ -17,7 +24,7 @@ function Lyrics() {
       <h1 className='survey-title'>SURVEY</h1>
       <p className='instruction'>좋아하는 가사를 입력해주세요.</p>
       <form className='lyrics-form' onSubmit={handleSubmit}>
-        <input type='text' className='transparent-input' placeholder='가사를 입력하세요' value={lyrics} onChange={(e) => setLyrics(e.target.value)} />
+        <input type='text' className='transparent-input' placeholder='가사를 입력하세요' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         <button type='submit' className='submit-button'>
           플레이리스트 생성하기
         </button>

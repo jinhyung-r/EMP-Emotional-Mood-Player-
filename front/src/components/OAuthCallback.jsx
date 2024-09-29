@@ -1,11 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
-
-const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8888',
-  withCredentials: true,
-});
+import axiosInstance from '../apis/axiosInstance';
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
@@ -24,8 +19,12 @@ const OAuthCallback = () => {
           });
 
           if (response.data.success) {
+            // 세션에 사용자 정보와 액세스 토큰 저장
             sessionStorage.setItem('user', JSON.stringify(response.data.user));
+            // sessionStorage.setItem('accessToken', response.data.accessToken);
+            // sessionStorage.setItem('refreshToken', response.data.refreshToken);
 
+            // 플레이리스트가 있으면 /mypage로, 없으면 /create로 리다이렉트
             if (response.data.playlistId) {
               navigate('/mypage', { state: { playlistId: response.data.playlistId } });
             } else {

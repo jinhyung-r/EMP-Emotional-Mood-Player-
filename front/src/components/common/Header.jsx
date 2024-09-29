@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 
@@ -18,12 +19,6 @@ const Header = ({ isHomeOrLogin }) => {
           <ul className='nav-links'>
             {isHomeOrLogin ? (
               <>
-                <li>
-                  <Link to='/emotion-playlist'>감정기반 플레이리스트</Link>
-                </li>
-                <li>
-                  <Link to='/lyrics-playlist'>가사기반 플레이리스트</Link>
-                </li>
                 <li>
                   <Link to='/login'>로그인/회원가입</Link>
                 </li>
@@ -57,6 +52,10 @@ const Header = ({ isHomeOrLogin }) => {
       </div>
     </header>
   );
+};
+
+Header.propTypes = {
+  isHomeOrLogin: PropTypes.bool.isRequired,
 };
 
 export default Header;

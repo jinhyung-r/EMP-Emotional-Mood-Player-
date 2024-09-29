@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './Footer.css';
 
@@ -85,7 +86,7 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-        <div className='f-copyright'>COPYRIGHT ⓒ EMP ALL RIGHTS RESERVED.</div>
+        <div className='f-copyright'>COPYRIGHT ⓒ EMP ALL RIGHTS RESERVED.</div>
       </div>
     </footer>
   );

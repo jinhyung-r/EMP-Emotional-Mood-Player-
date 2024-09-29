@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-// import axios from 'axios';
+import axiosInstance from '../../apis/axiosInstance';
 import '../../styles/Questionnaire.css';
 
 function Questionnaire() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const [slideDirection, setSlideDirection] = useState(''); // 슬라이드 방향을 저장
-  const [isSliding, setIsSliding] = useState(false); // 애니메이션 진행 상태를 저장
+  const [slideDirection, setSlideDirection] = useState('');
+  const [isSliding, setIsSliding] = useState(false);
 
   const questions = [
     {
@@ -29,29 +29,26 @@ function Questionnaire() {
 
   const handleAnswerClick = (answer) => {
     setAnswers([...answers, answer]);
-
-    // 마지막 질문 전까지 슬라이드 효과 적용
     if (currentQuestion < questions.length - 1) {
-      setSlideDirection('left'); // 슬라이드 방향 설정
-      setIsSliding(true); // 슬라이드 애니메이션 시작
-
+      setSlideDirection('left');
+      setIsSliding(true);
       setTimeout(() => {
         setCurrentQuestion(currentQuestion + 1);
-        setSlideDirection(''); // 슬라이드 방향 초기화
-        setIsSliding(false); // 슬라이드 애니메이션 종료
-      }, 300); // 애니메이션 시간과 맞춰줌
+        setSlideDirection('');
+        setIsSliding(false);
+      }, 300);
     }
   };
 
-  // API 명세 확정시 서버에 김장설문 결과 데이터 전달
-  // const handleSubmit = async () => {
-  //   try {
-  //     const response = await axios.post('YOUR_SERVER_API_ENDPOINT', { answers });
-  //     console.log('Server response:', response.data);
-  //   } catch (error) {
-  //     console.error('Error submitting answers:', error);
-  //   }
-  // };
+  const handleSubmit = async () => {
+    try {
+      const response = await axiosInstance.post('/emotion-playlist', { answers });
+      console.log('Server response:', response.data);
+      // 서버로부터 플레이리스트 ID를 받으면 /myplaylist || /myplaylist/${playlistId}로 이동?
+    } catch (error) {
+      console.error('Error submitting emotions:', error);
+    }
+  };
 
   return (
     <div className='questionnaire-container'>
@@ -72,8 +69,7 @@ function Questionnaire() {
       </div>
 
       {currentQuestion === questions.length - 1 && (
-        <button className='submit-button'>
-          {/* onClick=handleSubmit */}
+        <button className='submit-button' onClick={handleSubmit}>
           제출하기
         </button>
       )}
