@@ -5,8 +5,8 @@ export const loginState = atom({
   default: false, // 기본값, 초기상태
 });
 
-export const lyricsState = atom({
-  key: 'lyricsState',
+export const searchTermState = atom({
+  key: 'searchTermState',
   default: '',
 });
 
@@ -74,17 +74,17 @@ export const commentsState = atom({
     '휴가 중에 듣는 노래',
     '일할 때 듣는 노래',
     '운전할 때 듣는 노래',
-    '편안한 밤을 위한 노래'
+    '편안한 밤을 위한 노래',
   ],
 });
 
 export const albumCommentsSelector = selector({
   key: 'albumCommentsSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     const albums = get(albumsState);
     const comments = get(commentsState);
     const shuffledComments = [...comments].sort(() => 0.5 - Math.random());
-    
+
     return albums.map((album, index) => ({
       ...album,
       comment: shuffledComments[index % shuffledComments.length],

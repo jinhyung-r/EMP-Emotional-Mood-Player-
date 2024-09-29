@@ -14,13 +14,13 @@ export const oauthCallback = async (req, res, next) => {
     const userDto = UserDTO.fromEntity(user);
     req.session.user = userDto.toJSON();
 
-    logger.info(`User authenticated: ${userDto.getId()}`);
-    logger.info(`Provider: ${userDto.getProvider()}`);
+    logger.debug(`User authenticated: ${userDto.getId()}`);
+    logger.debug(`Provider: ${userDto.getProvider()}`);
 
     // 사용자의 첫 번째 플레이리스트 ID 조회
     const playlistId = await getUserFirstPlaylist(userDto.getId()) || [];
 
-    logger.info('First Playlist ID:', playlistId);
+    logger.debug('First Playlist ID:', playlistId);
 
     res.json({
       success: true,
@@ -43,7 +43,7 @@ export const logout = (req, res, next) => {
       return next(new InternalServerError('로그아웃 처리 중 오류가 발생했습니다.'));
     }
     res.clearCookie('auth_session');
-    logger.info(`사용자 로그아웃 완료: ${req.user?.email}`);
+    logger.debug(`사용자 로그아웃 완료: ${req.user?.email}`);
     res.json({ message: '로그아웃되었습니다.' });
   });
 };

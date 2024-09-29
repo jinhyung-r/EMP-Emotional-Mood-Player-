@@ -43,7 +43,7 @@ export const refreshAccessToken = async (req) => {
       });
     });
 
-    logger.info(`토큰 리프레시 완료: ${provider}`);
+    logger.debug(`토큰 리프레시 완료: ${provider}`);
 
     return {
       accessToken: access_token,
