@@ -64,7 +64,7 @@ app.use((err, req, res, _next) => {
 });
 
 app.listen(config.PORT, () => {
-  logger.info(`Server is running on port ${config.PORT}`);
+  logger.debug(`Server is running on port ${config.PORT}`);
   console.log(`Server is running on port ${config.PORT}`);
 });
 

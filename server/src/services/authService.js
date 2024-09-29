@@ -19,7 +19,7 @@ export const checkAndRefreshTokenIfNeeded = async (user) => {
       user.accessToken = accessToken;
       user.refreshToken = refreshToken;
       user.expiresAt = expiresAt;
-      logger.info(`해당 user의 토큰이 refresh되었답니다: ${user.id}`);
+      logger.debug(`해당 user의 토큰이 refresh되었답니다: ${user.id}`);
       return true;
     }
   } catch (error) {
