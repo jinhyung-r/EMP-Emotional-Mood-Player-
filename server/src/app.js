@@ -7,7 +7,6 @@ import config from './config/index.js';
 import sessionConfig from './config/session.js';
 import configurePassport from './config/passport.js';
 import routes from './routes/index.js';
-import prisma from './models/index.js';
 import { checkAndRefreshToken } from './middlewares/tokenMiddlware.js';
 import logger from './utils/logger.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -15,8 +14,6 @@ import playlistRoutes from './routes/playlistRoutes.js';
 
 // log 디렉토리 확인용
 import fs from 'fs';
-import path from 'path';
-
 const logDir = 'logs';
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
