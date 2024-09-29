@@ -36,3 +36,16 @@ export const getPlaylistById = async (playlistId) => {
     throw error;
   }
 };
+
+export const updatePlaylistTitle = async (playlistId, newTitle) => {
+  try {
+    const updatedPlaylist = await prisma.playlist.update({
+      where: { playlistId: parseInt(playlistId, 10) },
+      data: { title: newTitle },
+    });
+    return updatedPlaylist;
+  } catch (error) {
+    logger.error(`플레이리스트 제목 수정 중 오류: ${error.message}`);
+    throw error;
+  }
+};
