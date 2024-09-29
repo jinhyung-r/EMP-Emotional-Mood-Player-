@@ -41,6 +41,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // singed cookie => cookieParser(config 옵션 사용)
 app.use(cookieParser(config.COOKIE_SECRET));
 
@@ -58,9 +61,11 @@ app.use(playlistRoutes);
 
 app.use(errorHandler);
 
-app.use((err, req, res, _next) => {
+app.use((err, req, res, next) => {
   logger.error(`Unhandled error: ${err.message}`, { stack: err.stack });
-  res.status(500).send('An unexpected error occurred');
+  if (!res.headersSent) {
+    res.status(500).send('An unexpected error occurred');
+  }
 });
 
 app.listen(config.PORT, () => {

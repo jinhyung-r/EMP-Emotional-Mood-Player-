@@ -2,9 +2,11 @@ import React from 'react';
 import { backgroundStyle } from '../images/backgroundStyle';
 import './Login.css';
 
+const baseURI = process.env.REACT_APP_API_URL;
+
 const Login = () => {
   const handleLogin = (provider) => {
-    window.location.href = `http://localhost:8888/auth/${provider}`;
+    window.location.href = `${baseURI}/auth/${provider}/callback`;
   };
 
   return (
