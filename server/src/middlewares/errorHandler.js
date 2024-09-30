@@ -3,7 +3,7 @@ import { AppError } from '../utils/errors.js';
 import config from '../config/index.js';
 
 export const errorHandler = (err, req, res, _next) => {
-  err.statusCode = err.statusCode || 500;
+  err.statusCode = err.statusCode ?? 500;
 
   if (config.NODE_ENV === 'development') {
     sendErrorDev(err, res);
