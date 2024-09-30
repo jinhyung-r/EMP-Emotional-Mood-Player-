@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import prisma from '../models/index.js';
 
 export const findOrCreateUser = async (profile, provider) => {
   const user = await prisma.user.upsert({

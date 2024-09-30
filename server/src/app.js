@@ -11,6 +11,7 @@ import { checkAndRefreshToken } from './middlewares/tokenMiddlware.js';
 import logger from './utils/logger.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import playlistRoutes from './routes/playlistRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 // log 디렉토리 확인용
 import fs from 'fs';
@@ -55,6 +56,7 @@ app.use(checkAndRefreshToken);
 app.use('/', routes);
 
 app.use(playlistRoutes);
+app.use(authRoutes);
 
 app.use(errorHandler);
 
