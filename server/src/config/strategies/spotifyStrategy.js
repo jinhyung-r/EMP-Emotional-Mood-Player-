@@ -8,7 +8,7 @@ export default new SpotifyStrategy(
     clientID: config.SPOTIFY_CLIENT_ID,
     clientSecret: config.SPOTIFY_CLIENT_SECRET,
     callbackURL: config.SPOTIFY_REDIRECT_URI,
-    scope: ['profile', 'email'],
+    scope: ['user-read-email', 'user-read-private'],
   },
   async (accessToken, refreshToken, expires_in, profile, done) => {
     try {

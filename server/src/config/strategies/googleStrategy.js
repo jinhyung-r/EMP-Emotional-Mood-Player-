@@ -16,8 +16,8 @@ export default new GoogleStrategy(
       const user = await findOrCreateUser(profile, 'google');
       const expiresAt = Date.now() + 3600 * 1000; // 1시간 뒤
 
-      logger.debug(`구글 유저 로그인 성공: ${user.id}`); // 나중에 지울거(로그용)
-      logger.debug(`리프레시 토큰 받음: ${refreshToken ? 'Yes' : 'No'}`); // 나중에 지울거 로그용
+      logger.debug(`구글 유저 로그인 성공: ${user.id}`); 
+      logger.debug(`리프레시 토큰 받음: ${refreshToken ? 'Yes' : 'No'}`); 
       
       done(null, {
         id: user.id,
