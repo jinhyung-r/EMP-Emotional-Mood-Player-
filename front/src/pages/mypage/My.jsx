@@ -43,6 +43,7 @@ const MyPage = () => {
           {
             playlist_id: 1,
             title: 'Playlist 1',
+            userId: 1,
             tracks: [
               {
                 title: '그라데이션',
@@ -197,6 +198,7 @@ const MyPage = () => {
           },
         ],
       };
+      const storedDummyResponse = JSON.parse(sessionStorage.getItem('dummyResponse'));
 
       // 응답 데이터 사용
       const response = dummyResponse; // 실제 서버 호출 대신 임시 데이터 사용
@@ -242,9 +244,8 @@ const MyPage = () => {
     window.open(song.spotifyLink, '_blank');
   };
 
-  const handleEditPlaylist = () => {
-    setNewPlaylistName(latestPlaylist ? latestPlaylist.title : '제목 없음');
-    setShowEditPopup(true);
+  const handleDetailPlaylist = () => {
+    navigate('/myplaylist');
   };
 
   const handleDeletePlaylist = async () => {
@@ -340,20 +341,14 @@ const MyPage = () => {
           {latestPlaylist?.tracks?.map((song, index) => (
             <li key={index} className='song-item'>
               {song.artist} - {song.title}
-              <button className='play-button' onClick={() => handleSongPlay(song)}>
-                노래 듣기
-              </button>
             </li>
           ))}
         </ul>
       </div>
 
       <div className='playlist-buttons'>
-        <button className='edit-playlist-button' onClick={handleEditPlaylist}>
-          플레이 리스트 수정하기
-        </button>
-        <button className='delete-playlist-button' onClick={handleDeletePlaylist}>
-          플레이 리스트 삭제하기
+        <button className='edit-playlist-button' onClick={handleDetailPlaylist}>
+          플레이 리스트 자세히 보기
         </button>
         <button className='create-playlist-button' onClick={handleCreatePlaylist}>
           새로운 리스트 생성하기
@@ -374,14 +369,14 @@ const MyPage = () => {
         )}
       </div>
 
-      {showEditPopup && (
+      {/* {showEditPopup && (
         <div className='edit-playlist-popup'>
           <h2>플레이 리스트 제목 수정하기</h2>
           <input type='text' value={newPlaylistName} onChange={(e) => setNewPlaylistName(e.target.value)} />
           <button onClick={handleSaveEdit}>저장하기</button>
           <button onClick={() => setShowEditPopup(false)}>취소하기</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

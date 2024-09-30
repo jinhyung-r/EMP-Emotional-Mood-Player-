@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/Playlist.css';
 import { useNavigate, useParams } from 'react-router-dom';
-//import axiosInstance from '../apis/axiosInstance';
+import axiosInstance from '../../apis/axiosInstance';
 
 const Playlist = () => {
   const [playlist, setPlaylist] = useState(null);
@@ -10,78 +10,36 @@ const Playlist = () => {
   const navigate = useNavigate();
   const { playlistId } = useParams();
 
-  const [shareLink, setShareLink] = useState('');
+  // const [shareLink, setShareLink] = useState('');
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [showSavePopup, setShowSavePopup] = useState(false);
   const [isPlaylistSaved, setIsPlaylistSaved] = useState(false);
   const [untitledCount, setUntitledCount] = useState(0); // 제목없음 번호 추가
 
-  // 더미 데이터
-  const dummyPlaylist = {
-    userId: 1,
-    tracks: [
-      {
-        artist: '아이유',
-        title: '밤편지',
-        albumArt: 'https://image.bugsm.co.kr/album/images/200/200890/20089092.jpg?version=20220301014959.0',
-        spotifyLink: 'https://open.spotify.com/track/1Bb6jVrsg8cXxMCBxIWJUn',
-      },
-      {
-        artist: '백예린',
-        title: '그건 아마 우리의 잘못은 아닐 거야',
-        albumArt: 'https://image.bugsm.co.kr/album/images/200/202383/20238312.jpg?version=20201216092743.0',
-        spotifyLink: 'https://open.spotify.com/track/0wnSAKtD7n2Z5uOZcu0Obr',
-      },
-      {
-        artist: 'AKMU',
-        title: '어떻게 이별까지 사랑하겠어, 널 사랑하는 거지',
-        albumArt: 'https://image.bugsm.co.kr/album/images/200/202788/20278851.jpg?version=20210727012601.0',
-        spotifyLink: 'https://open.spotify.com/track/0hqj5JBnFt1BHEz2UCFwrl',
-      },
-      {
-        artist: '잔나비',
-        title: '주저하는 연인들을 위해',
-        albumArt: 'https://image.bugsm.co.kr/album/images/200/202371/20237198.jpg?version=20210422183751.0',
-        spotifyLink: 'https://open.spotify.com/track/5BqwC9kOBbqYkzdOKeXFFk',
-      },
-      {
-        artist: '헤이즈',
-        title: '비도 오고 그래서',
-        albumArt: 'https://image.bugsm.co.kr/album/images/200/201049/20104917.jpg?version=20231026053140.0',
-        spotifyLink: 'https://open.spotify.com/track/6FZAc2XaVYc8G8jaDnBshv',
-      },
-    ],
-  };
-
   useEffect(() => {
-    // Commenting out the API call for now
-    // const accessToken = sessionStorage.getItem('access_token');
+    const accessToken = sessionStorage.getItem('access_token'); // 세션에서 액세스 토큰 가져오기
 
-    // if (!accessToken) {
-    //   setError('No access token found');
-    //   setLoading(false);
-    //   return;
-    // }
+    if (!accessToken) {
+      setError('No access token found');
+      setLoading(false);
+      return;
+    }
 
-    // axiosInstance
-    //   .get(`/playlists/${playlistId}`, {
-    //     headers: {
-    //       Authorization: `Bearer ${accessToken}`,
-    //     },
-    //   })
-    //   .then((response) => {
-    //     setPlaylist(response.data);
-    //     setLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     setError(err.message || 'Error loading playlist');
-    //     setLoading(false);
-    //   });
-
-    //더미 사용중
-    setPlaylist(dummyPlaylist);
-    setLoading(false);
+    axiosInstance
+      .get(`/playlists/${playlistId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setPlaylist(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || 'Error loading playlist');
+        setLoading(false);
+      });
   }, [playlistId]);
 
   const handleSongPlay = (song) => {
@@ -108,21 +66,17 @@ const Playlist = () => {
     };
 
     // axios 신규 플레이리스트 저장
-    // axiosInstance
-    //   .post('/playlists', newPlaylistData) // api 경로 확인하기
-    //   .then((response) => {
-    //     console.log('저장된 내용:', response.data);
-    //     setIsPlaylistSaved(true);
-    //     setShowSavePopup(false);
-    //   })
-    //   .catch((err) => {
-    //     console.error('Error saving playlist:', err);
-    //     alert('플레이 리스트 저장 중 오류가 발생했습니다.');
-    //   });
-
-    console.log('더미 save:', newPlaylistData);
-    setIsPlaylistSaved(true);
-    setShowSavePopup(false);
+    axiosInstance
+      .put(`/myplaylist/${playlistId}`, newPlaylistData) // PUT 요청으로 변경
+      .then((response) => {
+        console.log('저장된 내용:', response.data);
+        setIsPlaylistSaved(true);
+        setShowSavePopup(false);
+      })
+      .catch((err) => {
+        console.error('Error saving playlist:', err);
+        alert('플레이 리스트 저장 중 오류가 발생했습니다.');
+      });
   };
 
   const handleShareClick = () => {
@@ -149,14 +103,14 @@ const Playlist = () => {
       {playlist && (
         <div className='playlist-container'>
           <h1 className='playlist-page-title'>PLAYLIST</h1>
-          <h3 className='recommended-playlist-title'>{playlist.userId}'s 추천 플레이리스트</h3>
+          <h3 className='recommended-playlist-title'>{`${playlist.user}'s`} 추천 플레이리스트</h3>
           <div className='album-cover-row'>
-            {playlist.tracks.map((song, index) => (
-              <img key={index} src={song.albumArt} alt={song.title} className='album-cover' />
+            {playlist.songs.map((song, index) => (
+              <img key={index} src={song.albumCover} alt={song.title} className='album-cover' />
             ))}
           </div>
           <ul className='song-list'>
-            {playlist.tracks.map((song, index) => (
+            {playlist.songs.map((song, index) => (
               <li key={index} className='song-item'>
                 <span className='artist-title'>
                   {song.artist} - {song.title}
@@ -170,9 +124,6 @@ const Playlist = () => {
           <div className='playlist-buttons'>
             <button className='create-button' onClick={handleCreatePlaylist}>
               새로운 리스트 생성하기
-            </button>
-            <button className='save-button' onClick={() => setShowSavePopup(true)}>
-              플레이 리스트 저장하기
             </button>
           </div>
           <div className='social-share'>
@@ -194,14 +145,22 @@ const Playlist = () => {
             )}
           </div>
           {showSavePopup && (
-            <div className='save-popup'>
-              <h2>플레이 리스트 제목 입력</h2>
-              <input type='text' value={playlistName} onChange={handleNameChange} />
-              <button onClick={handleSavePlaylistName}>저장</button>
-              <button onClick={handleSavePopupClose}>취소</button>
+            <div className='save-playlist-popup'>
+              <h2 className='save-playlist-title'>
+                플레이 리스트에 <br />
+                이름을 추가하세요
+              </h2>
+              <input type='text' value={playlistName} onChange={handleNameChange} placeholder='플레이 리스트 이름' className='playlist-name-input' />
+              <div className='save-playlist-buttons'>
+                <button className='cancel-playlist-button' onClick={handleSavePopupClose}>
+                  취소
+                </button>
+                <button className='save-playlist-button' onClick={handleSavePlaylistName}>
+                  저장하기
+                </button>
+              </div>
             </div>
           )}
-          {isPlaylistSaved && <div className='saved-message'>플레이 리스트가 저장되었습니다!</div>}
         </div>
       )}
     </div>
