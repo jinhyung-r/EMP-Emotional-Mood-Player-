@@ -23,9 +23,6 @@ if (!fs.existsSync(logDir)) {
 
 const app = express();
 
-// JSON 본문 파싱 미들웨어 추가
-app.use(express.json());
-
 const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true,
