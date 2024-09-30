@@ -49,8 +49,6 @@ app.use('/', routes);
 app.use('/auth', authRoutes);
 
 app.use(checkAndRefreshToken);
-
-
 app.use(playlistRoutes);
 app.use(authRoutes);
 

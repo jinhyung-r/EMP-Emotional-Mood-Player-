@@ -9,7 +9,7 @@ const sessionStore = new MySQLStoreSession({
   port: 3306,
   user: config.MYSQL_USER,
   password: config.MYSQL_PW,
-  db: config.MYSQL_NAME,
+  database: config.MYSQL_NAME,
 });
 
 // httpOnly + signed cookie
