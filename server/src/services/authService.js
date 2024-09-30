@@ -8,10 +8,11 @@ export const checkAndRefreshTokenIfNeeded = async (user) => {
     throw new UnauthorizedError('유저 정보나 토큰정보가 유효하지 않습니다', '다시 로그인해주세요.');
   }
 
+  // 내맘대로 오류 메세지 제거
   try {
     if (isTokenExpired(user.expiresAt)) {
       logger.warn(`토큰 만료 user: ${user.id}`);
-      const { accessToken, refreshToken, expiresAt } = await refreshAccessToken(user);
+      const { accessToken, refreshToken, expiresAt } = await refreshAccessToken(user.refreshToken, user.provider);
       user.accessToken = accessToken;
       user.refreshToken = refreshToken;
       user.expiresAt = expiresAt;
@@ -28,6 +29,7 @@ export const checkAndRefreshTokenIfNeeded = async (user) => {
 
   return false;
 };
+
 
 export const checkLoginState = async (user) => {
   if (!user) {
