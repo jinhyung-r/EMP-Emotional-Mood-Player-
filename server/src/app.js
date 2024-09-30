@@ -32,7 +32,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
-app.use(exp.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 // singed cookie => cookieParser(config 옵션 사용)
 app.use(cookieParser(config.COOKIE_SECRET));
