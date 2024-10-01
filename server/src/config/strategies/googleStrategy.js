@@ -1,6 +1,6 @@
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import config from '../index.js';
-import { findOrCreateUser } from '../../services/userService.js';
+import { createOrUpdateUser } from '../../services/userService.js';
 import logger from '../../utils/logger.js';
 
 export default new GoogleStrategy(
@@ -13,7 +13,7 @@ export default new GoogleStrategy(
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      const user = await findOrCreateUser(profile, 'google');
+      const user = await createOrUpdateUser(profile, 'google');
       const expiresAt = Date.now() + 3600 * 1000; // 1시간 후 만료
 
       // 구글 인증 완료 후에 passport에 저장할 user정보를 전달
