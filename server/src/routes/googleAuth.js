@@ -8,7 +8,7 @@ const router = express.Router();
 router.get(
   '/auth/google',
   passport.authenticate('google', {
-    scope: ['profile', 'email'],
+    scope: ['profile', 'email', 'user-read-playback-state', 'user-modify-playback-state', 'streaming'],
     accessType: 'offline',
   }),
 );

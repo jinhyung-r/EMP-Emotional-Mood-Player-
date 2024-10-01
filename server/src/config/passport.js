@@ -1,37 +1,57 @@
-// 각 전략에서 받은 객체를 세션에 저장
-// 저장한 세션에서 serializeUser 정보 받고, provider, accT, refT 객체에 추가 => req.user로 토큰 접근 가능
-// 데이터베이스에서 가져온 기본 사용자 정보에 세션의 인증 정보를 추가
-import passport from 'passport';
-import { findUserById } from '../services/userService.js';
-import googleStrategy from './strategies/googleStrategy.js';
-import spotifyStrategy from './strategies/spotifyStrategy.js';
 import logger from '../utils/logger.js';
+import { UnauthorizedError } from '../utils/errors.js';
+import { getUserFirstPlaylist } from '../services/playlistService.js';
 
-const configurePassport = () => {
-  passport.use(googleStrategy);
-  passport.use(spotifyStrategy);
-
-  passport.serializeUser((user, done) => {
-    done(null, user);
-  });
-
-  //만료시간 필드 추가
-  passport.deserializeUser(async (serializedUser, done) => {
-    try {
-      const { id, provider, accessToken, refreshToken, expiresAt } = serializedUser;
-      const user = await findUserById(id);
-      if (user) {
-        user.provider = provider;
-        user.accessToken = accessToken;
-        user.refreshToken = refreshToken;
-        user.expiresAt = expiresAt;
-      }
-      done(null, user);
-    } catch (error) {
-      logger.error(`역직렬화 중 에러: ${error.message}`);
-      done(error, null);
+export const oauthCallback = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      throw new UnauthorizedError('인증에 실패했습니다.');
     }
+
+    logger.debug(`User authenticated: ${req.user.id}`);
+    logger.debug(`Provider: ${req.user.provider}`);
+
+    const playlistId = await getUserFirstPlaylist(req.user.id) || [];
+
+    logger.debug('First Playlist ID:', playlistId);
+
+    res.json({
+      success: true,
+      user: {
+        id: req.user.id,
+        email: req.user.email,
+        name: req.user.name,
+        provider: req.user.provider
+      },
+      playlistId: playlistId,
+      message: '인증이 완료되었습니다.',
+    });
+  } catch (error) {
+    logger.debug('oauth error', error);
+    next(error);
+  }
+};
+
+export const logout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      logger.error('로그아웃 중 오류 발생:', err);
+      return next(err);
+    }
+    res.clearCookie('auth_session');
+    logger.debug(`사용자 로그아웃 완료: ${req.user?.email}`);
+    res.json({ message: '로그아웃되었습니다.' });
   });
 };
 
-export default configurePassport;
+export const getSpotifyToken = (req, res) => {
+  if (req.isAuthenticated() && req.user.provider === 'spotify') {
+    if (req.user.expiresAt > Date.now()) {
+      res.json({ accessToken: req.user.accessToken });
+    } else {
+      res.status(401).json({ message: '액세스 토큰이 만료되었습니다. 갱신이 필요합니다.' });
+    }
+  } else {
+    res.status(401).json({ message: '인증되지 않았거나 Spotify 사용자가 아닙니다.' });
+  }
+};

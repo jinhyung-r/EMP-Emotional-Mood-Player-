@@ -8,12 +8,12 @@ export default new SpotifyStrategy(
     clientID: config.SPOTIFY_CLIENT_ID,
     clientSecret: config.SPOTIFY_CLIENT_SECRET,
     callbackURL: config.SPOTIFY_REDIRECT_URI,
-    scope: ['user-read-email', 'user-read-private'],
+    scope: ['user-read-email', 'user-read-private', 'user-read-playback-state', 'user-modify-playback-state', 'streaming'],
   },
   async (accessToken, refreshToken, expires_in, profile, done) => {
     try {
       const user = await findOrCreateUser(profile, 'spotify');
-      const expiresAt = Date.now() + expires_in * 1000; // 1시간, 구글 스프토파이 동일
+      const expiresAt = Date.now() + expires_in * 1000;
       logger.debug(`스포티파이 로그인 성공: ${user.id}`);
       logger.debug(`리프레시 토큰 받음: ${refreshToken ? 'yes' : 'No'}`);
       done(null, {

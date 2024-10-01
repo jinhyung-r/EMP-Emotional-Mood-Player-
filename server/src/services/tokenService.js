@@ -20,8 +20,8 @@ export const refreshAccessToken = async (refreshToken, provider) => {
       },
     });
 
-    const { access_token, refresh_token } = response.data;
-    const newExpiresAt = Date.now() + 3600 * 1000; // 1시간
+    const { access_token, refresh_token, expires_in } = response.data;
+    const newExpiresAt = Date.now() + expires_in * 1000;
 
     logger.info(`토큰 리프레시 완료: ${provider}`);
 
@@ -43,7 +43,6 @@ export const refreshAccessToken = async (refreshToken, provider) => {
   }
 };
 
-// provider 받기
 function getProviderConfig(provider) {
   switch (provider) {
     case 'google':
