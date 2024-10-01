@@ -13,19 +13,20 @@ export default new SpotifyStrategy(
   async (accessToken, refreshToken, expires_in, profile, done) => {
     try {
       const user = await findOrCreateUser(profile, 'spotify');
-      const expiresAt = Date.now() + expires_in * 1000; // 액세스 토큰 만료 시간 설정
+      const expiresAt = Date.now() + expires_in * 1000;
 
-      logger.debug(`스포티파이 유저 로그인 성공: ${user.id}`);
-      logger.debug(`리프레시 토큰 받음: ${refreshToken ? 'Yes' : 'No'}`);
-
+      // 스포티파이 인증 완료 후에 passport에 저장할 user정보를 전달
       done(null, {
         id: user.id,
+        email: user.email,
+        name: user.name,
+        provider: user.provider,
         accessToken,
         refreshToken,
         expiresAt,
       });
     } catch (error) {
-      logger.error(`스포티파이 로그인 에러: ${error.message}`);
+      logger.error(`스포티파이 로그인 에러: ${error.message}`, { error });
       done(error, null);
     }
   },

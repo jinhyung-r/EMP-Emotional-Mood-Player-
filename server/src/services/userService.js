@@ -1,26 +1,42 @@
 import prisma from '../models/index.js';
+import logger from '../utils/logger.js';
 
-export const findOrCreateUser = async (profile, provider) => {
-  const user = await prisma.user.upsert({
-    where: { email: profile.emails[0].value },
-    update: {
-      provider,
-      providerId: profile.id,
-    },
-    create: {
-      email: profile.emails[0].value,
-      name: profile.displayName,
-      provider,
-      providerId: profile.id,
-    },
-  });
-  return user;
+export const createOrUpdateUser = async (profile, provider) => {
+  try {
+    const user = await prisma.user.upsert({
+      where: {
+        provider_providerId: {
+          provider: provider,
+          providerId: profile.id,
+        },
+      },
+      update: {
+        email: profile.emails[0].value,
+        name: profile.displayName,
+      },
+      create: {
+        email: profile.emails[0].value,
+        name: profile.displayName,
+        provider: provider,
+        providerId: profile.id,
+      },
+    });
+
+    logger.info(`user 생성/업데이트: ${user.id}`);
+    return user;
+  } catch (error) {
+    logger.error('user 생성/업데이트 중 에러 발생:', error);
+    throw error;
+  }
 };
 
 export const findUserById = async (id) => {
-  return await prisma.user.findUnique({
-    where: { id },
-  });
+  try {
+    return await prisma.user.findUnique({
+      where: { id: parseInt(id, 10) },
+    });
+  } catch (error) {
+    logger.error(`user id 찾기 중 오류: ${id}`, error);
+    throw error;
+  }
 };
-
-// 차후 ERD 테이블 따라서 관계정의 필요

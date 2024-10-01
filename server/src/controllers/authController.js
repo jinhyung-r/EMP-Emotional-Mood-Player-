@@ -16,7 +16,11 @@ export const oauthCallback = async (req, res, next) => {
 
     // 어차피 디버그용
     logger.debug('user의 first playlist:', playlistId);
-
+    logger.debug(`${req.user.id}`);
+    logger.debug(`${req.user.name}`);
+    logger.debug(`${req.user.provider}`);
+    logger.debug(`${playlistId}`);
+    
     res.json({
       success: true,
       user: {
