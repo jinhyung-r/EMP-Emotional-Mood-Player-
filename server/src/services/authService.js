@@ -29,11 +29,3 @@ export const checkAndRefreshTokenIfNeeded = async (user) => {
 
   return false;
 };
-
-
-export const checkLoginState = async (user) => {
-  if (!user) {
-    throw new UnauthorizedError('로그인 상태가 아닙니다.');
-  }
-  return true;
-};

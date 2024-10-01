@@ -2,7 +2,6 @@ import { UserDTO } from '../DTOs/userDTO.js';
 import logger from '../utils/logger.js';
 import { UnauthorizedError, InternalServerError } from '../utils/errors.js';
 import { getUserFirstPlaylist } from '../services/playlistService.js';
-import { checkLoginState } from '../services/authService.js';
 
 export const oauthCallback = async (req, res, next) => {
   try {
@@ -47,15 +46,4 @@ export const logout = (req, res, next) => {
     logger.debug(`사용자 로그아웃 완료: ${req.user?.email}`);
     res.json({ message: '로그아웃되었습니다.' });
   });
-};
-
-export const loginStateHandler = async (req, res, next) => {
-  try {
-    const { user } = req.body;
-    const isLoggedIn = await checkLoginState(user);
-    res.json({ isLoggedIn });
-  } catch (error) {
-    logger.error(`로그인 상태 확인 중 오류: ${error.message}`);
-    next(error);
-  }
 };

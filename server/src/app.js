@@ -11,7 +11,6 @@ import { checkAndRefreshToken } from './middlewares/tokenMiddleware.js';
 import logger from './utils/logger.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import playlistRoutes from './routes/playlistRoutes.js';
-import authRoutes from './routes/authRoutes.js';
 import prisma from './models/index.js';
 
 // log 디렉토리 확인용
@@ -46,11 +45,8 @@ configurePassport();
 
 app.use('/', routes);
 
-app.use('/auth', authRoutes);
-
 app.use(checkAndRefreshToken);
 app.use(playlistRoutes);
-app.use(authRoutes);
 
 app.use(errorHandler);
 
