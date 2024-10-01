@@ -8,11 +8,11 @@ const router = express.Router();
 router.get(
   '/auth/google',
   passport.authenticate('google', {
-    scope: ['profile', 'email', 'user-read-playback-state', 'user-modify-playback-state', 'streaming'],
+    scope: ['profile', 'email'],
     accessType: 'offline',
   }),
 );
 
-router.get('/auth/google/callback', passport.authenticate('google', { session: false }), oauthCallback);
+router.get('/auth/google/callback', passport.authenticate('google', { session: true }), oauthCallback);
 
 export default router;

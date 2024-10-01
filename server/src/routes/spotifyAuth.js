@@ -7,10 +7,10 @@ const router = express.Router();
 router.get(
   '/auth/spotify',
   passport.authenticate('spotify', {
-    scope: ['user-read-email', 'user-read-private'],
+    scope: ['user-read-email', 'user-read-private', 'streaming'],
   }),
 );
 
-router.get('/auth/spotify/callback', passport.authenticate('spotify', { session: false }), oauthCallback);
+router.get('/auth/spotify/callback', passport.authenticate('spotify', { session: true }), oauthCallback);
 
 export default router;

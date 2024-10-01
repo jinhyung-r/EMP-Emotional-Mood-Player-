@@ -9,19 +9,12 @@ const configurePassport = () => {
   passport.use(spotifyStrategy);
 
   passport.serializeUser((user, done) => {
-    done(null, user);
+    done(null, user.id);
   });
-
-  passport.deserializeUser(async (serializedUser, done) => {
+  
+  passport.deserializeUser(async (id, done) => {
     try {
-      const { id, provider, accessToken, refreshToken, expiresAt } = serializedUser;
       const user = await findUserById(id);
-      if (user) {
-        user.provider = provider;
-        user.accessToken = accessToken;
-        user.refreshToken = refreshToken;
-        user.expiresAt = expiresAt;
-      }
       done(null, user);
     } catch (error) {
       logger.error(`역직렬화 중 에러: ${error.message}`);

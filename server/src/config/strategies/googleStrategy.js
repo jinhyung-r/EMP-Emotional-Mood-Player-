@@ -8,22 +8,20 @@ export default new GoogleStrategy(
     clientID: config.GOOGLE_CLIENT_ID,
     clientSecret: config.GOOGLE_CLIENT_SECRET,
     callbackURL: config.GOOGLE_REDIRECT_URI,
-    accessType: 'offline', 
     scope: ['profile', 'email'],
+    accessType: 'offline',
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
       const user = await findOrCreateUser(profile, 'google');
-      const expiresAt = Date.now() + 3600 * 1000; // 1시간 뒤
+      const expiresAt = Date.now() + 3600 * 1000; // 1시간 후 만료
 
-      logger.debug(`구글 유저 로그인 성공: ${user.id}`); 
-      logger.debug(`리프레시 토큰 받음: ${refreshToken ? 'Yes' : 'No'}`); 
-      
+      logger.debug(`구글 유저 로그인 성공: ${user.id}`);
+      logger.debug(`리프레시 토큰 받음: ${refreshToken ? 'Yes' : 'No'}`);
+
+      // 자동저장
       done(null, {
-        id: user.id,
-        email: profile.emails[0].value,
-        name: profile.displayName,
-        provider: 'google',
+        id: user.id, 
         accessToken,
         refreshToken,
         expiresAt,
