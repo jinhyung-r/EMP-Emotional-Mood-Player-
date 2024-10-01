@@ -44,7 +44,7 @@ model Track {
   genre      String?
   playlist   Playlist @relation(fields: [playlistId], references: [playlistId])
   playlistId Int
-  spotifyLink String?
+  spotify_id String?
 
   @@map("tracks")
 }

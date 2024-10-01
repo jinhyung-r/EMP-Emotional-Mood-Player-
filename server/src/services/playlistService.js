@@ -39,11 +39,16 @@ export const getPlaylistById = async (playlistId) => {
 
 export const updatePlaylistTitle = async (playlistId, newTitle) => {
   try {
-    const updatedPlaylist = await prisma.playlist.update({
+    const result = await prisma.playlist.updateMany({
       where: { playlistId: parseInt(playlistId, 10) },
       data: { title: newTitle },
     });
-    return updatedPlaylist;
+
+    if (result.count === 0) {
+      throw new NotFoundError('업데이트할 플레이리스트를 찾을 수 없습니다.');
+    }
+
+    return result;
   } catch (error) {
     logger.error(`플레이리스트 제목 수정 중 오류: ${error.message}`);
     throw error;
@@ -52,9 +57,13 @@ export const updatePlaylistTitle = async (playlistId, newTitle) => {
 
 export const deletePlaylistById = async (playlistId) => {
   try {
-    await prisma.playlist.delete({
+    const result = await prisma.playlist.deleteMany({
       where: { playlistId: parseInt(playlistId, 10) },
     });
+
+    if (result.count === 0) {
+      throw new NotFoundError('삭제할 플레이리스트를 찾을 수 없습니다.');
+    }
   } catch (error) {
     logger.error(`플레이리스트 삭제 중 오류: ${error.message}`);
     throw error;
