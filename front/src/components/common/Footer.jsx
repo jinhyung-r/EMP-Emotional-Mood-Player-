@@ -36,7 +36,7 @@ const Footer = () => {
             <span className='tag'>사업자번호</span>
             <span className='content'>000-00-00</span>
             <span className='check-corp'>
-              <a href='http://www.ftc.go.kr/bizCommPop.do?wrkr_no=0000000000' target='_blank' rel='noreferrer'>
+              <a href='http://www.ftc.go.kr/bizCommPop.do?wrkr_no=0000000000' target='_blank' rel='noopener noreferrer'>
                 사업자확인
               </a>
             </span>

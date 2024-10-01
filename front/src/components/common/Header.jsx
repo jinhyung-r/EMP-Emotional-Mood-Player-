@@ -12,40 +12,36 @@ const Header = ({ isHomeOrLogin }) => {
   // 로그인 상태 확인
   const isLoggedIn = user !== null;
 
+  // 로그아웃 처리 함수
+  const handleLogout = () => {
+    sessionStorage.removeItem('user');
+    navigate('/');
+  };
+
   return (
     <header id='header'>
       <div className='desktop-navbar'>
         <nav className='navbar'>
           <ul className='nav-links'>
             {isHomeOrLogin ? (
-              <>
-                <li>
-                  <Link to='/login'>로그인/회원가입</Link>
-                </li>
-              </>
+              <li>
+                <Link to='/login'>로그인/회원가입</Link>
+              </li>
             ) : (
-              <>
-                {isLoggedIn && (
-                  <>
-                    <li>
-                      <p>
-                        <Link to='/mypage'>안녕하세요, {user.name || user.display_name}</Link>
-                      </p>
-                    </li>
-                    <li>
-                      <a
-                        onClick={() => {
-                          sessionStorage.removeItem('user');
-                          // '/'로 리다이렉션
-                          navigate('/');
-                        }}
-                      >
-                        로그아웃
-                      </a>
-                    </li>
-                  </>
-                )}
-              </>
+              isLoggedIn && (
+                <>
+                  <li>
+                    <p>
+                      <Link to='/mypage'>안녕하세요, {user.name || user.display_name}</Link>
+                    </p>
+                  </li>
+                  <li>
+                    <button className='logout-button' type='button' onClick={handleLogout}>
+                      로그아웃
+                    </button>
+                  </li>
+                </>
+              )
             )}
           </ul>
         </nav>

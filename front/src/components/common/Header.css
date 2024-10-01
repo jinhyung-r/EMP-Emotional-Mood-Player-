@@ -39,9 +39,21 @@ header ul li a:hover {
 }
 
 .desktop-navbar nav {
-    display: flex;
-    justify-content: flex-end;
-    padding-right: 50px;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 50px;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  text-decoration: underline;
 }
 
 /* 주석처리된 모바일 관련 코드 */
