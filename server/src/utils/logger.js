@@ -20,7 +20,12 @@ const consoleFormat = winston.format.combine(
 );
 
 // 파일 출력 형식
-const fileFormat = winston.format.combine(winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), winston.format.errors({ stack: true }), winston.format.splat(), winston.format.json());
+const fileFormat = winston.format.combine(
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+  winston.format.errors({ stack: true }),
+  winston.format.splat(),
+  winston.format.json()
+);
 
 // 일반 로그 파일 설정
 const fileRotateTransport = new DailyRotateFile({

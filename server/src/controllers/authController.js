@@ -37,6 +37,7 @@ export const oauthCallback = async (req, res, next) => {
 };
 
 export const logout = (req, res, next) => {
+  const userEmail = req.user?.email;
   req.logout((err) => {
     if (err) {
       logger.error('로그아웃 중 오류 발생:', err);
@@ -55,7 +56,7 @@ export const logout = (req, res, next) => {
         logger.error('세션 파기 중 오류 발생:', err);
         return next(err);
       }
-      logger.debug(`사용자 로그아웃 완료: ${req.user?.email}`);
+      logger.debug(`사용자 로그아웃 완료: ${userEmail}`);
       res.status(200).json({ success: true, message: '로그아웃되었습니다.' });
     });
   });
