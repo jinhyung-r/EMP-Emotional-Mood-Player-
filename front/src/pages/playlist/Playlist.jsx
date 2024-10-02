@@ -1,147 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import '../../styles/Playlist.css';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../apis/axiosInstance';
+import '../../styles/Playlist.css';
 
-// const dummyUserData = {
-//   success: true,
-//   user: {
-//     id: 5,
-//     email: 'edwardminlee@gmail.com',
-//     provider: 'google',
-//     name: 'Edward Min Lee',
-//     createdAt: '2024-09-27T04:29:44.256Z',
-//   },
-//   playlists: {
-//     playlistId: 1,
-//     title: "'민형님 테스트'",
-//     userId: 5,
-//   },
-//   message: '인증이 완료되었습니다.',
-// };
-
-// const dummyPlaylistData = {
-//   playlist: {
-//     playlistId: 3,
-//     title: '플리플리',
-//     userId: 1,
-//     tracks: [
-//       {
-//         id: 2,
-//         title: '그라데이션',
-//         artist: '10CM',
-//         albumArt: 'url',
-//         genre: '장르',
-//         playlistId: 3,
-//         spotifyLink: 'https://open.spotify.com/track/775S83AMYbQc8SYteOktTL',
-//       },
-//       {
-//         id: 7,
-//         title: 'title',
-//         artist: 'artist',
-//         albumArt: 'art',
-//         genre: 'genre',
-//         playlistId: 3,
-//         spotifyLink: 'url',
-//       },
-//       {
-//         id: 8,
-//         title: 'tt',
-//         artist: 'at',
-//         albumArt: 'art',
-//         genre: 'genre',
-//         playlistId: 3,
-//         spotifyLink: 'url',
-//       },
-//       {
-//         id: 9,
-//         title: 'tt',
-//         artist: 'att',
-//         albumArt: 'att',
-//         genre: 'att',
-//         playlistId: 3,
-//         spotifyLink: 'att',
-//       },
-//     ],
-//   },
-// };
 const Playlist = () => {
-  const [playlists, setPlaylists] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [playlists, setPlaylists] = useState([]);
   const [showSavePopup, setShowSavePopup] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
   const [showShareOptions, setShowShareOptions] = useState(false);
-  const [user, setUser] = useState(null);
 
   // 로그인한 유저의 정보 가져오기
-  const getUserData = () => {
-    const storedUser = sessionStorage.getItem('user');
-    if (storedUser) {
-      return JSON.parse(storedUser);
-    }
-    // 세션 스토리지에 사용자 정보가 없으면 더미 데이터 사용
-    // sessionStorage.setItem('user', JSON.stringify(dummyUserData.user));
-    // return dummyUserData.user;
-  };
+  const user = JSON.parse(sessionStorage.getItem('user') || '{}');
 
   useEffect(() => {
-    const userData = getUserData();
-    setUser(userData);
-    const userId = userData.id;
-
-    const fetchPlaylists = async () => {
+    const fetchData = async () => {
       try {
+        const userId = sessionStorage.getItem('id');
+        if (!userId) {
+          console.error('User ID not found');
+          return;
+        }
         const response = await axiosInstance.get(`/myplaylist/${userId}`);
-        const fetchedPlaylists = response.data.playlist ? [response.data.playlist] : [];
-        setPlaylists(fetchedPlaylists);
-        sessionStorage.setItem('userPlaylists', JSON.stringify(fetchedPlaylists));
-      } catch (err) {
-        console.error('Error fetching playlists:', err);
-        // 에러 발생 시 더미 데이터 사용
-        // const dummyPlaylists = [dummyPlaylistData.playlist];
-        // setPlaylists(dummyPlaylists);
-        // sessionStorage.setItem('userPlaylists', JSON.stringify(dummyPlaylists));
-      } finally {
-        setLoading(false);
+        const playlistData = response.data.playlists;
+
+        setPlaylists(playlistData || []);
+      } catch (error) {
+        console.error('Error fetching playlist:', error);
+        alert(error.response?.data?.message || '플레이리스트를 불러오는 중 오류가 발생했습니다.');
       }
     };
 
-    const storedPlaylists = sessionStorage.getItem('userPlaylists');
-    if (storedPlaylists) {
-      setPlaylists(JSON.parse(storedPlaylists));
-      setLoading(false);
-    } else {
-      fetchPlaylists();
-    }
+    fetchData();
   }, []);
 
-  const handleSongPlay = (song) => {
-    console.log(`Opening ${song.title} by ${song.artist} on Spotify`);
-    window.open(song.spotifyLink, '_blank');
+  const handleSongPlay = (track) => {
+    console.log(`Opening ${track.title} by ${track.artist} on Spotify`);
+    window.open(`https://open.spotify.com/track/${track.spotify_id}`, '_blank');
   };
 
   const handleCreatePlaylist = () => {
     navigate('/create');
   };
 
-  const handleSavePlaylistName = () => {
-    const title = playlistName.trim() || '제목 없음';
+  const handleSavePlaylistName = async () => {
+    try {
+      const response = await axiosInstance.put(`/myplaylist/${selectedPlaylistId}`, {
+        title: playlistName,
+      });
 
-    const updatedPlaylists = playlists.map((playlist) => (playlist.playlistId === selectedPlaylistId ? { ...playlist, title: title } : playlist));
-    setPlaylists(updatedPlaylists);
-    sessionStorage.setItem('userPlaylists', JSON.stringify(updatedPlaylists));
-    setShowSavePopup(false);
+      if (response.status === 200) {
+        const updatedPlaylists = playlists.map((playlist) => (playlist.playlistId === selectedPlaylistId ? { ...playlist, title: playlistName } : playlist));
+        setPlaylists(updatedPlaylists);
+        sessionStorage.setItem('userPlaylists', JSON.stringify(updatedPlaylists));
+        setShowSavePopup(false);
+        alert('플레이리스트 제목이 성공적으로 수정되었습니다.');
+      } else {
+        alert('플레이리스트 제목 수정에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error updating playlist title:', error);
+      alert(error.response?.data?.message || '플레이리스트 제목 수정 중 오류가 발생했습니다.');
+    }
   };
 
-  const handleDeletePlaylist = (playlistId) => {
-    if (window.confirm('정말로 플레이리스트를 삭제하시겠습니까?')) {
-      const updatedPlaylists = playlists.filter((playlist) => playlist.playlistId !== playlistId);
-      setPlaylists(updatedPlaylists);
-      sessionStorage.setItem('userPlaylists', JSON.stringify(updatedPlaylists));
-      alert('플레이리스트가 삭제되었습니다.');
+  const handleDeletePlaylist = async (playlistId) => {
+    const confirmDelete = window.confirm('정말로 플레이리스트를 삭제하시겠습니까?');
+
+    if (confirmDelete) {
+      try {
+        const response = await axiosInstance.delete(`/myplaylist/${playlistId}`);
+
+        if (response.status === 200) {
+          const updatedPlaylists = playlists.filter((playlist) => playlist.playlistId !== playlistId);
+          setPlaylists(updatedPlaylists);
+          sessionStorage.setItem('userPlaylists', JSON.stringify(updatedPlaylists));
+          alert('플레이리스트가 성공적으로 삭제되었습니다.');
+        } else {
+          alert('플레이리스트 삭제에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('Error deleting playlist:', error);
+        alert(error.response?.data?.message || '플레이리스트 삭제 중 오류가 발생했습니다.');
+      }
     }
   };
 
@@ -153,19 +95,14 @@ const Playlist = () => {
     setShowSavePopup(false);
   };
 
-  const handleEditPlaylist = (playlistId) => {
-    setSelectedPlaylistId(playlistId);
-    const playlist = playlists.find((p) => p.playlistId === playlistId);
-    setPlaylistName(playlist ? playlist.title : '');
-    setShowSavePopup(true);
-  };
-
   const handleShareClick = () => {
     setShowShareOptions(!showShareOptions);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading playlists: {error}</div>;
+  const handleEditPlaylist = (playlistId) => {
+    setSelectedPlaylistId(playlistId);
+    setShowSavePopup(true);
+  };
 
   return (
     <div className='playlist-page'>
@@ -177,12 +114,12 @@ const Playlist = () => {
             <div key={playlist.playlistId} className='playlist-block'>
               <h3 className='playlist-title'>{playlist.title}</h3>
               <ul className='song-list'>
-                {playlist.tracks.map((song) => (
-                  <li key={song.id} className='song-item'>
+                {playlist.tracks.map((track, index) => (
+                  <li key={index} className='song-item'>
                     <span className='artist-title'>
-                      {song.artist} - {song.title}
+                      {track.artist} - {track.title}
                     </span>
-                    <button className='play-button' onClick={() => handleSongPlay(song)}>
+                    <button className='play-button' onClick={() => handleSongPlay(track)}>
                       노래 듣기
                     </button>
                   </li>
@@ -218,7 +155,7 @@ const Playlist = () => {
           ))}
         </div>
       ) : (
-        <p>플레이리스트가 없습니다. 새 플레이리스트를 만들어보세요!</p>
+        <p className='playlist-guide'>플레이리스트가 없습니다. 새 플레이리스트를 만들어보세요!</p>
       )}
 
       {showSavePopup && (

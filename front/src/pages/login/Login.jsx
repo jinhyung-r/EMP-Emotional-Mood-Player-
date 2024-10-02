@@ -1,6 +1,6 @@
 import React from 'react';
 import { backgroundStyle } from '../images/backgroundStyle';
-import './Login.css';
+import '../../styles/Login.css';
 
 const baseURI = process.env.REACT_APP_API_URL;
 

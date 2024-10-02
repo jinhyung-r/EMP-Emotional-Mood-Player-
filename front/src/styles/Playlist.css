@@ -26,6 +26,7 @@ margin-top: 60px;
   color: white;
   text-align: center;
   width: 100%;
+  height: 100vh; 
 }
 
 .album-cover-row {
@@ -148,6 +149,10 @@ margin-top: 60px;
 .share-playlist-title {
   font-size: 24px;
   font-weight: 400;
+}
+
+.playlist-guide {
+  margin: 20px;
 }
 
 .save-playlist-popup {

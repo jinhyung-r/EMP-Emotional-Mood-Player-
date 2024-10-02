@@ -5,7 +5,7 @@ import { handleButtonClick } from '../utils/navigateHandlers';
 import { backgroundStyle } from './images/backgroundStyle';
 import sampleImage from './images/home-sample.png';
 
-import './Home.css';
+import '../styles/Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
