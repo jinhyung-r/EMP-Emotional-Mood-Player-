@@ -1,40 +1,26 @@
 import logger from '../utils/logger.js';
-import { AppError } from '../utils/errors.js';
 import config from '../config/index.js';
+import { AppError, COMMON_ERROR } from '../utils/errors.js';
 
 export const errorHandler = (err, req, res, _next) => {
-  err.statusCode = err.statusCode ?? 500;
+  const errorName = err instanceof AppError ? err.name : COMMON_ERROR.UNKNOWN_ERROR.name;
+  const errorMessage = err.message || 'An unexpected error occurred';
+  const errorStatus = err instanceof AppError ? err.statusCode : COMMON_ERROR.UNKNOWN_ERROR.statusCode;
+
+  logger.error(`${errorName}: ${errorMessage}`, {
+    stack: err.stack,
+    cause: err.cause?.stack
+  });
+
+  const responseBody = {
+    status: 'error',
+    message: errorMessage
+  };
 
   if (config.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
-  } else if (config.NODE_ENV === 'production') {
-    sendErrorProd(err, res);
+    responseBody.stack = err.stack;
+    responseBody.cause = err.cause?.stack;
   }
-};
 
-const sendErrorDev = (err, res) => {
-  logger.error(`${err.name}: ${err.message}`, { stack: err.stack });
-
-  res.status(err.statusCode).json({
-    status: 'error',
-    message: err.message,
-    stack: err.stack,
-  });
-};
-
-const sendErrorProd = (err, res) => {
-  if (err instanceof AppError) {
-    logger.error(`${err.name}: ${err.message}`);
-    res.status(err.statusCode).json({
-      status: 'error',
-      message: err.message,
-    });
-  } else {
-    logger.error('예기치 못한 오류', { error: err });
-
-    res.status(500).json({
-      status: 'error',
-      message: '서버 내부 오류가 발생했습니다.',
-    });
-  }
+  res.status(errorStatus).json(responseBody);
 };

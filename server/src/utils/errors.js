@@ -1,62 +1,30 @@
 export class AppError extends Error {
-  constructor(message, statusCode, details) {
-    super(message, details);
-    this.statusCode = statusCode;
-    this.name = this.constructor.name;
-    this.details = details;
-    this.isOperationals = true;
+  constructor(name, description, options = {}) {
+    super(description);
+    this.name = name;
+    this.statusCode = options.statusCode ?? 500;
+    if (options.cause) {
+      this.cause = options.cause;
+    }
     Error.captureStackTrace(this, this.constructor);
   }
 }
 
-// 차후 계속적인 추가 가능 일단은 현재 구현 단계의 에러처리 정도 적어둠
+export const COMMON_ERROR = {
+  AUTHENTICATION_ERROR: { name: 'Authentication Error', statusCode: 401 },
+  AUTHORIZATION_ERROR: { name: 'Authorization Error', statusCode: 403 },
+  EXTERNAL_API_ERROR: { name: 'External API Error', statusCode: 500 },    // 외부 api 사용할때 에러
+  ARGUMENT_ERROR: { name: 'Argument Error', statusCode: 400 },            // 함수 및 api 호출 시 parameter 에러(타입스크립트 도입 시 자주 쓰일듯 => test?)
+  BUSINESS_LOGIC_ERROR: { name: 'Business Logic Error', statusCode: 500 },
+  CONFIG_ERROR: { name: 'Config Error', statusCode: 500 },
+  DATABASE_ERROR: { name: 'Database Error', statusCode: 500 },
+  FATAL_ERROR: { name: 'Fatal Error', statusCode: 500 },
+  FILE_IO_ERROR: { name: 'File I/O Error', statusCode: 500 },           // 파일 경로, 권한 등 오류
+  HTTP_ERROR: { name: 'HTTP Request Error', statusCode: 500 },          
+  OPERATIONAL_ERROR: { name: 'Operational Error', statusCode: 500 },    // 코드 오류, 운영 환경 문제 -> 더 찾아볼 것
+  PARSING_ERROR: { name: 'Parsing Error', statusCode: 400 },            // json, xml, yaml 등 parsing이 필요한 부분에서의 에러(요청 포맷 오류)
+  RESOURCE_NOT_FOUND_ERROR: { name: 'Resource Not Found Error', statusCode: 404 },    // url, 파일, 데이터 없을 때
+  UNKNOWN_ERROR: { name: 'Unknown Error', statusCode: 500 },
+  VALIDATION_ERROR: { name: 'Validation Error', statusCode: 400 },
+};
 
-export class BadRequestError extends AppError {
-  constructor(message = 'Bad Request', details = '') {
-    super(message, 400, details);
-  }
-}
-
-export class UnauthorizedError extends AppError {
-  constructor(message = 'Unauthorized', details = '') {
-    super(message, 401, details);
-  }
-}
-
-export class ForbiddenError extends AppError {
-  constructor(message = 'Forbidden', details = '') {
-    super(message, 403, details);
-  }
-}
-
-export class NotFoundError extends AppError {
-  constructor(message = 'Not Found', details = '') {
-    super(message, 404, details);
-  }
-}
-
-export class ConflictError extends AppError {
-  constructor(message = 'Conflict', details = '') {
-    super(message, 409, details);
-  }
-}
-
-export class InternalServerError extends AppError {
-  constructor(message = 'Internal Server Error', details = '') {
-    super(message, 500, details);
-  }
-}
-
-// 얘는 적기는 했는데 orm쓰면 에러 보내주지않나? 아직 모르겟음
-// 뭐 정 못쓰면 서버킬때 쓰는것도?
-export class DatabaseConnectionError extends AppError {
-  constructor(message = 'Database Connection Error', details = '') {
-    super(message, 500, details);
-  }
-}
-
-export class ValidationError extends AppError {
-  constructor(message = 'Validation Error', details = '') {
-    super(message, 400, details);
-  }
-}

@@ -1,11 +1,11 @@
 import axios from 'axios';
 import config from '../config/index.js';
 import logger from '../utils/logger.js';
-import { AppError, UnauthorizedError, BadRequestError } from '../utils/errors.js';
+import { AppError, COMMON_ERROR } from '../utils/errors.js';
 
 export const refreshAccessToken = async (refreshToken, provider) => {
   if (!refreshToken) {
-    throw new UnauthorizedError('리프레시 토큰이 없습니다.');
+    throw new AppError(COMMON_ERROR.ARGUMENT_ERROR.name, '리프레시 토큰이 없습니다.', { statusCode: COMMON_ERROR.ARGUMENT_ERROR.statusCode });
   }
 
   const providerConfig = getProviderConfig(provider);
@@ -34,12 +34,12 @@ export const refreshAccessToken = async (refreshToken, provider) => {
     logger.error(`토큰 리프레시 중 오류: ${error.message}`);
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 400) {
-        throw new BadRequestError('잘못된 리프레시 토큰');
+        throw new AppError(COMMON_ERROR.ARGUMENT_ERROR.name, '잘못된 리프레시 토큰', { statusCode: COMMON_ERROR.ARGUMENT_ERROR.statusCode, cause: error });
       } else if (error.response?.status === 401) {
-        throw new UnauthorizedError('인증 실패');
+        throw new AppError(COMMON_ERROR.AUTHENTICATION_ERROR.name, '인증 실패', { statusCode: COMMON_ERROR.AUTHENTICATION_ERROR.statusCode, cause: error });
       }
     }
-    throw new AppError('토큰 리프레시 실패', 500);
+    throw new AppError(COMMON_ERROR.EXTERNAL_API_ERROR.name, '토큰 리프레시 실패', { statusCode: COMMON_ERROR.EXTERNAL_API_ERROR.statusCode, cause: error });
   }
 };
 
@@ -58,6 +58,6 @@ function getProviderConfig(provider) {
         clientSecret: config.SPOTIFY_CLIENT_SECRET,
       };
     default:
-      throw new BadRequestError('지원하지 않는 로그인 플랫폼');
+      throw new AppError(COMMON_ERROR.ARGUMENT_ERROR.name, '지원하지 않는 로그인 플랫폼', { statusCode: COMMON_ERROR.ARGUMENT_ERROR.statusCode });
   }
 }
