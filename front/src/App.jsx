@@ -23,8 +23,8 @@ function App() {
           <Route path='/emotion-playlist' element={<Emotions />} />
           <Route path='/mypage' element={<My />} />
           <Route path='/myplaylist' element={<Playlist />} />
-          <Route path='/auth/google/callback' element={<OAuthCallback />} />
-          <Route path='/auth/spotify/callback' element={<OAuthCallback />} />
+          <Route path='/api/auth/google/callback' element={<OAuthCallback />} />
+          <Route path='/api/auth/spotify/callback' element={<OAuthCallback />} />
         </Routes>
       </Wrapper>
     </Router>

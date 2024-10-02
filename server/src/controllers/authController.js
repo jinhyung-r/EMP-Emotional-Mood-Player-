@@ -12,9 +12,8 @@ export const oauthCallback = async (req, res, next) => {
     logger.debug(`유저 인증 완료: ${req.user.id}`);
     logger.debug(`provider: ${req.user.provider}`);
 
-    const playlistId = await getUserFirstPlaylist(req.user.id) ?? [];
+    const playlistId = await getUserFirstPlaylist(req.user.id);
 
-    // 어차피 디버그용
     logger.debug('user의 first playlist:', playlistId);
     logger.debug(`${req.user.id}`);
     logger.debug(`${req.user.name}`);
@@ -46,9 +45,10 @@ export const logout = (req, res, next) => {
     }
     res.clearCookie('auth_session');
     logger.debug(`사용자 로그아웃 완료: ${req.user?.email}`);
-    res.json({ message: '로그아웃되었습니다.' });
+    res.status(200).json({ success: true, message: '로그아웃되었습니다.' });
   });
 };
+
 
 
 // 스포티파이 토큰 가져오기

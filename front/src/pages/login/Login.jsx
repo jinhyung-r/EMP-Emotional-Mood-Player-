@@ -6,7 +6,7 @@ const baseURI = process.env.REACT_APP_API_URL;
 
 const Login = () => {
   const handleLogin = (provider) => {
-    window.location.href = `${baseURI}/auth/${provider}/callback`;
+    window.location.href = `${baseURI}/api/auth/${provider}/callback`;
   };
 
   return (
