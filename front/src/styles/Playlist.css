@@ -70,18 +70,19 @@ margin-top: 60px;
 
 .play-button {
   background-color: transparent;
-  color: white;
-  border: 1px solid white;
-  padding: 10px 20px;
+  /* color: white; */
+  /* border: 1px solid white; */
+  border: none;
+  /* padding: 10px 20px; */
   border-radius: 50px;
   cursor: pointer;
-  font-size: 14px;
+  /* font-size: 14px; */
 
 }
 
 .play-button:hover {
   background-color: #1DB954;
-  border: solid 1px #1DB954;
+  /* border: solid 1px #1DB954; */
 }
 
 .playlist-buttons {

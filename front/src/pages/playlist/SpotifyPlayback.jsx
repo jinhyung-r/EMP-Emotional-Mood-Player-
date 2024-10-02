@@ -5,7 +5,7 @@ import axiosInstance from '../../apis/axiosInstance';
 import { PauseIcon } from './icons/PauseIcon';
 import { PlayIcon } from './icons/PlayIcon';
 
-const SpotifyPlayback = () => {
+const SpotifyPlayback = ({ trackUri }) => {
   const [player, setPlayer] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [deviceId, setDeviceId] = useState(null);
@@ -14,7 +14,7 @@ const SpotifyPlayback = () => {
   const [isPremium, setIsPremium] = useState(false); // 프리미엄 여부 확인
   const [isPlaying, setIsPlaying] = useState(false); // 재생 상태 추적
 
-  const trackUri = 'spotify:track:775S83AMYbQc8SYteOktTL'; // Spotify 트랙 URI
+  // const trackUri = 'spotify:track:4e1aewX6ATPcdfQIqr7gqO'; // Spotify 트랙 URI
 
   // Spotify SDK 로드 함수
   const loadSpotifySDK = () => {

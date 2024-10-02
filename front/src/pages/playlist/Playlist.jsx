@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../apis/axiosInstance';
+import SpotifyPlayback from './SpotifyPlayback';
 import '../../styles/Playlist.css';
 
 const Playlist = () => {
@@ -35,10 +36,10 @@ const Playlist = () => {
     fetchData();
   }, []);
 
-  const handleSongPlay = (track) => {
-    console.log(`Opening ${track.title} by ${track.artist} on Spotify`);
-    window.open(`https://open.spotify.com/track/${track.spotify_id}`, '_blank');
-  };
+  // const handleSongPlay = (track) => {
+  //   console.log(`Opening ${track.title} by ${track.artist} on Spotify`);
+  //   window.open(`https://open.spotify.com/track/${track.spotify_id}`, '_blank');
+  // };
 
   const handleCreatePlaylist = () => {
     navigate('/create');
@@ -119,9 +120,8 @@ const Playlist = () => {
                     <span className='artist-title'>
                       {track.artist} - {track.title}
                     </span>
-                    <button className='play-button' onClick={() => handleSongPlay(track)}>
-                      노래 듣기
-                    </button>
+                    <SpotifyPlayback trackUri={`spotify:track:${track.spotify_id}`} />
+                    {/* <button className='play-button'>노래 듣기</button> */}
                   </li>
                 ))}
               </ul>

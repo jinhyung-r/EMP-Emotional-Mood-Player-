@@ -9,6 +9,9 @@ import Emotions from './pages/create/emotions/Emotions';
 import My from './pages/mypage/My';
 import Playlist from './pages/playlist/Playlist';
 import OAuthCallback from './components/OAuthCallback';
+
+import SpotifyPlayback from './pages/playlist/SpotifyPlayback';
+
 import './styles/App.css';
 
 function App() {
@@ -25,6 +28,7 @@ function App() {
           <Route path='/myplaylist' element={<Playlist />} />
           <Route path='/api/auth/google/callback' element={<OAuthCallback />} />
           <Route path='/api/auth/spotify/callback' element={<OAuthCallback />} />
+          <Route path='/spotify' element={<SpotifyPlayback />} />
         </Routes>
       </Wrapper>
     </Router>
