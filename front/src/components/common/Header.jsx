@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
+import axios from 'axios';
+
+const baseURI = process.env.REACT_APP_API_URL;
 
 const Header = ({ isHomeOrLogin }) => {
   const navigate = useNavigate();
@@ -13,9 +16,16 @@ const Header = ({ isHomeOrLogin }) => {
   const isLoggedIn = user !== null;
 
   // 로그아웃 처리 함수
-  const handleLogout = () => {
-    sessionStorage.removeItem('user');
-    navigate('/');
+
+  const handleLogout = async () => {
+    try {
+      // 서버에 로그아웃 요청 보내기
+      await axios.post(`${baseURI}/api/auth/logout`, {}, { withCredentials: true });
+      sessionStorage.removeItem('user');
+      navigate('/');
+    } catch (error) {
+      console.error('로그아웃 중 오류 발생:', error);
+    }
   };
 
   return (

@@ -39,12 +39,25 @@ export const oauthCallback = async (req, res, next) => {
 export const logout = (req, res, next) => {
   req.logout((err) => {
     if (err) {
-      logger.error('로그아웃 중 오류 발생:', { error: err });
-      return next(new AppError(COMMON_ERROR.BUSINESS_LOGIC_ERROR.name, '로그아웃 중 오류가 발생했습니다.', { statusCode: COMMON_ERROR.BUSINESS_LOGIC_ERROR.statusCode, cause: err }));
+      logger.error('로그아웃 중 오류 발생:', err);
+      return next(err);
     }
-    res.clearCookie('auth_session');
-    logger.debug(`사용자 로그아웃 완료: ${req.user?.email}`);
-    res.status(200).json({ success: true, message: '로그아웃되었습니다.' });
+    
+    res.clearCookie('auth_session', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/'
+    });
+
+    req.session.destroy((err) => {
+      if (err) {
+        logger.error('세션 파기 중 오류 발생:', err);
+        return next(err);
+      }
+      logger.debug(`사용자 로그아웃 완료: ${req.user?.email}`);
+      res.status(200).json({ success: true, message: '로그아웃되었습니다.' });
+    });
   });
 };
 
