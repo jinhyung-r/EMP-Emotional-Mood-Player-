@@ -5,6 +5,7 @@ import '../../styles/Questionnaire.css';
 function Questionnaire() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const userId = sessionStorage.getItem('id');
   const [selectedAnswers, setSelectedAnswers] = useState({
     song_types: [],
     genres: '',
@@ -72,10 +73,11 @@ function Questionnaire() {
     const { song_types, genres } = selectedAnswers;
 
     const postData = {
-      genres,
-      song_types,
-      playlistTitle,
-      preferLatest,
+      genres: genres, // 장르 문자열
+      song_types: song_types, // 선택된 감정(노래 타입) 배열
+      prefer_latest: preferLatest, // 최신곡 선호 여부
+      userId: Number(userId), // userId를 숫자로 변환
+      title: playlistTitle || '제목 없음', // 제목이 없으면 "제목 없음"
     };
 
     try {

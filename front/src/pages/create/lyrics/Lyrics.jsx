@@ -14,14 +14,16 @@ function Lyrics() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axiosInstance.post('/lyrics-playlist', {
-        searchTerm,
-        prefer_latest: preferLatest,
-        userId: Number(userId), // userId를 숫자로 변환
-        title: playlistTitle || '제목 없음', // 빈 문자열일 경우 "제목 없음" 설정
-      });
+    const postData = {
+      searchTerm,
+      prefer_latest: preferLatest,
+      userId: Number(userId), // userId를 숫자로 변환
+      title: playlistTitle || '제목 없음', // 빈 문자열일 경우 "제목 없음" 설정
+    };
 
+    try {
+      console.log('서버가 받을 데이터:', postData);
+      const response = await axiosInstance.post('/lyrics-playlist', postData);
       console.log('Server response:', response.data);
       // 플레이리스트 ID를 이용해 페이지 이동 처리 (필요 시 추가)
     } catch (error) {
