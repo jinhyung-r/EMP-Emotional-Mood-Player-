@@ -43,11 +43,6 @@ app.use(passport.session());
 configurePassport();
 
 app.use('/api', routes);
-
-app.use('/api', checkAndRefreshToken);
-app.use('/api', playlistRoutes);
-
-app.use('/api', routes);
 app.use('/api', checkAndRefreshToken);
 app.use('/api', playlistRoutes);
 

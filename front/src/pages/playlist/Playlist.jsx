@@ -48,7 +48,7 @@ const Playlist = () => {
   const handleSavePlaylistName = async () => {
     try {
       const response = await axiosInstance.put(`/myplaylist/${selectedPlaylistId}`, {
-        title: playlistName,
+        newTitle: playlistName,
       });
 
       if (response.status === 200) {
