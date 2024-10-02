@@ -23,23 +23,23 @@ const MyPage = () => {
   //   const color2 = getRandomLightColor();
   //   return `linear-gradient(to bottom, ${color1}, ${color2})`;
   // }, [getRandomLightColor]);
-  const user = sessionStorage.getItem('user');
+  const user = JSON.parse(sessionStorage.getItem('user') || '{}');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = sessionStorage.getItem('id');
+        const userId = user.id;
         if (!userId) {
           console.error('User ID not found');
           return;
         }
 
         const response = await axiosInstance.get(`/myplaylist/${userId}`);
-        const playlistData = response.data.playlists;
+        const playlistData = response.data.playlist;
 
-        setPlaylists(playlistData || []);
-        setTracks(playlistData[0]?.tracks || []);
-        setLatestPlaylist(playlistData[0]);
+        setPlaylists([playlistData] || []);
+        setTracks(playlistData.tracks || []);
+        setLatestPlaylist(playlistData);
       } catch (error) {
         console.error('Error fetching playlist:', error);
       }

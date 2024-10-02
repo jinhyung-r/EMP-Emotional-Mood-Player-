@@ -18,18 +18,23 @@ export const getUserFirstPlaylist = async (userId) => {
   }
 };
 
-export const getPlaylistById = async (playlistId) => {
+export const getPlaylistById = async (userId) => {
   try {
-    const playlist = await prisma.playlist.findUnique({
-      where: { playlistId: parseInt(playlistId, 10) },
+    const playlists = await prisma.playlist.findMany({
+      where: { userId: userId },
       include: {
         tracks: true,
       },
+      orderBy: {
+        playlistId: 'desc',
+      },
     });
-    if (!playlist) {
-      throw new AppError(COMMON_ERROR.RESOURCE_NOT_FOUND_ERROR.name, `플레이리스트 ID ${playlistId}를 찾을 수 없습니다`, { statusCode: COMMON_ERROR.RESOURCE_NOT_FOUND_ERROR.statusCode });
+
+    if (playlists.length === 0) {
+      throw new AppError(COMMON_ERROR.RESOURCE_NOT_FOUND_ERROR.name, `사용자 ID ${userId}에 해당하는 플레이리스트를 찾을 수 없습니다`, { statusCode: COMMON_ERROR.RESOURCE_NOT_FOUND_ERROR.statusCode });
     }
-    return playlist;
+    
+    return playlists[0];
   } catch (error) {
     logger.error(`플레이리스트 조회 중 오류: ${error.message}`);
     if (error instanceof AppError) {
