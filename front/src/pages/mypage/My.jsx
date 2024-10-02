@@ -25,10 +25,11 @@ const MyPage = () => {
   // }, [getRandomLightColor]);
   const user = JSON.parse(sessionStorage.getItem('user') || '{}');
 
-  useEffect(() => {
+  useEffect((user) => {
     const fetchData = async () => {
       try {
         const userId = user.id;
+
         if (!userId) {
           console.error('User ID not found');
           return;

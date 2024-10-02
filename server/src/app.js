@@ -46,6 +46,7 @@ app.use('/api', routes);
 app.use('/api', checkAndRefreshToken);
 app.use('/api', playlistRoutes);
 
+
 app.use(errorHandler);
 
 app.use((err, req, res, _next) => {

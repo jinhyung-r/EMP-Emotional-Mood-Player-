@@ -1,6 +1,49 @@
+import axios from 'axios';
 import { getPlaylistById, updatePlaylistTitle, deletePlaylistById } from '../services/playlistService.js';
 import logger from '../utils/logger.js';
+import prisma from '../models/index.js';
 
+
+export const createPlaylist = async (req, res, next) => {
+  try {
+    const playlistData = req.body;
+    const modelResponse = await axios.post('http://localhost:5000/myplaylist', playlistData);
+    res.json(modelResponse.data);
+  } catch (error) {
+    logger.error('플레이리스트 생성 중 오류:', error);
+    next(error);
+  }
+};
+
+export const savePlaylist = async (req, res, next) => {
+  try {
+    const playlistData = req.body;
+    
+    const savedPlaylist = await prisma.playlist.create({
+      data: {
+        title: playlistData.title,
+        userId: playlistData.userId,
+        tracks: {
+          create: playlistData.tracks.map(track => ({
+            title: track.title,
+            artist: track.artist,
+            albumArt: track.albumArt,
+            genre: track.genre,
+            spotifyId: track.spotify_id
+          }))
+        }
+      },
+      include: {
+        tracks: true
+      }
+    });
+
+    res.json(savedPlaylist);
+  } catch (error) {
+    logger.error('플레이리스트 저장 중 오류:', error);
+    next(error);
+  }
+};
 
 export const getPlaylistByIdHandler = async (req, res, next) => {
   const { playlistId } = req.params;
@@ -35,3 +78,4 @@ export const deletePlaylistHandler = async (req, res, next) => {
     next(error);
   }
 };
+
