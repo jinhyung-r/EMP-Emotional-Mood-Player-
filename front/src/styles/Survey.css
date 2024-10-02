@@ -64,3 +64,62 @@
   transition: background-color 0.3s ease;
   transition: transform 0.3s ease;
 }
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: linear-gradient(to bottom, #fff, #d9d9d9);
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  text-align: center;
+}
+
+.modal-close {
+  padding: 10px 20px;
+  margin-top: 20px;
+  background-color: black;
+  border: 2px solid white;
+  color: white;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.modal-input {
+  width: 360px;
+  font-family: pretendard;
+  background-color: rgba(0, 0, 0, 0.262); /* 투명한 입력창 */
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  padding: 30px;
+  margin-top: 10px;
+  outline: none;
+}
+
+.checkbox-label {
+  margin-top: 10px;
+  display: block;
+}
+
+.checkbox {
+  margin-right: 10px;
+}
+
+.transparent-input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+}
