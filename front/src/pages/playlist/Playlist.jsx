@@ -17,15 +17,15 @@ const Playlist = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = sessionStorage.getItem('id');
+        const userId = user.id;
         if (!userId) {
           console.error('User ID not found');
           return;
         }
         const response = await axiosInstance.get(`/myplaylist/${userId}`);
-        const playlistData = response.data.playlists;
+        const playlistData = response.data.playlist;
 
-        setPlaylists(playlistData || []);
+        setPlaylists([playlistData] || []);
       } catch (error) {
         console.error('Error fetching playlist:', error);
         alert(error.response?.data?.message || '플레이리스트를 불러오는 중 오류가 발생했습니다.');
