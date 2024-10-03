@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    ADD COLUMN `deletedAt` DATETIME(3) NULL;
+
+-- AlterTable
+ALTER TABLE `tracks` ADD COLUMN `spotifyLink` VARCHAR(191) NULL,
+    MODIFY `albumArt` VARCHAR(191) NULL,
+    MODIFY `genre` VARCHAR(191) NULL;
