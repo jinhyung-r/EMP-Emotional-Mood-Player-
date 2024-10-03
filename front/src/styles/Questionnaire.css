@@ -36,7 +36,6 @@
   border-radius: 5px;
   color: white;
   font-size: 24px;
-  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
@@ -76,8 +75,8 @@
 
 .modal-input {
   width: 360px;
-  font-family: pretendard;
-  background-color: rgba(0, 0, 0, 0.262); /* 투명한 입력창 */
+  font-family: 'Pretendard';
+  background-color: rgba(0, 0, 0, 0.262);
   color: white;
   font-size: 18px;
   text-align: center;

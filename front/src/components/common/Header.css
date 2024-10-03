@@ -26,7 +26,6 @@ header ul li a {
   color: white;
   font-size: 20px;
   text-decoration: none;
-  cursor:pointer;
 }
 
 header ul li a:hover {
@@ -49,64 +48,11 @@ header ul li a:hover {
   border: none;
   color: white;
   font-size: 20px;
-  cursor: pointer;
 }
 
 .logout-button:hover {
   text-decoration: underline;
 }
-
-/* 주석처리된 모바일 관련 코드 */
-/*
-.mobile-navbar {
-  display: none;
-}
-
-.bm-burger-button {
-  position: fixed;
-  width: 30px;
-  height: 20px;
-  left: 20px;
-  top: 20px;
-  z-index: 2;
-}
-
-.bm-burger-bars {
-  background: #ffffff;
-}
-
-.bm-cross-button {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  right: 20px;
-  top: 20px;
-}
-
-.bm-cross {
-  background: #fff;
-  height: 2px;
-  width: 24px;
-}
-
-.bm-menu {
-  background: #4a4a4a;
-  padding: 2.5em 1.5em 0;
-  z-index: 1;
-}
-
-.bm-item-list a {
-  padding: 1em 0;
-  text-decoration: none;
-  color: white;
-  display: block;
-  font-size: 20px;
-}
-
-.bm-item-list a:hover {
-  text-decoration: underline;
-}
-*/
 
 @media screen and (max-width: 1024px) {
   header ul li a {

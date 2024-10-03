@@ -36,7 +36,6 @@
   width: 285px;
   height: 65px;
   border: 2px solid #000;
-  cursor: pointer;
   transition: border 0.3s ease;
   transition: transform 0.3s ease;
 }
