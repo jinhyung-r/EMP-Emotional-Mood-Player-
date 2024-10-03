@@ -82,7 +82,7 @@ export const updatePlaylistTitleHandler = async (req, res, next) => {
 };
 
 export const deletePlaylistHandler = async (req, res, next) => {
-  const { playlistId } = req.body;
+  const { playlistId } = req.params;
   try {
     await deletePlaylistById(playlistId);
     res.json({ success: true, message: '플레이리스트가 삭제되었습니다.' });

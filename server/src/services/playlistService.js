@@ -67,6 +67,10 @@ export const updatePlaylistTitle = async (playlistId, newTitle) => {
 
 export const deletePlaylistById = async (playlistId) => {
   try {
+    await prisma.track.deleteMany({
+      where: { playlistId: parseInt(playlistId, 10) },
+    });
+
     const result = await prisma.playlist.deleteMany({
       where: { playlistId: parseInt(playlistId, 10) },
     });
