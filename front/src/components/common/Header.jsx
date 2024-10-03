@@ -42,7 +42,7 @@ const Header = ({ isHomeOrLogin }) => {
                 <>
                   <li>
                     <p>
-                      <Link to='/mypage'>안녕하세요, {user.name || user.display_name}</Link>
+                      <Link to='/mypage'>안녕하세요, {user.name || user.display_name}님</Link>
                     </p>
                   </li>
                   <li>
