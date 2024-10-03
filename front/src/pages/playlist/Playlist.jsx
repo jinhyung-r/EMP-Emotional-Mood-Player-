@@ -2,11 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../apis/axiosInstance';
 import SpotifyPlayback from './SpotifyPlayback';
+
+import { PlayIcon } from './icons/PlayIcon';
+import { PauseIcon } from './icons/PauseIcon';
+
 import '../../styles/Playlist.css';
 
 const Playlist = () => {
   const navigate = useNavigate();
   const [playlists, setPlaylists] = useState([]);
+  const [currentTrackUri, setCurrentTrackUri] = useState(null); // 현재 재생 중인 트랙 URI
+  const [isPlaying, setIsPlaying] = useState(false); // 재생 상태 관리
   const [showSavePopup, setShowSavePopup] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
@@ -34,12 +40,17 @@ const Playlist = () => {
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
-  // const handleSongPlay = (track) => {
-  //   console.log(`Opening ${track.title} by ${track.artist} on Spotify`);
-  //   window.open(`https://open.spotify.com/track/${track.spotify_id}`, '_blank');
-  // };
+  // 트랙 선택 핸들러
+  const handleTrackSelection = (track) => {
+    if (currentTrackUri === track.spotify_id) {
+      setIsPlaying((prev) => !prev); // 현재 선택된 트랙이 재생 중이면 재생 상태 토글
+    } else {
+      setCurrentTrackUri(track.spotify_id); // 다른 트랙을 선택하면 그 트랙으로 재생
+      setIsPlaying(true); // 새 트랙 선택 시 재생 상태로 설정
+    }
+  };
 
   const handleCreatePlaylist = () => {
     navigate('/create');
@@ -120,8 +131,9 @@ const Playlist = () => {
                     <span className='artist-title'>
                       {track.artist} - {track.title}
                     </span>
-                    <SpotifyPlayback trackUri={`spotify:track:${track.spotify_id}`} />
-                    {/* <button className='play-button'>노래 듣기</button> */}
+                    <button className='play-button' onClick={() => handleTrackSelection(track)}>
+                      {currentTrackUri === track.spotify_id && isPlaying ? <PauseIcon /> : <PlayIcon />}
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -178,6 +190,8 @@ const Playlist = () => {
       <button onClick={handleCreatePlaylist} className='create-playlist-button'>
         새 플레이리스트 만들기
       </button>
+
+      {currentTrackUri && <SpotifyPlayback trackUri={`spotify:track:${currentTrackUri}`} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />}
     </div>
   );
 };
