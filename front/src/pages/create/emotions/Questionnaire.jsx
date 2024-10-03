@@ -130,7 +130,7 @@ function Questionnaire() {
       console.log('서버가 받을 데이터:', postData);
       const response = await axiosInstance.post('/emotion-playlist', postData);
       console.log('Server response:', response.data);
-      navigate('/myplaylist', { state: { playlist: response.data.playlist } });
+      navigate('/myplaylist', { state: { playlist: response.data } });
     } catch (error) {
       console.error('Error submitting data:', error);
     } finally {

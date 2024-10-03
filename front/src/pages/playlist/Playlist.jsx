@@ -158,7 +158,7 @@ const Playlist = () => {
         </ul>
         <div className='playlist-buttons'>
           <button className='save-button' onClick={() => handleSavePlaylist()}>
-            플레이리스트 저장하기
+            플레이리스트 이름 바꾸기
           </button>
           <button className='delete-button' onClick={() => handleDeletePlaylist(playlist.playlistId)}>
             플레이리스트 삭제하기
@@ -185,8 +185,8 @@ const Playlist = () => {
         {showSavePopup && (
           <div className='save-playlist-popup'>
             <h2 className='save-playlist-title'>
-              플레이리스트에 <br />
-              이름을 추가하세요
+              플레이리스트의 <br />
+              이름을 수정하세요
             </h2>
             <input type='text' value={playlistName} onChange={handleNameChange} placeholder='플레이리스트 이름' className='playlist-name-input' />
             <div className='save-playlist-buttons'>
