@@ -50,7 +50,7 @@ const OAuthCallback = () => {
     fetchAuthData();
   }, [navigate, location, setUser, setAccessToken, setRefreshToken]);
 
-  return <Message message='인증 처리 중...' />;
+  return <Message message='loading' />;
 };
 
 export default OAuthCallback;

@@ -101,7 +101,7 @@ const MyPage = () => {
       <h1 className='mypage-title'>MY PAGE</h1>
       {playlists.length > 0 ? (
         <>
-          <h3 className='latest-playlist-title'>{`${user.name}'s 최신 플레이리스트`}</h3>
+          <h3 className='latest-playlist-title'>{user ? `${user.name}'s 최신 플레이리스트` : '최신 플레이리스트'}</h3>
           <div className='playlist-slider-container'>
             <button className='arrow arrow-left' onClick={handlePrev}>
               ←
