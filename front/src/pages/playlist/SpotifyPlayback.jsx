@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import axiosInstance from '../../apis/axiosInstance';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const SpotifyPlayback = ({ trackUri, isPlaying, setIsPlaying }) => {
-  const [spotifyPlayer, setSpotifyPlayer] = useState(null); // 내부에서 관리
+const SpotifyPlayback = ({ trackUri, isPlaying }) => {
+  const [spotifyPlayer, setSpotifyPlayer] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [deviceId, setDeviceId] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
@@ -47,7 +47,7 @@ const SpotifyPlayback = ({ trackUri, isPlaying, setIsPlaying }) => {
             });
 
             player.connect();
-            setSpotifyPlayer(player); // 내부에서 player 상태 관리
+            setSpotifyPlayer(player);
           };
         } catch (error) {
           if (error.response && error.response.data.message === '인증되지 않았거나 Spotify 사용자가 아닙니다.') {
@@ -77,6 +77,10 @@ const SpotifyPlayback = ({ trackUri, isPlaying, setIsPlaying }) => {
             console.log('Paused playback');
           }
         } catch (error) {
+          toast.error('노래 재생 기능은 스포티파이 프리미엄 가입자만 이용 가능합니다.', {
+            position: 'top-center',
+            autoClose: 10000,
+          });
           console.error('Error playing/pausing track:', error.response ? error.response.data : error);
         }
       };

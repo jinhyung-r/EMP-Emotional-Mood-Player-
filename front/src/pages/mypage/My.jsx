@@ -149,7 +149,7 @@ const MyPage = () => {
 
           <div className='playlist-buttons'>
             <button className='edit-playlist-button' onClick={handleDetailPlaylist}>
-              플레이 리스트 자세히 보기
+              플레이리스트 자세히 보기
             </button>
             <button className='create-playlist-button' onClick={handleCreatePlaylist}>
               새로운 리스트 생성하기

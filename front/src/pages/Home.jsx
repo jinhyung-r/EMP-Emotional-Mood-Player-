@@ -20,7 +20,7 @@ const Home = () => {
           <br />
           MOOD PLAYER
         </h1>
-        <button className='playlist-btn' onClick={() => handleButtonClick(navigate, '/')}>
+        <button className='playlist-btn' onClick={() => handleButtonClick(navigate, '/login')}>
           플레이리스트 생성하기
         </button>
       </div>
@@ -78,7 +78,7 @@ const Home = () => {
             </div>
           </div>
           <div className='playlist-btn-container'>
-            <button className='playlist-btn' onClick={() => handleButtonClick(navigate, '/')}>
+            <button className='playlist-btn' onClick={() => handleButtonClick(navigate, '/login')}>
               플레이리스트 생성하기
             </button>
           </div>

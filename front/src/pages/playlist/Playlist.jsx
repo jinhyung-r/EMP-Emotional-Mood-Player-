@@ -18,12 +18,13 @@ const Playlist = () => {
   const [showSavePopup, setShowSavePopup] = useState(false);
   const [isPlaylistSaved, setIsPlaylistSaved] = useState(false);
   const [untitledCount, setUntitledCount] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const [currentTrackUri, setCurrentTrackUri] = useState(null); // Spotify에서 재생할 트랙 URI
-  const [isPlaying, setIsPlaying] = useState(false); // 재생 상태 관리
-  // const navigate = useNavigate();
-  const location = useLocation(); // 라우팅 시 전달된 상태를 받아오기
-  const [user, setUser] = useRecoilState(userState); // 사용자 상태 관리
+  const [currentTrackUri, setCurrentTrackUri] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const location = useLocation();
+  const [user, setUser] = useRecoilState(userState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,12 +32,10 @@ const Playlist = () => {
         const userData = await getUsers();
         setUser(userData);
 
-        // 라우팅 시 전달된 상태가 있는 경우 해당 데이터를 사용
         if (location.state && location.state.playlist) {
           setPlaylist(location.state.playlist);
           setPlaylistName(location.state.playlist.title || '');
         } else {
-          // 전달된 상태가 없는 경우 API를 통해 플레이리스트 조회
           const playlistResponse = await axiosInstance.get(`/myplaylist/${userData.id}`);
           const playlistData = playlistResponse.data.playlist;
           setPlaylist(playlistData || null);
@@ -50,16 +49,14 @@ const Playlist = () => {
     };
 
     fetchData();
-    // 의존성 배열에서 user, setUser 제거, location.state도 변경이 필요하지 않으면 제거
   }, [location.state]);
 
-  // 트랙 선택 시 Spotify 플레이어로 재생
   const handleSongPlay = (track) => {
     if (currentTrackUri === track.spotify_id) {
-      setIsPlaying((prev) => !prev); // 현재 트랙이면 재생/일시정지 토글
+      setIsPlaying((prev) => !prev);
     } else {
-      setCurrentTrackUri(track.spotify_id); // 새 트랙 선택 시 URI 업데이트
-      setIsPlaying(true); // 선택 시 재생
+      setCurrentTrackUri(track.spotify_id);
+      setIsPlaying(true);
     }
   };
 
@@ -77,18 +74,17 @@ const Playlist = () => {
       try {
         await axiosInstance.delete(`/myplaylist/${playlistId}`);
         alert('플레이리스트가 성공적으로 삭제되었습니다.');
-        // navigate('/'); // 삭제 후 홈으로 이동 (라우팅 활성화 시 주석 해제)
       } catch (err) {
-        console.error('플레이리스트 삭제 중 오류:', err); // 실제 오류 메시지 확인
+        console.error('플레이리스트 삭제 중 오류:', err);
         alert('플레이리스트 삭제 중 오류가 발생했습니다.');
       }
     }
   };
 
   const handleSavePlaylistName = async () => {
+    setIsSaving(true);
     let title = playlistName.trim() || '제목 없음';
 
-    // 제목이 '제목 없음'으로 시작하는 경우, 제목 번호를 증가시킵니다.
     if (title.startsWith('제목 없음')) {
       setUntitledCount((prevCount) => prevCount + 1);
       title = `제목 없음 ${untitledCount + 1}`;
@@ -99,12 +95,11 @@ const Playlist = () => {
     };
 
     try {
-      // 플레이리스트 ID가 존재하는지 확인
       if (playlist?.playlistId) {
         await axiosInstance.put(`/myplaylist/${playlist.playlistId}`, newPlaylistData);
-        setIsPlaylistSaved(true); // 저장 성공 표시
-        setPlaylist({ ...playlist, title: title }); // 로컬 상태 업데이트
-        setShowSavePopup(false); // 저장 팝업 닫기
+        setIsPlaylistSaved(true);
+        setPlaylist({ ...playlist, title: title });
+        setShowSavePopup(false);
         alert('플레이리스트 이름이 성공적으로 저장되었습니다.');
       } else {
         throw new Error('플레이리스트 ID를 찾을 수 없습니다.');
@@ -112,6 +107,8 @@ const Playlist = () => {
     } catch (err) {
       console.error('플레이리스트 저장 중 오류:', err);
       alert('플레이리스트 저장 중 오류가 발생했습니다.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -140,7 +137,7 @@ const Playlist = () => {
       <div className='playlist-container'>
         <h1 className='playlist-page-title'>PLAYLIST</h1>
         <h3 className='recommended-playlist-title'>{`${user?.name || user?.display_name}'s`} 추천 플레이리스트</h3>
-        <h2 className='playlist-name'>{playlist.title}</h2>
+        <h2 className='playlist-name'>" {playlist.title} "</h2>
         <div className='album-cover-row'>
           {playlist.tracks.map((track, index) => (
             <img key={index} src={track.albumArt} alt={track.title} className='album-cover' onError={(e) => (e.target.src = 'images/emptyalbumart.png')} />
@@ -195,8 +192,8 @@ const Playlist = () => {
               <button className='cancel-playlist-button' onClick={handlePopupClose}>
                 취소
               </button>
-              <button className='save-playlist-button' onClick={handleSavePlaylistName}>
-                저장하기
+              <button className='save-playlist-button' onClick={handleSavePlaylistName} disabled={isSaving}>
+                {isSaving ? '저장 중...' : '저장하기'}
               </button>
             </div>
           </div>
