@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import axiosInstance from '../../apis/axiosInstance';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SpotifyPlayback = ({ trackUri, isPlaying, setIsPlaying }) => {
   const [spotifyPlayer, setSpotifyPlayer] = useState(null); // 내부에서 관리
@@ -48,7 +50,14 @@ const SpotifyPlayback = ({ trackUri, isPlaying, setIsPlaying }) => {
             setSpotifyPlayer(player); // 내부에서 player 상태 관리
           };
         } catch (error) {
-          console.error('Error initializing Spotify SDK:', error);
+          if (error.response && error.response.data.message === '인증되지 않았거나 Spotify 사용자가 아닙니다.') {
+            toast.error('노래 재생 기능은 스포티파이 프리미엄 가입자만 이용 가능합니다.', {
+              position: 'top-center',
+              autoClose: 10000,
+            });
+          } else {
+            console.error('Error initializing Spotify SDK:', error);
+          }
         }
       };
 
