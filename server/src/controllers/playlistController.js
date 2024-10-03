@@ -42,7 +42,7 @@ export const savePlaylist = async (req, res, next) => {
             artist: track.artist,
             albumArt: track.albumArt,
             genre: track.genre,
-            spotifyId: track.spotify_id
+            spotify_id: track.spotify_id
           }))
         }
       },
