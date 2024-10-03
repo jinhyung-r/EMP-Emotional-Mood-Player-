@@ -4,6 +4,7 @@ import { searchTermState, userState } from '../../../store/atoms';
 import { getUsers } from '../../../apis/userApi';
 import { useRecoilState } from 'recoil';
 import axiosInstance from '../../../apis/axiosInstance';
+
 import '../../../styles/Survey.css';
 
 function Lyrics() {
@@ -12,6 +13,7 @@ function Lyrics() {
   const [playlistTitle, setPlaylistTitle] = useState('제목 없음'); // 기본값 "제목 없음"
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
   const [user, setUser] = useRecoilState(userState); // 사용자 상태 관리
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +32,8 @@ function Lyrics() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setIsSubmitting(true);
+
     const postData = {
       searchTerm,
       prefer_latest: preferLatest,
@@ -44,6 +48,8 @@ function Lyrics() {
       navigate('/myplaylist', { state: { playlist: response.data.playlist } });
     } catch (error) {
       console.error('Error submitting lyrics:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -58,8 +64,8 @@ function Lyrics() {
           옵션 설정
         </button>
 
-        <button type='submit' className='submit-button'>
-          플레이리스트 생성하기
+        <button type='submit' className='submit-button' disabled={isSubmitting}>
+          {isSubmitting ? '생성 중...' : '플레이리스트 생성하기'}
         </button>
       </form>
 

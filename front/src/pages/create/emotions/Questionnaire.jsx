@@ -157,7 +157,7 @@ function Questionnaire() {
             옵션 설정
           </button>
           <button type='button' className='submit-button' onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? '제출 중...' : '제출하기'}
+            {isSubmitting ? '생성 중...' : '플레이리스트 생성하기'}
           </button>
         </div>
       )}
