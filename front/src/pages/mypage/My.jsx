@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axiosInstance from '../../apis/axiosInstance';
-import '../../styles/My.css';
+import { useRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../apis/axiosInstance';
+import { getUsers } from '../../apis/userApi';
+import { userState } from '../../store/atoms';
+import '../../styles/My.css';
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [user, setUser] = useState(null);
   const [playlists, setPlaylists] = useState([]);
   const [tracks, setTracks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [latestPlaylist, setLatestPlaylist] = useState(null);
   const [showShareOptions, setShowShareOptions] = useState(false);
+  const [user, setUser] = useRecoilState(userState); // 사용자 상태 관리
 
   const getRandomLightColor = useCallback(() => {
     const r = Math.floor(Math.random() * 256);
@@ -31,8 +34,7 @@ const MyPage = () => {
     const fetchData = async () => {
       try {
         // 사용자 정보 불러오기
-        const userResponse = await axiosInstance.get('/user-info');
-        const userData = userResponse.data;
+        const userData = await getUsers();
         setUser(userData);
 
         // 사용자 ID로 플레이리스트 불러오기
@@ -62,7 +64,7 @@ const MyPage = () => {
     };
 
     fetchData();
-  }, [getRandomGradient]);
+  }, [getRandomGradient, setUser]);
 
   const handlePlaylistClick = (playlist) => {
     setLatestPlaylist(playlist);
@@ -79,7 +81,7 @@ const MyPage = () => {
   };
 
   const handleDetailPlaylist = () => {
-    navigate('/myplaylist');
+    navigate('/myplaylist', { state: { playlist: latestPlaylist } });
   };
 
   const handleCreatePlaylist = () => {

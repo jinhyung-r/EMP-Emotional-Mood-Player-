@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { searchTermState, userState } from '../../../store/atoms';
+import { getUsers } from '../../../apis/userApi';
 import { useRecoilState } from 'recoil';
-import { searchTermState } from '../../../store/atoms';
 import axiosInstance from '../../../apis/axiosInstance';
 import '../../../styles/Survey.css';
 
@@ -9,7 +11,21 @@ function Lyrics() {
   const [preferLatest, setPreferLatest] = useState(true); // 기본값 true
   const [playlistTitle, setPlaylistTitle] = useState('제목 없음'); // 기본값 "제목 없음"
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
-  const userId = sessionStorage.getItem('id'); // 세션 스토리지에서 유저 ID 가져오기
+  const [user, setUser] = useRecoilState(userState); // 사용자 상태 관리
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getUsers();
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+
+    fetchUser();
+  }, [setUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +33,7 @@ function Lyrics() {
     const postData = {
       searchTerm,
       prefer_latest: preferLatest,
-      userId: Number(userId), // userId를 숫자로 변환
+      userId: user?.id, // userId를 userState에서 가져옴
       title: playlistTitle || '제목 없음', // 빈 문자열일 경우 "제목 없음" 설정
     };
 
@@ -25,7 +41,7 @@ function Lyrics() {
       console.log('서버가 받을 데이터:', postData);
       const response = await axiosInstance.post('/lyrics-playlist', postData);
       console.log('Server response:', response.data);
-      // 플레이리스트 ID를 이용해 페이지 이동 처리 (필요 시 추가)
+      navigate('/myplaylist', { state: { playlist: response.data.playlist } });
     } catch (error) {
       console.error('Error submitting lyrics:', error);
     }

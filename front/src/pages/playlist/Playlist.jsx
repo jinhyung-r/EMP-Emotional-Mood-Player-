@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/Playlist.css';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import axiosInstance from '../../apis/axiosInstance';
+import { getUsers } from '../../apis/userApi';
+import { userState } from '../../store/atoms';
 import SpotifyPlayback from './SpotifyPlayback';
 import { PlayIcon } from './icons/PlayIcon';
 import { PauseIcon } from './icons/PauseIcon';
@@ -10,29 +13,35 @@ const Playlist = () => {
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [user, setUser] = useState(null);
   const [showShareOptions, setShowShareOptions] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [showSavePopup, setShowSavePopup] = useState(false);
-  const [showEditPopup, setShowEditPopup] = useState(false);
   const [isPlaylistSaved, setIsPlaylistSaved] = useState(false);
   const [untitledCount, setUntitledCount] = useState(0);
 
   const [currentTrackUri, setCurrentTrackUri] = useState(null); // Spotify에서 재생할 트랙 URI
   const [isPlaying, setIsPlaying] = useState(false); // 재생 상태 관리
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const location = useLocation(); // 라우팅 시 전달된 상태를 받아오기
+  const [user, setUser] = useRecoilState(userState); // 사용자 상태 관리
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userResponse = await axiosInstance.get('/user-info');
-        const userData = userResponse.data;
+        const userData = await getUsers();
         setUser(userData);
 
-        const playlistResponse = await axiosInstance.get(`/myplaylist/${userData.id}`);
-        const playlistData = playlistResponse.data.playlist;
-        setPlaylist(playlistData || null);
-        setPlaylistName(playlistData?.title || '');
+        // 라우팅 시 전달된 상태가 있는 경우 해당 데이터를 사용
+        if (location.state && location.state.playlist) {
+          setPlaylist(location.state.playlist);
+          setPlaylistName(location.state.playlist.title || '');
+        } else {
+          // 전달된 상태가 없는 경우 API를 통해 플레이리스트 조회
+          const playlistResponse = await axiosInstance.get(`/myplaylist/${userData.id}`);
+          const playlistData = playlistResponse.data.playlist;
+          setPlaylist(playlistData || null);
+          setPlaylistName(playlistData?.title || '');
+        }
         setLoading(false);
       } catch (err) {
         setError(err.message || 'Error loading playlist');
@@ -41,7 +50,8 @@ const Playlist = () => {
     };
 
     fetchData();
-  }, [user]);
+    // 의존성 배열에서 user, setUser 제거, location.state도 변경이 필요하지 않으면 제거
+  }, [location.state]);
 
   // 트랙 선택 시 Spotify 플레이어로 재생
   const handleSongPlay = (track) => {
@@ -58,13 +68,18 @@ const Playlist = () => {
   };
 
   const handleDeletePlaylist = async (playlistId) => {
+    if (!playlistId) {
+      console.error('삭제할 플레이리스트 ID가 없습니다.');
+      return;
+    }
+
     if (window.confirm('정말로 이 플레이리스트를 삭제하시겠습니까?')) {
       try {
         await axiosInstance.delete(`/myplaylist/${playlistId}`);
         alert('플레이리스트가 성공적으로 삭제되었습니다.');
-        navigate('/'); // 홈 페이지로 이동
+        // navigate('/'); // 삭제 후 홈으로 이동 (라우팅 활성화 시 주석 해제)
       } catch (err) {
-        console.error('Error deleting playlist:', err);
+        console.error('플레이리스트 삭제 중 오류:', err); // 실제 오류 메시지 확인
         alert('플레이리스트 삭제 중 오류가 발생했습니다.');
       }
     }
@@ -73,6 +88,7 @@ const Playlist = () => {
   const handleSavePlaylistName = async () => {
     let title = playlistName.trim() || '제목 없음';
 
+    // 제목이 '제목 없음'으로 시작하는 경우, 제목 번호를 증가시킵니다.
     if (title.startsWith('제목 없음')) {
       setUntitledCount((prevCount) => prevCount + 1);
       title = `제목 없음 ${untitledCount + 1}`;
@@ -83,14 +99,18 @@ const Playlist = () => {
     };
 
     try {
-      await axiosInstance.put(`/myplaylist/${playlist.playlistId}`, newPlaylistData);
-      setIsPlaylistSaved(true);
-      setShowSavePopup(false);
-      setShowEditPopup(false);
-      setPlaylist({ ...playlist, title: title });
-      alert('플레이리스트 이름이 성공적으로 저장되었습니다.');
+      // 플레이리스트 ID가 존재하는지 확인
+      if (playlist?.playlistId) {
+        await axiosInstance.put(`/myplaylist/${playlist.playlistId}`, newPlaylistData);
+        setIsPlaylistSaved(true); // 저장 성공 표시
+        setPlaylist({ ...playlist, title: title }); // 로컬 상태 업데이트
+        setShowSavePopup(false); // 저장 팝업 닫기
+        alert('플레이리스트 이름이 성공적으로 저장되었습니다.');
+      } else {
+        throw new Error('플레이리스트 ID를 찾을 수 없습니다.');
+      }
     } catch (err) {
-      console.error('Error saving playlist:', err);
+      console.error('플레이리스트 저장 중 오류:', err);
       alert('플레이리스트 저장 중 오류가 발생했습니다.');
     }
   };
@@ -109,7 +129,6 @@ const Playlist = () => {
 
   const handlePopupClose = () => {
     setShowSavePopup(false);
-    setShowEditPopup(false);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -165,11 +184,11 @@ const Playlist = () => {
             </div>
           )}
         </div>
-        {(showSavePopup || showEditPopup) && (
+        {showSavePopup && (
           <div className='save-playlist-popup'>
             <h2 className='save-playlist-title'>
               플레이리스트에 <br />
-              이름을 {showEditPopup ? '수정' : '추가'}하세요
+              이름을 추가하세요
             </h2>
             <input type='text' value={playlistName} onChange={handleNameChange} placeholder='플레이리스트 이름' className='playlist-name-input' />
             <div className='save-playlist-buttons'>

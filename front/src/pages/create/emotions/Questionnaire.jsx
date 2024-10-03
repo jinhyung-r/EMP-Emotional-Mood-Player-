@@ -1,19 +1,37 @@
-import React, { useState } from 'react';
-import axiosInstance from '../../apis/axiosInstance';
-import '../../styles/Questionnaire.css';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../../apis/axiosInstance';
+import { useRecoilState } from 'recoil';
+import { getUsers } from '../../../apis/userApi';
+import { userState } from '../../../store/atoms';
+import '../../../styles/Questionnaire.css';
 
 function Questionnaire() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);
-  const userId = sessionStorage.getItem('id');
   const [selectedAnswers, setSelectedAnswers] = useState({
     song_types: [],
     genres: '',
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [playlistTitle, setPlaylistTitle] = useState('');
-  const [preferLatest, setPreferLatest] = useState(false);
+  const [preferLatest, setPreferLatest] = useState(true);
   const [isQuestionnaireDone, setIsQuestionnaireDone] = useState(false);
+  const [user, setUser] = useRecoilState(userState); // 사용자 상태 관리
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getUsers();
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+
+    fetchUser();
+  }, [setUser]);
 
   const questions = [
     {
@@ -102,7 +120,7 @@ function Questionnaire() {
       genres: mappedGenres, // 장르 문자열
       song_types: mappedSongTypes, // 선택된 감정(노래 타입) 배열
       prefer_latest: preferLatest, // 최신곡 선호 여부
-      userId: Number(userId), // userId를 숫자로 변환
+      userId: user?.id, // userId를 userState에서 가져옴
       title: playlistTitle || '제목 없음', // 제목이 없으면 "제목 없음"
     };
 
@@ -110,7 +128,7 @@ function Questionnaire() {
       console.log('서버가 받을 데이터:', postData);
       const response = await axiosInstance.post('/emotion-playlist', postData);
       console.log('Server response:', response.data);
-      // 서버로부터 플레이리스트 ID를 받으면 /myplaylist || /myplaylist/${playlistId}로 이동?
+      navigate('/myplaylist', { state: { playlist: response.data.playlist } });
     } catch (error) {
       console.error('Error submitting data:', error);
     }
