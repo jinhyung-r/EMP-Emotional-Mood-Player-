@@ -11,7 +11,6 @@ const OAuthCallback = () => {
       const urlParams = new URLSearchParams(location.search);
       const code = urlParams.get('code');
       const provider = location.pathname.includes('google') ? 'google' : 'spotify';
-
       if (code) {
         try {
           const response = await axiosInstance.get(`/auth/${provider}/callback`, {
