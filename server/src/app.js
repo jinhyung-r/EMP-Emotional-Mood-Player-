@@ -11,7 +11,7 @@ import { checkAndRefreshToken } from './middlewares/tokenMiddleware.js';
 import logger from './utils/logger.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import playlistRoutes from './routes/playlistRoutes.js';
-
+import userRoutes from './routes/userRoutes.js';
 
 // log 디렉토리 확인용
 import fs from 'fs';
@@ -45,7 +45,7 @@ configurePassport();
 app.use('/api', routes);
 app.use('/api', checkAndRefreshToken);
 app.use('/api', playlistRoutes);
-
+app.use('/api', userRoutes);
 
 app.use(errorHandler);
 
