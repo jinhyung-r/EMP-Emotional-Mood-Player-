@@ -18,6 +18,7 @@ function Questionnaire() {
   const [preferLatest, setPreferLatest] = useState(true);
   const [isQuestionnaireDone, setIsQuestionnaireDone] = useState(false);
   const [user, setUser] = useRecoilState(userState); // 사용자 상태 관리
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -125,12 +126,15 @@ function Questionnaire() {
     };
 
     try {
+      setIsSubmitting(true);
       console.log('서버가 받을 데이터:', postData);
       const response = await axiosInstance.post('/emotion-playlist', postData);
       console.log('Server response:', response.data);
       navigate('/myplaylist', { state: { playlist: response.data.playlist } });
     } catch (error) {
       console.error('Error submitting data:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -152,8 +156,8 @@ function Questionnaire() {
           <button type='button' className='submit-button' onClick={() => setIsModalOpen(true)}>
             옵션 설정
           </button>
-          <button type='button' className='submit-button' onClick={handleSubmit}>
-            제출하기
+          <button type='button' className='submit-button' onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? '제출 중...' : '제출하기'}
           </button>
         </div>
       )}
