@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../apis/axiosInstance';
 import { getUsers } from '../../apis/userApi';
 import { userState } from '../../store/atoms';
+import Message from '../../components/Message';
 import '../../styles/My.css';
 
 const MyPage = () => {
@@ -92,8 +93,8 @@ const MyPage = () => {
     setShowShareOptions(!showShareOptions);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading playlists: {error}</div>;
+  if (loading) return <Message message='loading' />;
+  if (error) return <Message message={error.message} />;
 
   return (
     <div className='mypage'>

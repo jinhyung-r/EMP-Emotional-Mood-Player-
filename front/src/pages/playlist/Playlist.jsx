@@ -8,6 +8,7 @@ import { userState } from '../../store/atoms';
 import SpotifyPlayback from './SpotifyPlayback';
 import { PlayIcon } from './icons/PlayIcon';
 import { PauseIcon } from './icons/PauseIcon';
+import Message from '../../components/Message';
 
 const Playlist = () => {
   const [playlist, setPlaylist] = useState(null);
@@ -128,9 +129,9 @@ const Playlist = () => {
     setShowSavePopup(false);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading playlist: {error}</div>;
-  if (!playlist) return <div>No playlist found.</div>;
+  if (loading) return <Message message='loading' />;
+  if (error) return <Message message={error.message} />;
+  if (!playlist) return <Message message='No playlist found.' />;
 
   return (
     <div className='playlist-page'>

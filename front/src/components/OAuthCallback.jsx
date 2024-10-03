@@ -1,10 +1,18 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { userState, accessTokenState, refreshTokenState } from '../store/atoms';
 import axiosInstance from '../apis/axiosInstance';
+import Message from './Message';
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Recoil 상태 설정 훅
+  const setUser = useSetRecoilState(userState);
+  const setAccessToken = useSetRecoilState(accessTokenState);
+  const setRefreshToken = useSetRecoilState(refreshTokenState);
 
   useEffect(() => {
     const fetchAuthData = async () => {
@@ -18,10 +26,10 @@ const OAuthCallback = () => {
           });
 
           if (response.data.success) {
-            // 세션에 사용자 정보와 액세스 토큰 저장
-            sessionStorage.setItem('user', JSON.stringify(response.data.user));
-            // sessionStorage.setItem('accessToken', response.data.accessToken);
-            // sessionStorage.setItem('refreshToken', response.data.refreshToken);
+            // Recoil 상태에 사용자 정보와 액세스 토큰 저장
+            setUser(response.data.user);
+            setAccessToken(response.data.accessToken);
+            setRefreshToken(response.data.refreshToken);
 
             // 플레이리스트가 있으면 /mypage로, 없으면 /create로 리다이렉트
             if (response.data.playlistId) {
@@ -40,9 +48,9 @@ const OAuthCallback = () => {
     };
 
     fetchAuthData();
-  }, [navigate, location]);
+  }, [navigate, location, setUser, setAccessToken, setRefreshToken]);
 
-  return <div>인증 처리 중...</div>;
+  return <Message message='인증 처리 중...' />;
 };
 
 export default OAuthCallback;
