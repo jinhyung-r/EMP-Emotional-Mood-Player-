@@ -13,11 +13,13 @@ import OAuthCallback from './components/OAuthCallback';
 import SpotifyPlayback from './pages/playlist/SpotifyPlayback';
 
 import './styles/App.css';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <Router>
       <Wrapper>
+        <ToastContainer />
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />

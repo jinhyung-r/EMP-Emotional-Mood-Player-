@@ -1,99 +1,91 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import axiosInstance from '../../apis/axiosInstance';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { PauseIcon } from './icons/PauseIcon';
-import { PlayIcon } from './icons/PlayIcon';
-
-const SpotifyPlayback = ({ trackUri }) => {
-  const [player, setPlayer] = useState(null);
+const SpotifyPlayback = ({ trackUri, isPlaying, setIsPlaying }) => {
+  const [spotifyPlayer, setSpotifyPlayer] = useState(null); // 내부에서 관리
   const [isReady, setIsReady] = useState(false);
   const [deviceId, setDeviceId] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
-  const [isSpotifyUser, setIsSpotifyUser] = useState(false);
-  const [isPremium, setIsPremium] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    const initializeSpotifySDK = async () => {
-      try {
-        const tokenResponse = await axiosInstance.get('/auth/spotify/token');
-        const token = tokenResponse.data.accessToken;
+    if (!spotifyPlayer) {
+      const initializeSpotifySDK = async () => {
+        try {
+          const tokenResponse = await axiosInstance.get('/auth/spotify/token');
+          const token = tokenResponse.data.accessToken;
 
-        if (!token) {
-          console.error('Access token not found');
-          return;
+          if (!token) {
+            console.error('Access token not found');
+            return;
+          }
+
+          setAccessToken(token);
+
+          const script = document.createElement('script');
+          script.src = 'https://sdk.scdn.co/spotify-player.js';
+          script.async = true;
+          document.body.appendChild(script);
+
+          window.onSpotifyWebPlaybackSDKReady = () => {
+            const player = new window.Spotify.Player({
+              name: 'My Spotify Player',
+              getOAuthToken: (cb) => cb(token),
+              volume: 0.5,
+            });
+
+            player.addListener('ready', ({ device_id }) => {
+              console.log('Player ready with Device ID:', device_id);
+              setDeviceId(device_id);
+              setIsReady(true);
+            });
+
+            player.addListener('not_ready', ({ device_id }) => {
+              console.log('Player is not ready with Device ID:', device_id);
+            });
+
+            player.connect();
+            setSpotifyPlayer(player); // 내부에서 player 상태 관리
+          };
+        } catch (error) {
+          if (error.response && error.response.data.message === '인증되지 않았거나 Spotify 사용자가 아닙니다.') {
+            toast.error('노래 재생 기능은 스포티파이 프리미엄 가입자만 이용 가능합니다.', {
+              position: 'top-center',
+              autoClose: 10000,
+            });
+          } else {
+            console.error('Error initializing Spotify SDK:', error);
+          }
         }
+      };
 
-        setAccessToken(token);
-        setIsSpotifyUser(true);
-
-        const script = document.createElement('script');
-        script.src = 'https://sdk.scdn.co/spotify-player.js';
-        script.async = true;
-        document.body.appendChild(script);
-
-        window.onSpotifyWebPlaybackSDKReady = () => {
-          const spotifyPlayer = new window.Spotify.Player({
-            name: 'My Spotify Player',
-            getOAuthToken: (cb) => cb(token),
-            volume: 0.5,
-          });
-
-          spotifyPlayer.addListener('ready', ({ device_id }) => {
-            console.log('Player ready with Device ID:', device_id);
-            setDeviceId(device_id);
-            setIsReady(true);
-          });
-
-          spotifyPlayer.addListener('not_ready', ({ device_id }) => {
-            console.log('Player is not ready with Device ID:', device_id);
-          });
-
-          spotifyPlayer.connect();
-          setPlayer(spotifyPlayer);
-        };
-      } catch (error) {
-        console.error('Error initializing Spotify SDK:', error);
-      }
-    };
-
-    initializeSpotifySDK();
-  }, []);
-
-  const handlePlayPause = async () => {
-    if (!player || !deviceId) {
-      console.error('Cannot play or pause song: player or deviceId is missing');
-      return;
+      initializeSpotifySDK();
     }
+  }, [spotifyPlayer]);
 
-    try {
-      const playbackState = await player.getCurrentState();
-      if (playbackState && !playbackState.paused) {
-        await player.pause();
-        console.log('Paused playback');
-      } else if (playbackState && playbackState.paused) {
-        await player.resume();
-        console.log('Resumed playback');
-      } else {
-        await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, { uris: [trackUri] }, { headers: { Authorization: `Bearer ${accessToken}` } });
-        console.log('Started playback');
-      }
-      setIsPlaying(!isPlaying);
-    } catch (error) {
-      console.error('Error handling play/pause:', error.response ? error.response.data : error);
+  useEffect(() => {
+    if (trackUri && deviceId && isReady) {
+      const playTrack = async () => {
+        try {
+          if (isPlaying) {
+            await axios.put(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, { uris: [trackUri] }, { headers: { Authorization: `Bearer ${accessToken}` } });
+            console.log('Started playback');
+          } else {
+            await spotifyPlayer.pause();
+            console.log('Paused playback');
+          }
+        } catch (error) {
+          console.error('Error playing/pausing track:', error.response ? error.response.data : error);
+        }
+      };
+
+      playTrack();
     }
-  };
+  }, [trackUri, deviceId, isReady, accessToken, isPlaying]);
 
-  return (
-    <div>
-      {isReady && isSpotifyUser && isPremium && (
-        <button className='play-button' onClick={handlePlayPause}>
-          {isPlaying ? <PauseIcon /> : <PlayIcon />}
-        </button>
-      )}
-    </div>
-  );
+  return null;
 };
 
 export default SpotifyPlayback;
