@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { handleButtonClick } from '../utils/navigateHandlers';
 
 import { backgroundStyle } from './images/backgroundStyle';
-import sampleImage from './images/home-sample.png';
+import exampleImage1 from './images/home-image1.png';
+import exampleImage2 from './images/home-image2.png';
+import exampleImage3 from './images/home-image3.png';
 
 import '../styles/Home.css';
 
@@ -26,7 +28,7 @@ const Home = () => {
         <div className='section-container'>
           <div className='section'>
             <div className='image-content'>
-              <img src={sampleImage} alt='감정 기반 음악 이미지' />
+              <img src={exampleImage1} alt='감정 기반 음악 이미지' />
             </div>
             <div className='text-content'>
               <h2>
@@ -45,7 +47,7 @@ const Home = () => {
 
           <div className='section'>
             <div className='image-content'>
-              <img src={sampleImage} alt='노래 가사 기반 음악 이미지' />
+              <img src={exampleImage2} alt='노래 가사 기반 음악 이미지' />
             </div>
             <div className='text-content'>
               <h2>
@@ -63,7 +65,7 @@ const Home = () => {
 
           <div className='section'>
             <div className='image-content'>
-              <img src={sampleImage} alt='감정 기반 음악 이미지' />
+              <img src={exampleImage3} alt='감정 기반 음악 이미지' />
             </div>
             <div className='text-content'>
               <h2>음악의 감정, 연결의 시작</h2>
