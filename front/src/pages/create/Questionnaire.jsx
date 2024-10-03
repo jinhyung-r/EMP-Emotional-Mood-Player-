@@ -30,6 +30,28 @@ function Questionnaire() {
     },
   ];
 
+  const songTypesMapping = {
+    사랑: ['사랑에빠졌어요', '사랑과 연애'],
+    슬픔: ['슬퍼요', '외로워요', '이별과 그리움'],
+    설레임: ['행복해요', '신나요', '꿈과 희망'],
+    이별: ['이별과 그리움'],
+    초조함: ['화나요', '차분해요', '피곤해요', '자기 성찰과 성장', '우정과 가족', '자유와 모험', '극복과 도전'],
+  };
+
+  const genresMapping = {
+    adultkpop: ['성인가요'],
+    ballad: ['발라드'],
+    dance: ['댄스/팝'],
+    elec: ['일렉트로닉'],
+    folk: ['포크/어쿠스틱'],
+    idol: ['아이돌'],
+    indie: ['인디'],
+    jazz: ['재즈'],
+    rnh: ['랩/힙합'],
+    rns: ['알앤비/소울'],
+    rock: ['락/메탈'],
+  };
+
   const handleAnswerClick = (answer) => {
     const questionIndex = currentQuestion;
 
@@ -72,9 +94,13 @@ function Questionnaire() {
   const handleSubmit = async () => {
     const { song_types, genres } = selectedAnswers;
 
+    const mappedSongTypes = Object.keys(songTypesMapping).filter((key) => song_types.some((type) => songTypesMapping[key].includes(type)));
+
+    const mappedGenres = Object.keys(genresMapping).find((key) => genresMapping[key].includes(genres));
+
     const postData = {
-      genres: genres, // 장르 문자열
-      song_types: song_types, // 선택된 감정(노래 타입) 배열
+      genres: mappedGenres, // 장르 문자열
+      song_types: mappedSongTypes, // 선택된 감정(노래 타입) 배열
       prefer_latest: preferLatest, // 최신곡 선호 여부
       userId: Number(userId), // userId를 숫자로 변환
       title: playlistTitle || '제목 없음', // 제목이 없으면 "제목 없음"
