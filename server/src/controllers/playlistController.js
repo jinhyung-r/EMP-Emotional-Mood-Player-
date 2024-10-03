@@ -4,13 +4,26 @@ import logger from '../utils/logger.js';
 import prisma from '../models/index.js';
 
 
-export const createPlaylist = async (req, res, next) => {
+export const createLyricsPlaylist = async (req, res, next) => {
   try {
     const playlistData = req.body;
     const modelResponse = await axios.post('http://localhost:5000/myplaylist', playlistData);
+    
     res.json(modelResponse.data);
   } catch (error) {
-    logger.error('플레이리스트 생성 중 오류:', error);
+    logger.error('가사 기반 플레이리스트 생성 중 오류:', error);
+    next(error);
+  }
+};
+
+export const createEmotionPlaylist = async (req, res, next) => {
+  try {
+    const playlistData = req.body;
+    const modelResponse = await axios.post('http://localhost:5000/myplaylist', playlistData);
+    
+    res.json(modelResponse.data);
+  } catch (error) {
+    logger.error('감정 기반 플레이리스트 생성 중 오류:', error);
     next(error);
   }
 };
