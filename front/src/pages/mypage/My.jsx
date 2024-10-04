@@ -73,13 +73,13 @@ const MyPage = () => {
     setCurrentIndex(playlists.indexOf(playlist));
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % playlists.length);
-  };
+  // const handleNext = () => {
+  //   setCurrentIndex((prevIndex) => (prevIndex + 1) % playlists.length);
+  // };
 
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + playlists.length) % playlists.length);
-  };
+  // const handlePrev = () => {
+  //   setCurrentIndex((prevIndex) => (prevIndex - 1 + playlists.length) % playlists.length);
+  // };
 
   const handleDetailPlaylist = () => {
     navigate('/myplaylist', { state: { playlist: latestPlaylist } });
@@ -103,7 +103,7 @@ const MyPage = () => {
         <>
           <h3 className='latest-playlist-title'>{user ? `${user.name}'s 최신 플레이리스트` : '최신 플레이리스트'}</h3>
           <div className='playlist-slider-container'>
-            <button className='arrow arrow-left' onClick={handlePrev}>
+            {/* <button className='arrow arrow-left' onClick={handlePrev}>
               ←
             </button>
             <div
@@ -113,29 +113,29 @@ const MyPage = () => {
                 transition: 'transform 0.3s ease',
                 overflow: 'hidden',
               }}
-            >
-              {playlists.map((playlist, index) => (
-                <div
-                  key={playlist.playlistId}
-                  className={`playlist-album ${latestPlaylist?.playlistId === playlist.playlistId ? 'active' : ''}`}
-                  onClick={() => handlePlaylistClick(playlist)}
-                  style={{
-                    minWidth: '200px',
-                    height: '200px',
-                    marginRight: '20px',
-                    transform: `translateX(${-currentIndex * (200 + 20)}px)`,
-                  }}
-                >
-                  <div className='album-cover'>
+            > */}
+            {playlists.map((playlist, index) => (
+              <div
+                key={playlist.playlistId}
+                className={`playlist-album ${latestPlaylist?.playlistId === playlist.playlistId ? 'active' : ''}`}
+                onClick={() => handlePlaylistClick(playlist)}
+                style={{
+                  minWidth: '200px',
+                  height: '200px',
+                  marginRight: '20px',
+                  transform: `translateX(${-currentIndex * (200 + 20)}px)`,
+                }}
+              >
+                {/* <div className='album-cover'>
                     <span className='album-order'>{index + 1}</span>
-                  </div>
-                  <p className='album-title'>{playlist.title}</p>
-                </div>
-              ))}
-            </div>
+                  </div> */}
+                <p className='album-title'>{playlist.title}</p>
+              </div>
+            ))}
+            {/* </div>
             <button className='arrow arrow-right' onClick={handleNext}>
               →
-            </button>
+            </button> */}
           </div>
 
           <div className='playlist-details'>
