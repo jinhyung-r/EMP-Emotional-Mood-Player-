@@ -85,26 +85,24 @@ const Playlist = () => {
   const handleSavePlaylistName = async () => {
     setIsSaving(true);
     let title = playlistName.trim() || '제목 없음';
-
+  
     if (title.startsWith('제목 없음')) {
       setUntitledCount((prevCount) => prevCount + 1);
       title = `제목 없음 ${untitledCount + 1}`;
     }
-
+  
     const newPlaylistData = {
-      newTitle: title,
+      title,
+      userId: user.id,
+      tracks: playlist.tracks
     };
-
+  
     try {
-      if (playlist?.playlistId) {
-        await axiosInstance.put(`/myplaylist/${playlist.playlistId}`, newPlaylistData);
-        setIsPlaylistSaved(true);
-        setPlaylist({ ...playlist, title: title });
-        setShowSavePopup(false);
-        alert('플레이리스트 이름이 성공적으로 저장되었습니다.');
-      } else {
-        throw new Error('플레이리스트 ID를 찾을 수 없습니다.');
-      }
+      const response = await axiosInstance.post('/save-playlist', newPlaylistData);
+      setIsPlaylistSaved(true);
+      setPlaylist(response.data);
+      setShowSavePopup(false);
+      alert('플레이리스트가 성공적으로 저장되었습니다.');
     } catch (err) {
       console.error('플레이리스트 저장 중 오류:', err);
       alert('플레이리스트 저장 중 오류가 발생했습니다.');

@@ -117,27 +117,31 @@ function Questionnaire() {
 
     const mappedGenres = Object.keys(genresMapping).find((key) => genresMapping[key].includes(genres));
 
-    const postData = {
-      genres: mappedGenres, // 장르 문자열
-      song_types: mappedSongTypes, // 선택된 감정(노래 타입) 배열
-      prefer_latest: preferLatest, // 최신곡 선호 여부
-      userId: user?.id, // userId를 userState에서 가져옴
-      title: playlistTitle || '제목 없음', // 제목이 없으면 "제목 없음"
+    const mappedData = {
+      genres: mappedGenres,
+      song_types: mappedSongTypes,
+      prefer_latest: preferLatest,
+      userId: user?.id,
+      title: playlistTitle || '제목 없음',
     };
 
     try {
       setIsSubmitting(true);
-      console.log('서버가 받을 데이터:', postData);
-      const response = await axiosInstance.post('/emotion-playlist', postData);
-      console.log('Server response:', response.data);
+      console.log('서버로 보내는 데이터:', mappedData);
+      const response = await axiosInstance.post('/emotion-playlist', mappedData);
+      console.log('서버 응답:', response.data);
       navigate('/myplaylist', { state: { playlist: response.data } });
     } catch (error) {
-      console.error('Error submitting data:', error);
+      console.error('데이터 제출 중 오류:', error.response?.data || error.message);
+      let errorMessage = '플레이리스트 생성 중 오류가 발생했습니다.';
+      if (error.response && error.response.data && error.response.data.details) {
+        errorMessage += ` ${error.response.data.details}`;
+      }
+      alert(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
-
   return (
     <div className='questionnaire-container'>
       {!isQuestionnaireDone ? (
