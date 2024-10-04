@@ -19,25 +19,35 @@ export const createLyricsPlaylist = async (req, res, next) => {
 export const createEmotionPlaylist = async (req, res, next) => {
   try {
     const playlistData = req.body;
+    console.log('모델 서버로 보내는 데이터:', playlistData);
+    
     const modelResponse = await axios.post('http://localhost:5000/myplaylist', playlistData);
     
+    console.log('모델 서버 응답:', modelResponse.data);
     res.json(modelResponse.data);
   } catch (error) {
-    logger.error('감정 기반 플레이리스트 생성 중 오류:', error);
-    next(error);
+    logger.error('감정 기반 플레이리스트 생성 중 오류:', error.response?.data || error.message);
+    if (error.response && error.response.status === 422) {
+      res.status(422).json({ 
+        message: '입력 데이터 오류', 
+        details: error.response.data.detail 
+      });
+    } else {
+      next(error);
+    }
   }
 };
 
 export const savePlaylist = async (req, res, next) => {
   try {
-    const playlistData = req.body;
+    const { title, tracks, userId } = req.body;
     
     const savedPlaylist = await prisma.playlist.create({
       data: {
-        title: playlistData.title,
-        userId: playlistData.userId,
+        title,
+        userId,
         tracks: {
-          create: playlistData.tracks.map(track => ({
+          create: tracks.map(track => ({
             title: track.title,
             artist: track.artist,
             albumArt: track.albumArt,
