@@ -168,11 +168,11 @@ const Playlist = () => {
           <button className='save-button' onClick={() => handleSavePlaylist()}>
             플레이리스트 저장하기
           </button>
-          <button className='save-button' onClick={() => handleLatestPlaylist()}>
-            최신 플레이리스트
-          </button>
           <button className='delete-button' onClick={() => handleDeletePlaylist(playlist.playlistId)}>
             플레이리스트 삭제하기
+          </button>
+          <button className='create-button' onClick={() => navigate('/create')}>
+            새로운 플레이리스트 생성하기
           </button>
         </div>
         <div className='social-share'>
