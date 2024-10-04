@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../apis/axiosInstance';
-import { useRecoilState } from 'recoil';
-import { getUsers } from '../../../apis/userApi';
+import { useRecoilValue } from 'recoil';
 import { userState } from '../../../store/atoms';
 import '../../../styles/Questionnaire.css';
 
@@ -17,22 +16,9 @@ function Questionnaire() {
   const [playlistTitle, setPlaylistTitle] = useState('');
   const [preferLatest, setPreferLatest] = useState(true);
   const [isQuestionnaireDone, setIsQuestionnaireDone] = useState(false);
-  const [user, setUser] = useRecoilState(userState); // 사용자 상태 관리
+  const user = useRecoilValue(userState); // 사용자 상태 읽기
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await getUsers();
-        setUser(userData);
-      } catch (error) {
-        console.error('Error fetching user:', error);
-      }
-    };
-
-    fetchUser();
-  }, [setUser]);
 
   const questions = [
     {
@@ -142,6 +128,7 @@ function Questionnaire() {
       setIsSubmitting(false);
     }
   };
+
   return (
     <div className='questionnaire-container'>
       {!isQuestionnaireDone ? (
