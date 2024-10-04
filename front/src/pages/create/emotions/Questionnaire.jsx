@@ -113,9 +113,7 @@ function Questionnaire() {
 
     try {
       setIsSubmitting(true);
-      console.log('서버로 보내는 데이터:', mappedData);
       const response = await axiosInstance.post('/emotion-playlist', mappedData);
-      console.log('서버 응답:', response.data);
       navigate('/myplaylist', { state: { playlist: response.data } });
     } catch (error) {
       console.error('데이터 제출 중 오류:', error.response?.data || error.message);
@@ -166,7 +164,7 @@ function Questionnaire() {
             </label>
 
             <button className='modal-close' onClick={() => setIsModalOpen(false)}>
-              닫기
+              확인
             </button>
           </div>
         </div>

@@ -8,7 +8,7 @@ import '../../../styles/Survey.css';
 function Lyrics() {
   const [searchTerm, setSearchTerm] = useRecoilState(searchTermState);
   const [preferLatest, setPreferLatest] = useState(true); // 기본값 true
-  const [playlistTitle, setPlaylistTitle] = useState('제목 없음'); // 기본값 "제목 없음"
+  const [playlistTitle, setPlaylistTitle] = useState(''); // 기본값 "제목 없음"
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
   const user = useRecoilValue(userState); // 사용자 상태 읽기
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,9 +27,7 @@ function Lyrics() {
     };
 
     try {
-      console.log('서버가 받을 데이터:', postData);
       const response = await axiosInstance.post('/lyrics-playlist', postData);
-      console.log('Server response:', response.data);
       navigate('/myplaylist', { state: { playlist: response.data } });
     } catch (error) {
       console.error('Error submitting lyrics:', error);
