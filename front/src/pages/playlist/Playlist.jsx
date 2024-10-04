@@ -149,7 +149,12 @@ const Playlist = () => {
         <h2 className='playlist-name'>" {playlist.title} "</h2>
         <div className='album-cover-row'>
           {playlist.tracks.map((track, index) => (
-            <img key={index} src={track.albumArt} alt={track.title} className='album-cover' onError={(e) => (e.target.src = 'images/emptyalbumart.png')} />
+            <img
+              key={index}
+              src={track.albumArt || 'images/emptyalbumart.png'} // 앨범 아트가 없으면 대체 이미지 사용
+              alt={track.title}
+              className='album-cover'
+            />
           ))}
         </div>
         <ul className='song-list'>
