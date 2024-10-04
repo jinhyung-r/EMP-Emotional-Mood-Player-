@@ -126,9 +126,10 @@ const MyPage = () => {
                   transform: `translateX(${-currentIndex * (200 + 20)}px)`,
                 }}
               >
-                {/* <div className='album-cover'>
-                    <span className='album-order'>{index + 1}</span>
-                  </div> */}
+                <div className='album-cover'>
+                  {/* <span className='album-order'>{index + 1}</span> */}
+                  <img src='/images/player.svg' alt='Player Icon' className='player-icon' />
+                </div>
                 <p className='album-title'>{playlist.title}</p>
               </div>
             ))}
