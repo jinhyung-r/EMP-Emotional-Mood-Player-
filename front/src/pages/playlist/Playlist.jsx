@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/Playlist.css';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import axiosInstance from '../../apis/axiosInstance';
-import { getUsers } from '../../apis/userApi';
 import { userState } from '../../store/atoms';
 import SpotifyPlayback from './SpotifyPlayback';
 import { PlayIcon } from './icons/PlayIcon';
@@ -26,19 +25,16 @@ const Playlist = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const location = useLocation();
-  const [user, setUser] = useRecoilState(userState);
+  const user = useRecoilValue(userState);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await getUsers();
-        setUser(userData);
-
         if (location.state && location.state.playlist) {
           setPlaylist(location.state.playlist);
           setPlaylistName(location.state.playlist.title || '');
         } else {
-          const playlistResponse = await axiosInstance.get(`/myplaylist/${userData.id}`);
+          const playlistResponse = await axiosInstance.get(`/myplaylist/${user.id}`);
           const playlistData = playlistResponse.data.playlist;
           setPlaylist(playlistData || null);
           setPlaylistName(playlistData?.title || '');
@@ -50,8 +46,13 @@ const Playlist = () => {
       }
     };
 
-    fetchData();
-  }, [location.state]);
+    if (user) {
+      fetchData();
+    } else {
+      setLoading(false);
+      setError('User not logged in');
+    }
+  }, [location.state, user]);
 
   const handleSongPlay = (track) => {
     if (currentTrackUri === track.spotify_id) {
@@ -113,13 +114,13 @@ const Playlist = () => {
     }
   };
 
-  const handleLatestPlaylist = () => {
-    if (!isPlaylistSaved) {
-      alert('플레이리스트를 먼저 저장해주세요.');
-    } else {
-      navigate('/mypage');
-    }
-  };
+  // const handleLatestPlaylist = () => {
+  //   if (!isPlaylistSaved) {
+  //     alert('플레이리스트를 먼저 저장해주세요.');
+  //   } else {
+  //     navigate('/mypage');
+  //   }
+  // };
 
   const handleNameChange = (e) => {
     setPlaylistName(e.target.value);
