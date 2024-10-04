@@ -82,7 +82,7 @@ margin-top: 60px;
   margin-top: 50px;
 }
 
-.delete-button, .save-button {
+.delete-button, .save-button, .create-button {
  background-color: black;
   color: white;
   border: 1px solid white;
@@ -92,7 +92,7 @@ margin-top: 60px;
   margin: 30px;
 }
 
-.delete-button:hover, .save-button:hover {
+.delete-button:hover, .save-button:hover, .create-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
