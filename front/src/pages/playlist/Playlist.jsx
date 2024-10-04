@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/Playlist.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import axiosInstance from '../../apis/axiosInstance';
 import { getUsers } from '../../apis/userApi';
@@ -11,6 +11,7 @@ import { PauseIcon } from './icons/PauseIcon';
 import Message from '../../components/Message';
 
 const Playlist = () => {
+  const navigate = useNavigate();
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -75,6 +76,7 @@ const Playlist = () => {
       try {
         await axiosInstance.delete(`/myplaylist/${playlistId}`);
         alert('플레이리스트가 성공적으로 삭제되었습니다.');
+        navigate('/create');
       } catch (err) {
         console.error('플레이리스트 삭제 중 오류:', err);
         alert('플레이리스트 삭제 중 오류가 발생했습니다.');
@@ -85,18 +87,18 @@ const Playlist = () => {
   const handleSavePlaylistName = async () => {
     setIsSaving(true);
     let title = playlistName.trim() || '제목 없음';
-  
+
     if (title.startsWith('제목 없음')) {
       setUntitledCount((prevCount) => prevCount + 1);
       title = `제목 없음 ${untitledCount + 1}`;
     }
-  
+
     const newPlaylistData = {
       title,
       userId: user.id,
-      tracks: playlist.tracks
+      tracks: playlist.tracks,
     };
-  
+
     try {
       const response = await axiosInstance.post('/save-playlist', newPlaylistData);
       setIsPlaylistSaved(true);
@@ -111,16 +113,24 @@ const Playlist = () => {
     }
   };
 
+  const handleLatestPlaylist = () => {
+    if (!isPlaylistSaved) {
+      alert('플레이리스트를 먼저 저장해주세요.');
+    } else {
+      navigate('/mypage');
+    }
+  };
+
+  const handleNameChange = (e) => {
+    setPlaylistName(e.target.value);
+  };
+
   const handleShareClick = () => {
     if (!isPlaylistSaved) {
       alert('플레이리스트를 먼저 저장해주세요.');
     } else {
       setShowShareOptions(!showShareOptions);
     }
-  };
-
-  const handleNameChange = (e) => {
-    setPlaylistName(e.target.value);
   };
 
   const handlePopupClose = () => {
@@ -156,7 +166,10 @@ const Playlist = () => {
         </ul>
         <div className='playlist-buttons'>
           <button className='save-button' onClick={() => handleSavePlaylist()}>
-            플레이리스트 이름 바꾸기
+            플레이리스트 저장하기
+          </button>
+          <button className='save-button' onClick={() => handleLatestPlaylist()}>
+            최신 플레이리스트
           </button>
           <button className='delete-button' onClick={() => handleDeletePlaylist(playlist.playlistId)}>
             플레이리스트 삭제하기
@@ -183,8 +196,9 @@ const Playlist = () => {
         {showSavePopup && (
           <div className='save-playlist-popup'>
             <h2 className='save-playlist-title'>
-              플레이리스트의 <br />
-              이름을 수정하세요
+              저장할
+              <br /> 플레이리스트의 <br />
+              이름을 입력하세요
             </h2>
             <input type='text' value={playlistName} onChange={handleNameChange} placeholder='플레이리스트 이름' className='playlist-name-input' />
             <div className='save-playlist-buttons'>
