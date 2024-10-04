@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { searchTermState, userState } from '../../../store/atoms';
-import { getUsers } from '../../../apis/userApi';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { userState, searchTermState } from '../../../store/atoms';
 import axiosInstance from '../../../apis/axiosInstance';
-
 import '../../../styles/Survey.css';
 
 function Lyrics() {
@@ -12,22 +10,9 @@ function Lyrics() {
   const [preferLatest, setPreferLatest] = useState(true); // 기본값 true
   const [playlistTitle, setPlaylistTitle] = useState('제목 없음'); // 기본값 "제목 없음"
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
-  const [user, setUser] = useRecoilState(userState); // 사용자 상태 관리
+  const user = useRecoilValue(userState); // 사용자 상태 읽기
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await getUsers();
-        setUser(userData);
-      } catch (error) {
-        console.error('Error fetching user:', error);
-      }
-    };
-
-    fetchUser();
-  }, [setUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../../../apis/axiosInstance';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../store/atoms';
+import axiosInstance from '../../../apis/axiosInstance';
 import '../../../styles/Questionnaire.css';
 
 function Questionnaire() {
