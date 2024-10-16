@@ -1,0 +1,9 @@
+# Unix-style line endings for all files
+* text=auto eol=lf
+
+# Ensure these file types use LF line endings
+*.js text eol=lf
+*.json text eol=lf
+*.prisma text eol=lf
+*.sql text eol=lf
+*.sh text eol=lf
