@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
@@ -23,23 +23,20 @@
     "noFallthroughCasesInSwitch": true,
     "allowJs": false,
     "esModuleInterop": true,
-    "baseUrl": "src",
+    "baseUrl": ".",     
     "paths": {
-      "@/*": ["*"],
-      "@auth/*": ["auth/*"],
-      "@users/*": ["users/*"],
-      "@playlists/*": ["playlists/*"],
-      "@shared/*": ["shared/*"],
-      "@config/*": ["config/*"],
-      "@middlewares/*": ["middlewares/*"],
-      "@utils/*": ["utils/*"]
+      "@/*": ["src/*"],
+      "@auth/*": ["src/auth/*"],
+      "@users/*": ["src/users/*"],
+      "@playlists/*": ["src/playlists/*"],
+      "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/config/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@utils/*": ["src/utils/*"]
     },
     "typeRoots": ["./src/@types", "./node_modules/@types"],
     "types": ["node"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts"
-  ],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
