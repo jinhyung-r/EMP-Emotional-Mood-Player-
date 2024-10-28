@@ -9,5 +9,6 @@
   },
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "eslint.validate": ["typescript"]
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "eslint.validate": ["typescript", "javascript"]
 }
