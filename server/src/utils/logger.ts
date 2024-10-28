@@ -2,8 +2,8 @@ import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { Config } from '@/shared/types/common';
 
-const getLogLevel = (config: Config) => {
-  switch (config.NODE_ENV) {
+const getLogLevel = (nodeEnv: string): string => {
+  switch (nodeEnv) {
     case 'production':
       return 'info';
     default:
@@ -45,7 +45,7 @@ export const createLogger = (config: Config) => {
   });
 
   const logger = winston.createLogger({
-    level: getLogLevel(config),
+    level: getLogLevel(config.NODE_ENV),
     format: fileFormat,
     defaultMeta: { service: 'EMP logs' },
     transports: [fileRotateTransport, errorFileRotateTransport],
