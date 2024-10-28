@@ -28,4 +28,21 @@ module.exports = {
       'endOfLine': 'auto'
     }]
   },
+  // .d.ts에 대한 설정
+  overrides: [
+    {
+      files: ['*.d.ts'],
+      rules: {
+        '@typescript-eslint/no-unused-vars': 'off'
+      }
+    }
+  ],
+  settings: {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json',
+      }
+    }
+  }
 };
