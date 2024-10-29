@@ -8,6 +8,7 @@
     "rootDir": "./src",
     "strict": true,
     "sourceMap": true,
+    "skipDefaultLibCheck": true,
     "declaration": true,
     "declarationMap": true,
     "skipLibCheck": true,
@@ -32,7 +33,7 @@
       "@shared/*": ["src/shared/*"],
       "@config/*": ["src/config/*"],
       "@middlewares/*": ["src/middlewares/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/shared/utils/*"]
     },
     "typeRoots": ["./src/@types", "./node_modules/@types"],
     "types": ["node"]

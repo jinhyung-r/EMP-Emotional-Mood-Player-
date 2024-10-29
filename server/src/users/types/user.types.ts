@@ -14,3 +14,8 @@ export interface CreateUserDTO {
   provider: string;
   providerId: string;
 }
+
+export interface UpdateProfileDTO {
+  name?: string;
+  email?: string;
+}

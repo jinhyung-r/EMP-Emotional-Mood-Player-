@@ -1,6 +1,6 @@
-import { ErrorOptions } from '@/shared/types/common';
+import { ErrorOptions, CommonError } from '@shared/types/error.types';
 
-export const COMMON_ERROR = {
+export const COMMON_ERROR: Record<string, CommonError> = {
   AUTHENTICATION_ERROR: { name: 'Authentication Error', statusCode: 401 },
   AUTHORIZATION_ERROR: { name: 'Authorization Error', statusCode: 403 },
   EXTERNAL_API_ERROR: { name: 'External API Error', statusCode: 500 },
@@ -20,12 +20,14 @@ export const COMMON_ERROR = {
 
 export class AppError extends Error {
   public readonly statusCode: number;
+  public readonly isOperational: boolean;
   public readonly cause?: Error;
 
-  constructor(name: string, description: string, options: ErrorOptions = {}) {
-    super(description);
+  constructor(name: string, message: string, options: ErrorOptions = {}) {
+    super(message);
     this.name = name;
     this.statusCode = options.statusCode ?? 500;
+    this.isOperational = options.isOperational ?? true;
 
     if (options.cause) {
       this.cause = options.cause;

@@ -1,16 +1,18 @@
 import { PrismaClient } from '@prisma/client';
-import { createLogger } from '@/utils/logger';
+import { createLogger } from '@utils/logger';
 import config from '@/config';
-import { PrismaLogEvent } from '../types/prisma';
+import { AppError, COMMON_ERROR } from '@utils/errors';
 
 const logger = createLogger(config);
 
-class Database {
-  private static instance: PrismaClient;
+export class PrismaService {
+  private static instance: PrismaClient | null = null;
+
+  private constructor() {}
 
   public static getInstance(): PrismaClient {
-    if (!Database.instance) {
-      Database.instance = new PrismaClient({
+    if (!PrismaService.instance) {
+      PrismaService.instance = new PrismaClient({
         log: [
           { emit: 'event', level: 'query' },
           { emit: 'event', level: 'error' },
@@ -19,32 +21,39 @@ class Database {
         ],
       });
 
-      // 타입이 명시된 이벤트 핸들러
-      Database.instance.$on('query', (event: PrismaLogEvent) => {
-        logger.debug('Query: ' + event.query);
+      // Prisma 이벤트 로깅 설정
+      PrismaService.instance.$on('query', (e) => {
+        logger.debug('Prisma Query:', e);
       });
 
-      Database.instance.$on('error', (event: { message: string }) => {
-        logger.error('Prisma Error: ' + event.message);
+      PrismaService.instance.$on('error', (e) => {
+        logger.error('Prisma Error:', e);
       });
 
-      Database.instance.$on('info', (event: { message: string }) => {
-        logger.info('Prisma Info: ' + event.message);
-      });
-
-      Database.instance.$on('warn', (event: { message: string }) => {
-        logger.warn('Prisma Warning: ' + event.message);
-      });
+      // 연결 테스트
+      PrismaService.instance
+        .$connect()
+        .then(() => {
+          logger.info('Database connected successfully');
+        })
+        .catch((error: Error | undefined) => {
+          logger.error('Database connection failed:', error);
+          throw new AppError(COMMON_ERROR.DATABASE_ERROR.name, 'Database connection failed', {
+            statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
+            cause: error instanceof Error ? error : undefined,
+          });
+        });
     }
 
-    return Database.instance;
+    return PrismaService.instance;
   }
 
   public static async disconnect(): Promise<void> {
-    if (Database.instance) {
-      await Database.instance.$disconnect();
+    if (PrismaService.instance) {
+      await PrismaService.instance.$disconnect();
+      PrismaService.instance = null;
     }
   }
 }
 
-export const prisma = Database.getInstance();
+export const prisma = PrismaService.getInstance();

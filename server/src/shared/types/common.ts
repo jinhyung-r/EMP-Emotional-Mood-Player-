@@ -36,6 +36,7 @@ export interface ServerConfig {
   FRONTEND_URL: string;
   SESSION_SECRET: string;
   COOKIE_SECRET: string;
+  AI_MODEL_URL: string;
 }
 
 export type Config = AuthConfig & DatabaseConfig & ServerConfig;

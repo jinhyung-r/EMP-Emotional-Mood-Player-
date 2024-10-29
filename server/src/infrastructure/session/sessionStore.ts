@@ -1,15 +1,13 @@
-import * as session from 'express-session'; // `* as` 구문으로 수정
+import * as session from 'express-session';
 import mysqlSession from 'express-mysql-session';
 import { Config } from '@/shared/types/common';
-import { AppError, COMMON_ERROR } from '@/utils/errors';
-import { createLogger } from '@/utils/logger';
-import { SessionConfig, SessionStoreOptions } from '../types/session';
 import config from '@/config';
+import { AppError, COMMON_ERROR } from '@utils/errors';
+import { createLogger } from '@utils/logger';
+import { SessionConfig, SessionStoreOptions } from '../types/session';
 
-const logger = createLogger(config);
-
-// MySQLStore 타입 정의
 const MySQLStore = mysqlSession(session);
+const logger = createLogger(config); // 혹은 appConfig로 대체 가능
 
 export function createSessionStore(appConfig: Config): SessionConfig {
   const storeOptions: SessionStoreOptions = {
@@ -20,13 +18,11 @@ export function createSessionStore(appConfig: Config): SessionConfig {
     database: appConfig.MYSQL_NAME,
   };
 
-  // MySQLStore 인스턴스 생성
-  const store = new MySQLStore(storeOptions) as session.Store;
+  const store = new MySQLStore(storeOptions);
 
-  // 에러 이벤트 리스너 추가
   store.on('error', (err: Error) => {
-    logger.error('Session store 에러:', err);
-    throw new AppError(COMMON_ERROR.DATABASE_ERROR.name, 'Session store 에러', {
+    logger.error('Session store error:', err);
+    throw new AppError(COMMON_ERROR.DATABASE_ERROR.name, 'Session store error', {
       cause: err,
       statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
     });

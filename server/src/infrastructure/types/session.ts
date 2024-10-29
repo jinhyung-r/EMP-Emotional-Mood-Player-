@@ -1,4 +1,5 @@
 import { Store } from 'express-session';
+import { AuthUser } from '@/auth/types/auth.types';
 
 export interface SessionConfig {
   key: string;
@@ -29,4 +30,10 @@ export interface SessionStoreOptions {
       data: string;
     };
   };
+}
+
+declare module 'express-session' {
+  interface SessionData {
+    user?: AuthUser;
+  }
 }

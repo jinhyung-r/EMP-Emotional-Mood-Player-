@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import { Config } from '@/shared/types/common';
-import { AppError, COMMON_ERROR } from '@/utils/errors';
+import { AppError, COMMON_ERROR } from '@/shared/utils/errors';
 
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
 dotenv.config({ path: path.resolve(process.cwd(), envFile) });
@@ -25,6 +25,7 @@ function createConfig(): Config {
     FRONTEND_URL: process.env.FRONTEND_URL ?? 'http://localhost:3000',
     SESSION_SECRET: validateEnvVar('SESSION_SECRET', process.env.SESSION_SECRET),
     COOKIE_SECRET: validateEnvVar('COOKIE_SECRET', process.env.COOKIE_SECRET),
+    AI_MODEL_URL: validateEnvVar('AI_MODEL_URL', process.env.AI_MODEL_URL),
 
     // Database
     MYSQL_USER: validateEnvVar('MYSQL_USER', process.env.MYSQL_USER),
