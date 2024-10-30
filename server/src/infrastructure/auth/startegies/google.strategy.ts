@@ -1,27 +1,43 @@
-import { Profile, Strategy as GoogleStrategy, VerifyCallback } from 'passport-google-oauth20';
+import {
+  Strategy as GoogleStrategy,
+  Profile,
+  VerifyCallback,
+  StrategyOptionsWithRequest,
+} from 'passport-google-oauth20';
 import { createLogger } from '@utils/logger';
 import { authService } from '@auth/services/auth.service';
-import config from '@/config';
 import { OAuthProfile, AuthUser } from '@auth/types/auth.types';
+import config from '@/config';
+import { Provider } from '@prisma/client';
+import { Request } from 'express';
 
 const logger = createLogger(config);
 
-const GOOGLE_CONFIG = {
+// StrategyOptionsWithRequest 사용 + passreqTocallbakc 강제 true 설정
+// passport의 type 안쓰면 에러뜸
+const strategyConfig: StrategyOptionsWithRequest = {
   clientID: config.GOOGLE_CLIENT_ID,
   clientSecret: config.GOOGLE_CLIENT_SECRET,
   callbackURL: config.GOOGLE_REDIRECT_URI,
   scope: ['profile', 'email'] as const,
-} as const;
+  passReqToCallback: true, // passReqToCallback은 반드시 true로 설정
+};
 
 export default new GoogleStrategy(
-  GOOGLE_CONFIG,
-  async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
+  strategyConfig,
+  async (
+    req: Request,
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+    done: VerifyCallback,
+  ) => {
     try {
       const oauthProfile: OAuthProfile = {
         id: profile.id,
         displayName: profile.displayName,
         emails: profile.emails ?? [],
-        provider: 'google',
+        provider: Provider.GOOGLE,
         photos: profile.photos,
       };
 
@@ -38,9 +54,9 @@ export default new GoogleStrategy(
       logger.info(`Google OAuth 인증 성공: ${user.email}`);
       done(null, authUser);
     } catch (error) {
-      const error_ = error instanceof Error ? error : new Error('Unknown error');
-      logger.error(`Google OAuth 에러: ${error_.message}`, { error: error_ });
-      done(error_);
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      logger.error(`Google OAuth 에러: ${err.message}`, { error: err });
+      done(err);
     }
   },
 );

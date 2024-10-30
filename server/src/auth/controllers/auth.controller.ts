@@ -5,6 +5,7 @@ import { authService } from '@auth/services/auth.service';
 import { playlistService } from '@playlists/services/playlist.service';
 import { createLogger } from '@utils/logger';
 import config from '@/config';
+import { Provider } from '@prisma/client';
 
 export class AuthController {
   private static instance: AuthController;
@@ -106,7 +107,7 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      if (!req.isAuthenticated() || req.user?.provider !== 'spotify') {
+      if (!req.isAuthenticated() || req.user?.provider !== Provider.SPOTIFY) {
         throw new AppError(
           COMMON_ERROR.AUTHENTICATION_ERROR.name,
           '인증되지 않았거나 Spotify 사용자가 아닙니다.',
@@ -130,7 +131,7 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      if (!req.isAuthenticated() || req.user?.provider !== 'spotify') {
+      if (!req.isAuthenticated() || req.user?.provider !== Provider.SPOTIFY) {
         throw new AppError(
           COMMON_ERROR.AUTHENTICATION_ERROR.name,
           '인증되지 않았거나 Spotify 사용자가 아닙니다.',
@@ -146,7 +147,7 @@ export class AuthController {
 
       const tokenInfo = await authService.refreshToken({
         refreshToken: req.user.refreshToken,
-        provider: 'spotify',
+        provider: Provider.SPOTIFY,
       });
 
       // 세션의 유저 정보 업데이트
