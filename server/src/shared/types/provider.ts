@@ -1,4 +1,7 @@
-export type Provider = 'google' | 'spotify';
+export enum Provider {
+  GOOGLE = 'GOOGLE',
+  SPOTIFY = 'SPOTIFY',
+}
 
 export interface ProviderConfig {
   tokenUrl: string;

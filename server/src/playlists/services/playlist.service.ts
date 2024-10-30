@@ -1,13 +1,12 @@
-import { prisma } from '@/infrastructure/database/prisma';
-import { AppError, COMMON_ERROR } from '@utils/errors';
-import { createLogger } from '@utils/logger';
-import { Playlist } from '@prisma/client';
+import { prisma } from '@/infrastructure/database/prisma.service';
+import { AppError, COMMON_ERROR } from '@/shared/utils/errors';
+import { createLogger } from '@/shared/utils/logger';
+import config from '@/config';
 import {
-  PlaylistResponse,
-  SavedPlaylist,
+  PlaylistWithTracks,
+  SavePlaylistRequest,
   UpdatePlaylistTitleRequest,
 } from '../types/playlist.types';
-import config from '@/config';
 
 export class PlaylistService {
   private static instance: PlaylistService;
@@ -22,14 +21,20 @@ export class PlaylistService {
     return PlaylistService.instance;
   }
 
-  public async createPlaylist(data: PlaylistResponse): Promise<SavedPlaylist> {
+  public async savePlaylist(data: SavePlaylistRequest): Promise<PlaylistWithTracks> {
     try {
       const playlist = await prisma.playlist.create({
         data: {
           title: data.title,
           userId: data.userId,
           tracks: {
-            create: data.tracks,
+            create: data.tracks.map((track) => ({
+              title: track.title,
+              artist: track.artist,
+              albumArt: track.albumArt,
+              genre: track.genre,
+              spotifyId: track.spotifyId,
+            })),
           },
         },
         include: {
@@ -37,22 +42,39 @@ export class PlaylistService {
         },
       });
 
-      this.logger.info(`플레이리스트 생성 완료: ${playlist.playlistId}`);
+      this.logger.info(`새로운 플레이리스트 저장 완료: ${playlist.playlistId}`);
       return playlist;
     } catch (error) {
-      this.logger.error('플레이리스트 생성 중 오류:', error);
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      this.logger.error('플레이리스트 저장 중 오류:', err);
       throw new AppError(
         COMMON_ERROR.DATABASE_ERROR.name,
-        '플레이리스트 생성 중 오류가 발생했습니다',
-        {
-          statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
-          cause: error instanceof Error ? error : undefined,
-        },
+        '플레이리스트 저장 중 오류가 발생했습니다',
+        { statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode, cause: err },
       );
     }
   }
 
-  public async findById(playlistId: number): Promise<Playlist> {
+  public async findByUserId(userId: number): Promise<PlaylistWithTracks[]> {
+    try {
+      const playlists = await prisma.playlist.findMany({
+        where: { userId },
+        include: { tracks: true },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return playlists;
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      this.logger.error('사용자의 플레이리스트 조회 중 오류:', err);
+      throw new AppError(COMMON_ERROR.DATABASE_ERROR.name, 'DB 조회 중 오류가 발생했습니다', {
+        statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
+        cause: err,
+      });
+    }
+  }
+
+  public async findById(playlistId: number): Promise<PlaylistWithTracks> {
     try {
       const playlist = await prisma.playlist.findUnique({
         where: { playlistId },
@@ -71,36 +93,19 @@ export class PlaylistService {
     } catch (error) {
       if (error instanceof AppError) throw error;
 
-      this.logger.error('플레이리스트 조회 중 오류:', error);
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      this.logger.error('플레이리스트 조회 중 오류:', err);
       throw new AppError(COMMON_ERROR.DATABASE_ERROR.name, 'DB 조회 중 오류가 발생했습니다', {
         statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
-        cause: error instanceof Error ? error : undefined,
+        cause: err,
       });
     }
   }
 
-  public async findByUserId(userId: number): Promise<Playlist[]> {
-    try {
-      const playlists = await prisma.playlist.findMany({
-        where: { userId },
-        include: { tracks: true },
-        orderBy: { createdAt: 'desc' },
-      });
-
-      return playlists;
-    } catch (error) {
-      throw new AppError(COMMON_ERROR.DATABASE_ERROR.name, 'Failed to fetch user playlists', {
-        statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
-  }
-
-  // title update(개별 playlist는 아직임)
   public async updateTitle(
     playlistId: number,
     data: UpdatePlaylistTitleRequest,
-  ): Promise<SavedPlaylist> {
+  ): Promise<PlaylistWithTracks> {
     try {
       const playlist = await prisma.playlist.update({
         where: { playlistId },
@@ -108,25 +113,15 @@ export class PlaylistService {
         include: { tracks: true },
       });
 
-      this.logger.info(`플레이리스트 제목 업데이트 완료: ${playlistId} -> "${data.newTitle}"`);
+      this.logger.info(`플레이리스트 제목 업데이트 완료: ${playlistId}`);
       return playlist;
     } catch (error) {
-      this.logger.error(
-        `플레이리스트 제목 수정 중 오류: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        {
-          playlistId,
-          newTitle: data.newTitle,
-          error,
-        },
-      );
-
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      this.logger.error('플레이리스트 제목 수정 중 오류:', err);
       throw new AppError(
         COMMON_ERROR.DATABASE_ERROR.name,
         'DB에서 플레이리스트 제목 수정 중 문제가 발생하였습니다',
-        {
-          statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
-          cause: error instanceof Error ? error : undefined,
-        },
+        { statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode, cause: err },
       );
     }
   }
@@ -139,14 +134,12 @@ export class PlaylistService {
 
       this.logger.info(`플레이리스트 삭제 완료: ${playlistId}`);
     } catch (error) {
-      this.logger.error('플레이리스트 삭제 중 오류:', error);
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      this.logger.error('플레이리스트 삭제 중 오류:', err);
       throw new AppError(
         COMMON_ERROR.DATABASE_ERROR.name,
         '플레이리스트 삭제 중 오류가 발생했습니다',
-        {
-          statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
-          cause: error instanceof Error ? error : undefined,
-        },
+        { statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode, cause: err },
       );
     }
   }

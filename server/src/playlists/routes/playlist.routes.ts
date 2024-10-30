@@ -1,29 +1,31 @@
 import express from 'express';
 import { playlistController } from '../controllers/playlist.controller';
 import { authMiddleware } from '@/middlewares/auth.middleware';
-import {
-  validateEmotionPlaylist,
-  validateLyricsPlaylist,
-  validateUpdatePlaylistTitle,
-} from '@/middlewares/validators/playlist.validator';
+import { validatePlaylist } from '@/middlewares/validators/playlist.validator';
 import { RouteConfig } from '@/shared/types/router.types';
 
 const router = express.Router();
 
-// 감정 기반 플레이리스트 생성
 router.post(
-  '/emotion',
+  '/recommend/emotion',
   authMiddleware.isAuthenticated,
-  validateEmotionPlaylist,
+  validatePlaylist.validateEmotionPlaylist,
   playlistController.createEmotionPlaylist,
 );
 
-// 가사 기반 플레이리스트 생성
 router.post(
-  '/lyrics',
+  '/recommend/lyrics',
   authMiddleware.isAuthenticated,
-  validateLyricsPlaylist,
+  validatePlaylist.validateLyricsPlaylist,
   playlistController.createLyricsPlaylist,
+);
+
+// 플레이리스트 저장
+router.post(
+  '/save',
+  authMiddleware.isAuthenticated,
+  validatePlaylist.validateSavePlaylist,
+  playlistController.savePlaylist,
 );
 
 // 플레이리스트 조회
@@ -34,12 +36,12 @@ router.get(
   playlistController.getPlaylistById,
 );
 
-// 플레이리스트 제목 업데이트
+// 플레이리스트 제목 수정
 router.put(
   '/:playlistId/title',
   authMiddleware.isAuthenticated,
   authMiddleware.checkPermission('playlist'),
-  validateUpdatePlaylistTitle,
+  validatePlaylist.validateUpdateTitle,
   playlistController.updatePlaylistTitle,
 );
 
@@ -51,8 +53,7 @@ router.delete(
   playlistController.deletePlaylist,
 );
 
-// `RouteConfig` 타입을 활용해 라우터와 경로를 명시적으로 설정
-export const playlistRoutesConfig: RouteConfig = {
-  path: '/playlist',
+export const playlistRoutes: RouteConfig = {
+  path: '/playlists',
   router,
 };

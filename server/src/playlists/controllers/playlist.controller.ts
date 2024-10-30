@@ -1,14 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import axios from 'axios';
 import { AuthenticatedRequest } from '@/auth/types/auth.types';
-import { AppError, COMMON_ERROR } from '@utils/errors';
+import { AppError, COMMON_ERROR } from '@/shared/utils/errors';
 import { playlistService } from '../services/playlist.service';
-import { createLogger } from '@utils/logger';
+import { createLogger } from '@/shared/utils/logger';
 import config from '@/config';
 import {
   EmotionPlaylistRequest,
   LyricsPlaylistRequest,
-  PlaylistResponse,
+  AIModelResponse,
+  SavePlaylistRequest,
   UpdatePlaylistTitleRequest,
   PlaylistActionResponse,
 } from '../types/playlist.types';
@@ -38,30 +39,17 @@ export class PlaylistController {
         prefer_latest: req.body.prefer_latest ?? true,
       };
 
-      this.logger.debug('AI 모델 서버로 보내는 데이터:', playlistData);
-
-      const modelResponse = await axios.post<PlaylistResponse>(
+      const modelResponse = await axios.post<AIModelResponse>(
         `${config.AI_MODEL_URL}/emotion-playlist`,
         playlistData,
       );
 
-      this.logger.debug('AI 모델 서버 응답:', modelResponse.data);
-
-      // AI 모델의 응답을 기반으로 플레이리스트 생성
-      const savedPlaylist = await playlistService.createPlaylist({
-        title: modelResponse.data.title || `${playlistData.genres} Playlist`,
-        userId: req.user!.id,
-        tracks: modelResponse.data.tracks,
-      });
-
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         message: '감정 기반 플레이리스트가 생성되었습니다.',
-        playlist: savedPlaylist,
+        recommendedPlaylist: modelResponse.data,
       });
     } catch (error) {
-      this.logger.error('감정 기반 플레이리스트 생성 중 오류:', error);
-
       if (axios.isAxiosError(error) && error.response?.status === 422) {
         next(
           new AppError(
@@ -97,25 +85,17 @@ export class PlaylistController {
         prefer_latest: req.body.prefer_latest ?? true,
       };
 
-      const modelResponse = await axios.post<PlaylistResponse>(
+      const modelResponse = await axios.post<AIModelResponse>(
         `${config.AI_MODEL_URL}/lyrics-playlist`,
         playlistData,
       );
 
-      const savedPlaylist = await playlistService.createPlaylist({
-        title: modelResponse.data.title || `Lyrics: ${playlistData.searchTerm}`,
-        userId: req.user!.id,
-        tracks: modelResponse.data.tracks,
-      });
-
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         message: '가사 기반 플레이리스트가 생성되었습니다.',
-        playlist: savedPlaylist,
+        recommendedPlaylist: modelResponse.data,
       });
     } catch (error) {
-      this.logger.error('가사 기반 플레이리스트 생성 중 오류:', error);
-
       if (axios.isAxiosError(error) && error.response?.status === 422) {
         next(
           new AppError(COMMON_ERROR.VALIDATION_ERROR.name, '가사 검색어가 올바르지 않습니다', {
@@ -138,77 +118,49 @@ export class PlaylistController {
     }
   };
 
-  public getPlaylistById = async (
+  public savePlaylist = async (
     req: AuthenticatedRequest,
-    res: Response,
+    res: Response<PlaylistActionResponse>,
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const playlistId = Number(req.params.playlistId);
-      if (isNaN(playlistId)) {
-        throw new AppError(
-          COMMON_ERROR.VALIDATION_ERROR.name,
-          '유효하지 않은 플레이리스트 ID입니다.',
-          { statusCode: COMMON_ERROR.VALIDATION_ERROR.statusCode },
-        );
-      }
+      const saveData: SavePlaylistRequest = {
+        title: req.body.title,
+        userId: req.user!.id,
+        tracks: req.body.tracks,
+      };
 
-      const playlist = await playlistService.findById(playlistId);
+      const savedPlaylist = await playlistService.savePlaylist(saveData);
 
-      // 권한 확인
-      if (playlist.userId !== req.user!.id) {
-        throw new AppError(
-          COMMON_ERROR.AUTHORIZATION_ERROR.name,
-          '해당 플레이리스트에 대한 접근 권한이 없습니다.',
-          { statusCode: COMMON_ERROR.AUTHORIZATION_ERROR.statusCode },
-        );
-      }
-
-      res.json(playlist);
+      res.status(201).json({
+        success: true,
+        message: '플레이리스트가 저장되었습니다.',
+        playlist: savedPlaylist,
+      });
     } catch (error) {
       next(error);
     }
   };
 
-  /* 플레이리스트 각각은 아직 업데이트 기능 도입 예정 -> 현재는 playlistTitle만 업데이트
-  public updatePlaylist = async (
+  public getPlaylistById = async (
     req: AuthenticatedRequest,
-    res: Response,
-    next: NextFunction
+    res: Response<PlaylistActionResponse>,
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const playlistId = Number(req.params.playlistId);
-      if (isNaN(playlistId)) {
-        throw new AppError(
-          COMMON_ERROR.VALIDATION_ERROR.name,
-          '유효하지 않은 플레이리스트 ID입니다.',
-          { statusCode: COMMON_ERROR.VALIDATION_ERROR.statusCode }
-        );
-      }
-
       const playlist = await playlistService.findById(playlistId);
-      
-      // 권한 확인
-      if (playlist.userId !== req.user!.id) {
-        throw new AppError(
-          COMMON_ERROR.AUTHORIZATION_ERROR.name,
-          '해당 플레이리스트에 대한 접근 권한이 없습니다.',
-          { statusCode: COMMON_ERROR.AUTHORIZATION_ERROR.statusCode }
-        );
-      }
 
-      const updateData: UpdatePlaylistDTO = req.body;
-      const updatedPlaylist = await playlistService.update(playlistId, updateData);
-
-      res.json(updatedPlaylist);
+      res.json({
+        success: true,
+        message: '플레이리스트를 조회했습니다.',
+        playlist,
+      });
     } catch (error) {
       next(error);
     }
-  };    
-  
-  */
+  };
 
-  // title 업데이트
   public updatePlaylistTitle = async (
     req: AuthenticatedRequest,
     res: Response<PlaylistActionResponse>,
@@ -216,23 +168,11 @@ export class PlaylistController {
   ): Promise<void> => {
     try {
       const playlistId = Number(req.params.playlistId);
-      if (isNaN(playlistId)) {
-        throw new AppError(
-          COMMON_ERROR.VALIDATION_ERROR.name,
-          '유효하지 않은 플레이리스트 ID입니다.',
-          { statusCode: COMMON_ERROR.VALIDATION_ERROR.statusCode },
-        );
-      }
+      const updateData: UpdatePlaylistTitleRequest = {
+        newTitle: req.body.newTitle,
+      };
 
-      const { newTitle } = req.body as UpdatePlaylistTitleRequest;
-
-      if (!newTitle || typeof newTitle !== 'string' || newTitle.trim().length === 0) {
-        throw new AppError(COMMON_ERROR.VALIDATION_ERROR.name, '유효한 제목을 입력해주세요.', {
-          statusCode: COMMON_ERROR.VALIDATION_ERROR.statusCode,
-        });
-      }
-
-      const updatedPlaylist = await playlistService.updateTitle(playlistId, newTitle.trim());
+      const updatedPlaylist = await playlistService.updateTitle(playlistId, updateData);
 
       res.json({
         success: true,
@@ -240,40 +180,23 @@ export class PlaylistController {
         playlist: updatedPlaylist,
       });
     } catch (error) {
-      this.logger.error('플레이리스트 제목 수정 중 오류:', error);
       next(error);
     }
   };
 
   public deletePlaylist = async (
     req: AuthenticatedRequest,
-    res: Response,
+    res: Response<PlaylistActionResponse>,
     next: NextFunction,
   ): Promise<void> => {
     try {
       const playlistId = Number(req.params.playlistId);
-      if (isNaN(playlistId)) {
-        throw new AppError(
-          COMMON_ERROR.VALIDATION_ERROR.name,
-          '유효하지 않은 플레이리스트 ID입니다.',
-          { statusCode: COMMON_ERROR.VALIDATION_ERROR.statusCode },
-        );
-      }
-
-      const playlist = await playlistService.findById(playlistId);
-
-      // 권한 확인
-      if (playlist.userId !== req.user!.id) {
-        throw new AppError(
-          COMMON_ERROR.AUTHORIZATION_ERROR.name,
-          '해당 플레이리스트에 대한 접근 권한이 없습니다.',
-          { statusCode: COMMON_ERROR.AUTHORIZATION_ERROR.statusCode },
-        );
-      }
-
       await playlistService.delete(playlistId);
 
-      res.json({ success: true, message: '플레이리스트가 삭제되었습니다.' });
+      res.json({
+        success: true,
+        message: '플레이리스트가 삭제되었습니다.',
+      });
     } catch (error) {
       next(error);
     }
