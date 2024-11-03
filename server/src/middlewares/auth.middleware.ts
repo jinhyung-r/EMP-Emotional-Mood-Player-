@@ -3,6 +3,7 @@ import { AppError, COMMON_ERROR } from '@utils/errors';
 import { createLogger } from '@utils/logger';
 import { AuthenticatedRequest } from '@/auth/types/auth.types';
 import { authService } from '@/auth/services/auth.service';
+import { prisma } from '@/infrastructure/database';
 import config from '@/config';
 
 const logger = createLogger(config);
@@ -19,7 +20,7 @@ export class AuthMiddleware {
     return AuthMiddleware.instance;
   }
 
-  public isAuthenticated = (req: Request, res: Response, next: NextFunction): void => {
+  public isAuthenticated = (req: Request, _res: Response, next: NextFunction): void => {
     if (!req.isAuthenticated()) {
       throw new AppError(COMMON_ERROR.AUTHENTICATION_ERROR.name, '인증이 필요한 요청입니다.', {
         statusCode: COMMON_ERROR.AUTHENTICATION_ERROR.statusCode,
@@ -30,7 +31,7 @@ export class AuthMiddleware {
 
   public checkAndRefreshToken = async (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction,
   ): Promise<void> => {
     const authenticatedReq = req as AuthenticatedRequest;
@@ -82,42 +83,11 @@ export class AuthMiddleware {
             resolve();
           });
         });
-
-        logger.info(`토큰 갱신 완료: ${user.id}`);
       }
 
       next();
     } catch (error) {
-      logger.error(
-        `토큰 갱신 중 에러: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        {
-          error,
-          userId: authenticatedReq.user?.id,
-        },
-      );
-
-      if (error instanceof AppError && error.name === COMMON_ERROR.AUTHENTICATION_ERROR.name) {
-        authenticatedReq.logout((err) => {
-          if (err) {
-            logger.error(`로그아웃 에러: ${err.message}`, { stack: err.stack, cause: err.cause });
-          }
-          next(
-            new AppError(
-              COMMON_ERROR.AUTHENTICATION_ERROR.name,
-              '인증에 실패했습니다. 다시 로그인해주세요.',
-              { cause: error, statusCode: COMMON_ERROR.AUTHENTICATION_ERROR.statusCode },
-            ),
-          );
-        });
-        return;
-      }
-
-      next(
-        new AppError(COMMON_ERROR.BUSINESS_LOGIC_ERROR.name, '토큰 갱신 중 오류가 발생했습니다.', {
-          cause: error instanceof Error ? error : undefined,
-          statusCode: COMMON_ERROR.BUSINESS_LOGIC_ERROR.statusCode,
-        }),
-      );
+      next(error);
     }
   };
 
@@ -136,7 +106,6 @@ export class AuthMiddleware {
       }
 
       try {
-        // 리소스 타입에 따른 소유권 확인 로직
         const hasPermission = await this.verifyResourceOwnership(
           resource,
           resourceId,

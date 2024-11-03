@@ -19,7 +19,7 @@ const SPOTIFY_CONFIG: StrategyOptionsWithRequest = {
 export default new SpotifyStrategy(
   SPOTIFY_CONFIG,
   async (
-    req: Request,
+    _req: Request,
     accessToken: string,
     refreshToken: string,
     expiresIn: number,

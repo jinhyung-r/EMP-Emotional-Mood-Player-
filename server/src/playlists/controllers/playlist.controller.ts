@@ -3,7 +3,6 @@ import axios from 'axios';
 import { AuthenticatedRequest } from '@/auth/types/auth.types';
 import { AppError, COMMON_ERROR } from '@/shared/utils/errors';
 import { playlistService } from '../services/playlist.service';
-import { createLogger } from '@/shared/utils/logger';
 import config from '@/config';
 import {
   EmotionPlaylistRequest,
@@ -16,7 +15,6 @@ import {
 
 export class PlaylistController {
   private static instance: PlaylistController;
-  private readonly logger = createLogger(config);
 
   private constructor() {}
 

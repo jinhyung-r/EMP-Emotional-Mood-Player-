@@ -2,7 +2,7 @@ import { prisma } from '@/infrastructure/database/prisma';
 import { AppError, COMMON_ERROR } from '@utils/errors';
 import { createLogger } from '@utils/logger';
 import { User } from '@prisma/client';
-import { CreateUserDTO, UpdateProfileDTO } from '@/users/types/user.types';
+import { UpdateProfileDTO } from '@/users/types/user.types';
 import config from '@/config';
 import { OAuthProfile } from '@/auth/types/auth.types';
 

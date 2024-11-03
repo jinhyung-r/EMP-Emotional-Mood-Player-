@@ -26,7 +26,7 @@ const strategyConfig: StrategyOptionsWithRequest = {
 export default new GoogleStrategy(
   strategyConfig,
   async (
-    req: Request,
+    _req: Request,
     accessToken: string,
     refreshToken: string,
     profile: Profile,

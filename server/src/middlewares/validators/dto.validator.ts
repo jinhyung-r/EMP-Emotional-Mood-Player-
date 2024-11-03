@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
-import { ValidationResult, Validator } from '@/shared/types/validation.types';
+import {
+  ValidationResult,
+  ValidationError,
+  Validator,
+  ValidationRule,
+} from '@/shared/types/validation.types';
 import { AppError, COMMON_ERROR } from '@utils/errors';
-import { createLogger } from '@utils/logger';
-import config from '@/config';
-
-const logger = createLogger(config);
 
 export class DTOValidator {
   static validate<T extends object>(validator: Validator<T>) {
-    return (req: Request, res: Response, next: NextFunction) => {
+    return (req: Request, _res: Response, next: NextFunction) => {
       try {
         const validationResult = this.validateObject(req.body, validator);
 
@@ -32,21 +33,21 @@ export class DTOValidator {
   ): ValidationResult {
     const errors: ValidationError[] = [];
 
-    for (const [field, rules] of Object.entries(validator)) {
+    Object.entries(validator).forEach(([field, rules]) => {
       const value = data[field as keyof T];
 
-      if (rules) {
-        for (const rule of rules) {
+      if (rules && Array.isArray(rules)) {
+        for (const rule of rules as ValidationRule<T[keyof T]>[]) {
           if (!rule.validate(value)) {
             errors.push({
               field,
               message: rule.message,
             });
-            break; // 첫 번째 실패한 규칙에서 중단
+            break;
           }
         }
       }
-    }
+    });
 
     return {
       isValid: errors.length === 0,

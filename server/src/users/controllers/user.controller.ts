@@ -2,13 +2,10 @@ import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '@/auth/types/auth.types';
 import { AppError, COMMON_ERROR } from '@utils/errors';
 import { userService } from '@users/services/user.service';
-import { createLogger } from '@utils/logger';
-import { UserDTO, CreateUserDTO, UpdateProfileDTO } from '@users/types/user.types';
-import config from '@/config';
+import { UpdateProfileDTO } from '@users/types/user.types';
 
 export class UserController {
   private static instance: UserController;
-  private readonly logger = createLogger(config);
 
   private constructor() {}
 
@@ -62,7 +59,6 @@ export class UserController {
 
       const updateData: UpdateProfileDTO = req.body;
 
-      // 이메일 변경은 제한할 수 있습니다
       if (updateData.email) {
         throw new AppError(
           COMMON_ERROR.VALIDATION_ERROR.name,

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authRouteConfig } from '@/auth/routes/auth.routes';
 import { userRouteConfig } from '@/users/routes/user.routes';
-import { playlistRoutesConfig } from '@/playlists/routes/playlist.routes';
+import { playlistRoutes } from '@/playlists/routes/playlist.routes';
 import { errorMiddleware } from '@/middlewares/error.middleware';
 import { createLogger } from '@utils/logger';
 import config from '@/config';
@@ -25,7 +25,7 @@ export class RouteManager {
   }
 
   private setupRoutes(): void {
-    const routes = [authRouteConfig, userRouteConfig, playlistRoutesConfig];
+    const routes = [authRouteConfig, userRouteConfig, playlistRoutes];
 
     routes.forEach(({ path, router }) => {
       this.router.use(path, router);

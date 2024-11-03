@@ -38,7 +38,7 @@ export const validateCreateUser = DTOValidator.validate<CreateUserDTO>({
 export const validateUpdateUser = DTOValidator.validate<UpdateUserDTO>({
   name: [
     {
-      validate: (value) =>
+      validate: (value: string | undefined): boolean =>
         !value || (ValidationUtils.isString(value) && ValidationUtils.isLength(value, 2, 50)),
       message: '이름은 2-50자 사이여야 합니다.',
     },

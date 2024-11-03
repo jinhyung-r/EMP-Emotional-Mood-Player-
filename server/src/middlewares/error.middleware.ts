@@ -49,7 +49,7 @@ export class ErrorMiddleware {
     res.status(errorStatus).json(responseBody);
   };
 
-  public notFound = (req: Request, res: Response, next: NextFunction): void => {
+  public notFound = (req: Request, _res: Response, next: NextFunction): void => {
     const err = new AppError(
       COMMON_ERROR.RESOURCE_NOT_FOUND_ERROR.name,
       `Path ${req.path} not found`,

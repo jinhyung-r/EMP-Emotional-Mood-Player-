@@ -22,66 +22,72 @@ export class PrismaService {
         ],
       });
 
-      PrismaService.setupLogging(PrismaService.instance);
+      // Prisma Events 타입 지정
+      const prisma = PrismaService.instance;
+
+      // @ts-expect-error - Prisma Client Extensions API의 한계로 인한 타입 에러 무시
+      prisma.$on('query', (event) => {
+        logger.debug('Prisma Query:', {
+          query: event.query,
+          params: event.params,
+          duration: event.duration,
+        });
+      });
+
+      // @ts-expect-error - Prisma Client Extensions API의 한계로 인한 타입 에러 무시
+      prisma.$on('error', (event) => {
+        logger.error('Prisma Error:', event);
+      });
+
+      // @ts-expect-error - Prisma Client Extensions API의 한계로 인한 타입 에러 무시
+      prisma.$on('info', (event) => {
+        logger.info('Prisma Info:', event);
+      });
+
+      // @ts-expect-error - Prisma Client Extensions API의 한계로 인한 타입 에러 무시
+      prisma.$on('warn', (event) => {
+        logger.warn('Prisma Warning:', event);
+      });
     }
+
     return PrismaService.instance;
   }
 
-  private static setupLogging(prisma: PrismaClient): void {
-    prisma.$on('query', (e: { query: string; params: string; duration: number }) => {
-      logger.debug('Prisma Query:', {
-        query: e.query,
-        params: e.params,
-        duration: e.duration,
-      });
-    });
-
-    prisma.$on('error', (e) => {
-      logger.error('Prisma Error:', e);
-    });
-
-    prisma.$on('info', (e) => {
-      logger.info('Prisma Info:', e);
-    });
-
-    prisma.$on('warn', (e) => {
-      logger.warn('Prisma Warning:', e);
-    });
-  }
-
   public static async connect(): Promise<void> {
-    if (this.isConnected) {
-      return;
-    }
+    if (this.isConnected) return;
+
     try {
       const prisma = this.getInstance();
       await prisma.$connect();
       this.isConnected = true;
       logger.info('Database connected successfully');
     } catch (error) {
-      logger.error('Database connection failed:', error);
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      logger.error('Database connection failed:', err);
       throw new AppError(COMMON_ERROR.DATABASE_ERROR.name, 'Database connection failed', {
         statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
-        cause: error instanceof Error ? error : undefined,
+        cause: err,
       });
     }
   }
 
   public static async disconnect(): Promise<void> {
-    if (!this.instance) {
-      return;
-    }
+    if (!this.instance) return;
+
     try {
       await this.instance.$disconnect();
       this.instance = null;
       this.isConnected = false;
       logger.info('Database disconnected successfully');
     } catch (error) {
-      logger.error('Database disconnection failed:', error);
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      logger.error('Database disconnection failed:', err);
       throw new AppError(COMMON_ERROR.DATABASE_ERROR.name, 'Database disconnection failed', {
         statusCode: COMMON_ERROR.DATABASE_ERROR.statusCode,
-        cause: error instanceof Error ? error : undefined,
+        cause: err,
       });
     }
   }
 }
+
+export const prisma = PrismaService.getInstance();
