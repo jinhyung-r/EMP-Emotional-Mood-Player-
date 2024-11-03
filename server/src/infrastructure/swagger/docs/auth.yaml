@@ -1,0 +1,65 @@
+components:
+  schemas:
+    OAuthCallbackResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            email:
+              type: string
+            name:
+              type: string
+            provider:
+              type: string
+              enum: [GOOGLE, SPOTIFY]
+        playlistId:
+          type: integer
+          nullable: true
+        message:
+          type: string
+
+paths:
+  /api/auth/google:
+    get:
+      tags:
+        - Auth
+      summary: Google OAuth 로그인
+      description: Google OAuth 인증 페이지로 리다이렉트합니다.
+      responses:
+        302:
+          description: Google 로그인 페이지로 리다이렉트
+
+  /api/auth/spotify:
+    get:
+      tags:
+        - Auth
+      summary: Spotify OAuth 로그인
+      description: Spotify OAuth 인증 페이지로 리다이렉트합니다.
+      responses:
+        302:
+          description: Spotify 로그인 페이지로 리다이렉트
+
+  /api/auth/spotify/token:
+    get:
+      tags:
+        - Auth
+      summary: Spotify 액세스 토큰 조회
+      security:
+        - sessionAuth: []
+      responses:
+        200:
+          description: 유효한 액세스 토큰 반환
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+        401:
+          description: 인증 실패 또는 토큰 만료

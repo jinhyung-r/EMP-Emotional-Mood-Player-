@@ -9,6 +9,7 @@ import { configurePassport } from '@/infrastructure/auth/passport.config';
 import { RouteManager } from './routes';
 import { createLogger } from '@utils/logger';
 import config from '@/config';
+import { swaggerService } from './infrastructure/swagger/swagger';
 
 const logger = createLogger(config);
 
@@ -87,6 +88,7 @@ export class App {
       await this.connectDatabase();
       this.setupMiddlewares();
       this.setupRoutes();
+      swaggerService.setup(this.app);
       this.setupGracefulShutdown();
       return this.app;
     } catch (error) {

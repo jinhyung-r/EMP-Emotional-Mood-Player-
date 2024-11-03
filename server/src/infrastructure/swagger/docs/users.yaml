@@ -1,0 +1,50 @@
+paths:
+  /api/users/info:
+    get:
+      tags:
+        - Users
+      summary: 사용자 정보 조회
+      security:
+        - sessionAuth: []
+      responses:
+        200:
+          description: 사용자 정보 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          description: 인증되지 않은 요청
+
+  /api/users/profile:
+    put:
+      tags:
+        - Users
+      summary: 사용자 프로필 수정
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 2
+                  maxLength: 50
+      responses:
+        200:
+          description: 프로필 수정 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: '#/components/schemas/User'
+        400:
+          description: 잘못된 요청 데이터

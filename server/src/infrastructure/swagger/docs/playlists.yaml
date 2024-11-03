@@ -1,0 +1,89 @@
+components:
+  schemas:
+    EmotionPlaylistRequest:
+      type: object
+      required:
+        - genres
+        - song_types
+        - prefer_latest
+      properties:
+        genres:
+          type: string
+          enum: [ballad, dance, folk, idol, indie, jazz, rnh, rns, rock, adultkpop]
+        song_types:
+          type: array
+          items:
+            type: string
+            enum: [사랑, 슬픔, 설레임, 이별, 초조함]
+        prefer_latest:
+          type: boolean
+
+paths:
+  /api/playlists/recommend/emotion:
+    post:
+      tags:
+        - Playlists
+      summary: 감정 기반 플레이리스트 생성
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmotionPlaylistRequest'
+      responses:
+        200:
+          description: 플레이리스트 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistResponse'
+
+  /api/playlists/recommend/lyrics:
+    post:
+      tags:
+        - Playlists
+      summary: 가사 기반 플레이리스트 생성
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - searchTerm
+              properties:
+                searchTerm:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                prefer_latest:
+                  type: boolean
+                  default: true
+      responses:
+        200:
+          description: 플레이리스트 생성 성공
+
+  /api/playlists/{playlistId}:
+    get:
+      tags:
+        - Playlists
+      summary: 플레이리스트 조회
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: playlistId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 플레이리스트 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Playlist'
