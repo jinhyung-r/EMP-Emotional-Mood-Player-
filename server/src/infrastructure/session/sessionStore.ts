@@ -7,7 +7,7 @@ import { createLogger } from '@utils/logger';
 import { SessionConfig, SessionStoreOptions } from '../types/session';
 
 const MySQLStore = mysqlSession(session);
-const logger = createLogger(config); // 혹은 appConfig로 대체 가능
+const logger = createLogger(config);
 
 export function createSessionStore(appConfig: Config): SessionConfig {
   const storeOptions: SessionStoreOptions = {

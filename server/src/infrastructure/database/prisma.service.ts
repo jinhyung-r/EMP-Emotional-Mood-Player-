@@ -1,9 +1,16 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { createLogger } from '@utils/logger';
 import { AppError, COMMON_ERROR } from '@utils/errors';
 import config from '@/config';
 
 const logger = createLogger(config);
+
+type PrismaEventType = {
+  query: Prisma.QueryEvent;
+  error: Prisma.LogEvent;
+  info: Prisma.LogEvent;
+  warn: Prisma.LogEvent;
+};
 
 export class PrismaService {
   private static instance: PrismaClient | null = null;
@@ -22,35 +29,48 @@ export class PrismaService {
         ],
       });
 
-      // Prisma Events 타입 지정
-      const prisma = PrismaService.instance;
-
-      // @ts-expect-error - Prisma Client Extensions API의 한계로 인한 타입 에러 무시
-      prisma.$on('query', (event) => {
-        logger.debug('Prisma Query:', {
-          query: event.query,
-          params: event.params,
-          duration: event.duration,
-        });
-      });
-
-      // @ts-expect-error - Prisma Client Extensions API의 한계로 인한 타입 에러 무시
-      prisma.$on('error', (event) => {
-        logger.error('Prisma Error:', event);
-      });
-
-      // @ts-expect-error - Prisma Client Extensions API의 한계로 인한 타입 에러 무시
-      prisma.$on('info', (event) => {
-        logger.info('Prisma Info:', event);
-      });
-
-      // @ts-expect-error - Prisma Client Extensions API의 한계로 인한 타입 에러 무시
-      prisma.$on('warn', (event) => {
-        logger.warn('Prisma Warning:', event);
-      });
+      this.setupLogging();
     }
 
     return PrismaService.instance;
+  }
+
+  private static setupLogging(): void {
+    if (!PrismaService.instance) return;
+
+    const prisma = PrismaService.instance;
+
+    // Prisma의 타입 시스템 제한으로 인해 any 타입 사용
+    (prisma as any).$on('query', (event: PrismaEventType['query']) => {
+      logger.debug('Prisma Query:', {
+        query: event.query,
+        params: event.params,
+        duration: event.duration,
+        timestamp: event.timestamp,
+      });
+    });
+
+    (prisma as any).$on('error', (event: PrismaEventType['error']) => {
+      logger.error('Prisma Error:', {
+        message: event.message,
+        timestamp: event.timestamp,
+        target: event.target,
+      });
+    });
+
+    (prisma as any).$on('info', (event: PrismaEventType['info']) => {
+      logger.info('Prisma Info:', {
+        message: event.message,
+        timestamp: event.timestamp,
+      });
+    });
+
+    (prisma as any).$on('warn', (event: PrismaEventType['warn']) => {
+      logger.warn('Prisma Warning:', {
+        message: event.message,
+        timestamp: event.timestamp,
+      });
+    });
   }
 
   public static async connect(): Promise<void> {

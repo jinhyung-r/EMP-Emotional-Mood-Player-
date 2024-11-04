@@ -17,13 +17,7 @@ export class ErrorMiddleware {
     return ErrorMiddleware.instance;
   }
 
-  public handleError = (
-    err: Error,
-    req: Request,
-    res: Response,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _next: NextFunction,
-  ): void => {
+  public handleError = (err: Error, req: Request, res: Response, _next: NextFunction): void => {
     const errorName = err instanceof AppError ? err.name : COMMON_ERROR.UNKNOWN_ERROR.name;
     const errorMessage = err.message || '예상치 못한 오류가 발생했습니다';
     const errorStatus =

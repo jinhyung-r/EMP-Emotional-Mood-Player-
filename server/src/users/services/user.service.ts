@@ -1,4 +1,4 @@
-import { prisma } from '@/infrastructure/database/prisma';
+import { prisma } from '@/infrastructure/database/prisma.service';
 import { AppError, COMMON_ERROR } from '@utils/errors';
 import { createLogger } from '@utils/logger';
 import { User } from '@prisma/client';
