@@ -107,7 +107,7 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      if (!req.isAuthenticated() || req.user?.provider !== Provider.SPOTIFY) {
+      if (!req.isAuthenticated() || req.user?.provider !== Provider.spotify) {
         throw new AppError(
           COMMON_ERROR.AUTHENTICATION_ERROR.name,
           '인증되지 않았거나 Spotify 사용자가 아닙니다.',
@@ -131,7 +131,7 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      if (!req.isAuthenticated() || req.user?.provider !== Provider.SPOTIFY) {
+      if (!req.isAuthenticated() || req.user?.provider !== Provider.spotify) {
         throw new AppError(
           COMMON_ERROR.AUTHENTICATION_ERROR.name,
           '인증되지 않았거나 Spotify 사용자가 아닙니다.',
@@ -147,7 +147,7 @@ export class AuthController {
 
       const tokenInfo = await authService.refreshToken({
         refreshToken: req.user.refreshToken,
-        provider: Provider.SPOTIFY,
+        provider: Provider.spotify,
       });
 
       // 세션의 유저 정보 업데이트
