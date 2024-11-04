@@ -1,0 +1,75 @@
+header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 1;
+}
+
+header nav {
+  display: flex;
+  padding: 10px 20px;
+}
+
+header ul {
+  display: flex;
+  gap: 50px;
+}
+
+header ul li p {
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+header ul li a {
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+header ul li a:hover {
+  text-decoration: underline;
+}
+
+.desktop-navbar {
+  display: block;
+  padding-top: 25px;
+}
+
+.desktop-navbar nav {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 50px;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+}
+
+.logout-button:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 1024px) {
+  header ul li a {
+    font-size: 18px;
+  }
+
+  .desktop-navbar nav {
+    padding-right: 30px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  header ul li a {
+    font-size: 16px;
+  }
+
+  .desktop-navbar nav {
+    padding-right: 20px;
+  }
+}

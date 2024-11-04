@@ -1,0 +1,40 @@
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React from 'react';
+import Wrapper from './components/common/Wrapper';
+import Home from './pages/Home';
+import Login from './pages/login/Login';
+import Create from './pages/create/Create';
+import Lyrics from './pages/create/lyrics/Lyrics';
+import Emotions from './pages/create/emotions/Emotions';
+import My from './pages/mypage/My';
+import Playlist from './pages/playlist/Playlist';
+import OAuthCallback from './components/OAuthCallback';
+
+import SpotifyPlayback from './pages/playlist/SpotifyPlayback';
+
+import './styles/App.css';
+import { ToastContainer } from 'react-toastify';
+
+function App() {
+  return (
+    <Router>
+      <Wrapper>
+        <ToastContainer />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/create' element={<Create />} />
+          <Route path='/playlists/recommend/lyrics' element={<Lyrics />} />
+          <Route path='/playlists/recommend/emotion' element={<Emotions />} />
+          <Route path='/mypage' element={<My />} />
+          <Route path='/myplaylist' element={<Playlist />} />
+          <Route path='/auth/google/callback' element={<OAuthCallback />} />
+          <Route path='/auth/spotify/callback' element={<OAuthCallback />} />
+          <Route path='/spotify' element={<SpotifyPlayback />} />
+        </Routes>
+      </Wrapper>
+    </Router>
+  );
+}
+
+export default App;
