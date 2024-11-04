@@ -31,7 +31,7 @@ export default new SpotifyStrategy(
         id: profile.id,
         displayName: profile.displayName,
         emails: profile.emails ?? [],
-        provider: Provider.SPOTIFY,
+        provider: Provider.spotify,
         photos: profile.photos ? profile.photos.map((url) => ({ value: url })) : undefined,
       };
 

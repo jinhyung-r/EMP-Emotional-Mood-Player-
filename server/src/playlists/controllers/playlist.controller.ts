@@ -38,7 +38,7 @@ export class PlaylistController {
       };
 
       const modelResponse = await axios.post<AIModelResponse>(
-        `${config.AI_MODEL_URL}/emotion-playlist`,
+        `${config.AI_MODEL_URL}/myplaylist`,
         playlistData,
       );
 
@@ -84,7 +84,7 @@ export class PlaylistController {
       };
 
       const modelResponse = await axios.post<AIModelResponse>(
-        `${config.AI_MODEL_URL}/lyrics-playlist`,
+        `${config.AI_MODEL_URL}/myplaylist`,
         playlistData,
       );
 

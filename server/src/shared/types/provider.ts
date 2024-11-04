@@ -1,10 +1,3 @@
-export enum Provider {
-  GOOGLE = 'GOOGLE',
-  SPOTIFY = 'SPOTIFY',
-}
+import { Provider } from '@prisma/client';
 
-export interface ProviderConfig {
-  tokenUrl: string;
-  clientId: string;
-  clientSecret: string;
-}
+export { Provider };

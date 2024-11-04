@@ -94,12 +94,12 @@ export class AuthService {
 
   private getProviderConfig(provider: Provider) {
     const configs = {
-      [Provider.GOOGLE]: {
+      [Provider.google]: {
         tokenUrl: 'https://oauth2.googleapis.com/token',
         clientId: config.GOOGLE_CLIENT_ID,
         clientSecret: config.GOOGLE_CLIENT_SECRET,
       },
-      [Provider.SPOTIFY]: {
+      [Provider.spotify]: {
         tokenUrl: 'https://accounts.spotify.com/api/token',
         clientId: config.SPOTIFY_CLIENT_ID,
         clientSecret: config.SPOTIFY_CLIENT_SECRET,

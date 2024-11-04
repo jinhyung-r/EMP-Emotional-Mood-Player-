@@ -37,7 +37,7 @@ export default new GoogleStrategy(
         id: profile.id,
         displayName: profile.displayName,
         emails: profile.emails ?? [],
-        provider: Provider.GOOGLE,
+        provider: Provider.google,
         photos: profile.photos,
       };
 
