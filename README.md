@@ -24,6 +24,12 @@ Emotional Mood Player는 사용자의 감정 상태와 선호하는 가사를 �
 
 ## 🛠 기술 스택
 
+![alt text](docs/기술스택.png)
+![alt text](docs/AI-workflow.png)
+***refactoring 이전 기준***
+
+---
+
 ### Frontend
 - React 18.3.1
 - Recoil (상태 관리)
@@ -106,6 +112,10 @@ export class AppError extends Error {
   }
 }
 ```
+
+### HOW EMP WOKS
+![alt text](docs/image.png)
+
 
 ## 🚀 시작하기
 
